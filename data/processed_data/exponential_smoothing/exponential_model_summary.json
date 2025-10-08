@@ -1,0 +1,18 @@
+{
+  "model_type": "ExponentialSmoothing",
+  "fitted": true,
+  "train_samples": 105,
+  "test_samples": 27,
+  "forecast_periods": 27,
+  "trend_seasonality_analysis": {
+    "trend_strength": 0.7223451630439788,
+    "seasonal_strength": 0.1949118800885184,
+    "trend_type": "increasing",
+    "trend_slope": 416896.8637761303,
+    "has_seasonality": true,
+    "seasonal_period": 12,
+    "decomposition_available": true,
+    "recommended_model": "Holt-Winters (trend and seasonality)"
+  },
+  "model_fitted": true
+}

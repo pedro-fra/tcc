@@ -1,0 +1,37 @@
+{
+  "initial": {
+    "total_records": 37034,
+    "missing_values": {
+      "apelido": 0,
+      "DATA_EMISSAO_PEDIDO": 0,
+      "OPERACAO": 0,
+      "VALOR_LIQ": 0
+    },
+    "duplicate_records": 271,
+    "date_range": {
+      "min_date": "01/02/2017",
+      "max_date": "31/12/2020",
+      "unique_dates": 2956
+    },
+    "value_statistics": {
+      "mean": 80313.24461305827,
+      "median": 41275.0,
+      "std": 138415.29211436186,
+      "min": 0.0,
+      "max": 5392800.0,
+      "zero_values": 514,
+      "negative_values": 0
+    },
+    "operation_counts": {
+      "VENDA": 37022,
+      "VENDA DE MERCADORIA CONSIGNADA": 12
+    }
+  },
+  "final": {
+    "total_records": 36751,
+    "total_features": 27,
+    "target_column": "target",
+    "missing_values": 0,
+    "memory_usage_mb": 7.465327262878418
+  }
+}

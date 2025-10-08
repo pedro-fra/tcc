@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cut:*)",
+      "Bash(awk:*)",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__get-library-docs",
+      "Bash(uv add:*)",
+      "Bash(uv sync:*)",
+      "Bash(uv run:*)",
+      "Bash(/dev/null)",
+      "Bash(find:*)",
+      "WebFetch(domain:unit8co.github.io)",
+      "Bash(cat:*)",
+      "Bash(findstr:*)",
+      "Bash(dir:*)",
+      "Bash(del:*)",
+      "Bash(tree:*)",
+      "Bash(powershell:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
