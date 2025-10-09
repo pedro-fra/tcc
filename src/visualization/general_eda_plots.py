@@ -195,33 +195,18 @@ class GeneralEDAPlotter:
         ax3.tick_params(axis="x", rotation=45)
         ax3.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: self.format_currency(x)))
 
-        # Plot 4: Estatisticas principais
+        # Plot 4: Volatilidade temporal (desvio padrao movel)
         ax4 = axes[1, 1]
-        ax4.axis("off")
-
-        # Calcular estatisticas
-        stats_data = {
-            "Total de Observacoes": len(df),
-            "Periodo": f"{df.index.min().strftime('%m/%Y')} a {df.index.max().strftime('%m/%Y')}",
-            "Valor Total": self.format_currency(df["target"].sum()),
-            "Valor Medio Mensal": self.format_currency(df["target"].mean()),
-            "Valor Mediano": self.format_currency(df["target"].median()),
-            "Desvio Padrao": self.format_currency(df["target"].std()),
-            "Coeficiente de Variacao": self.format_percentage(
-                (df["target"].std() / df["target"].mean()) * 100
-            ),
-            "Valor Minimo": self.format_currency(df["target"].min()),
-            "Valor Maximo": self.format_currency(df["target"].max()),
-        }
-
-        # Exibir estatisticas
-        y_pos = 0.9
-        for key, value in stats_data.items():
-            ax4.text(0.1, y_pos, f"{key}:", fontsize=11, fontweight="bold")
-            ax4.text(0.6, y_pos, str(value), fontsize=11)
-            y_pos -= 0.09
-
-        ax4.set_title("Estatisticas Descritivas", fontsize=14, fontweight="bold", pad=20)
+        rolling_std = df["target"].rolling(window=12).std()
+        ax4.plot(df.index, rolling_std, linewidth=2, color="#d62728", alpha=0.8)
+        
+        configure_axes(
+            ax4,
+            title="Volatilidade Temporal (Desvio Padrao Movel 12 Meses)",
+            xlabel="Data",
+            ylabel="Desvio Padrao (R$)",
+        )
+        ax4.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: self.format_currency(x)))
 
         plt.tight_layout()
         save_figure(fig, self.output_dir / "01_visao_geral_serie_temporal.png")
@@ -515,131 +500,38 @@ class GeneralEDAPlotter:
                 0.5, 0.5, "Erro no calculo PACF", ha="center", va="center", transform=ax2.transAxes
             )
 
-        # Plot 3: Testes de estacionariedade
+        # Plot 3: Diferenciacao para analise de estacionariedade
         ax3 = axes[1, 0]
-        ax3.axis("off")
+        diff_series = df["target"].diff().dropna()
+        ax3.plot(df.index[1:], diff_series, linewidth=1.5, color="#9467bd", alpha=0.8)
+        ax3.axhline(0, color="black", linewidth=0.5, linestyle="--")
+        
+        configure_axes(
+            ax3,
+            title="Serie Diferenciada (1ª Diferenca)",
+            xlabel="Data",
+            ylabel="Diferenca das Vendas (R$)",
+        )
+        ax3.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: self.format_currency(x)))
 
-        # Teste ADF
-        try:
-            adf_result = adfuller(df["target"].dropna())
-            adf_statistic = adf_result[0]
-            adf_pvalue = adf_result[1]
-            adf_critical = adf_result[4]
-
-            # Teste KPSS
-            kpss_result = kpss(df["target"].dropna(), regression="ct")
-            kpss_statistic = kpss_result[0]
-            kpss_pvalue = kpss_result[1]
-            kpss_critical = kpss_result[3]
-
-            # Exibir resultados
-            results_text = [
-                "TESTES DE ESTACIONARIEDADE",
-                "",
-                "Teste ADF (Augmented Dickey-Fuller):",
-                f"  Estatistica: {adf_statistic:.4f}",
-                f"  p-valor: {adf_pvalue:.4f}",
-                "  Valores criticos:",
-                f"    1%: {adf_critical['1%']:.4f}",
-                f"    5%: {adf_critical['5%']:.4f}",
-                f"    10%: {adf_critical['10%']:.4f}",
-                f"  Resultado: {'Estacionaria' if adf_pvalue < 0.05 else 'Nao Estacionaria'}",
-                "",
-                "Teste KPSS (Kwiatkowski-Phillips-Schmidt-Shin):",
-                f"  Estatistica: {kpss_statistic:.4f}",
-                f"  p-valor: {kpss_pvalue:.4f}",
-                "  Valores criticos:",
-                f"    1%: {kpss_critical['1%']:.4f}",
-                f"    5%: {kpss_critical['5%']:.4f}",
-                f"    10%: {kpss_critical['10%']:.4f}",
-                f"  Resultado: {'Estacionaria' if kpss_pvalue > 0.05 else 'Nao Estacionaria'}",
-            ]
-
-            y_pos = 0.95
-            for line in results_text:
-                if line.startswith("TESTES"):
-                    ax3.text(
-                        0.02, y_pos, line, fontsize=12, fontweight="bold", transform=ax3.transAxes
-                    )
-                elif line.startswith("Teste"):
-                    ax3.text(
-                        0.02, y_pos, line, fontsize=11, fontweight="bold", transform=ax3.transAxes
-                    )
-                elif line.startswith("  Resultado:"):
-                    color = "green" if "Estacionaria" in line and "Nao" not in line else "red"
-                    ax3.text(
-                        0.02,
-                        y_pos,
-                        line,
-                        fontsize=10,
-                        color=color,
-                        fontweight="bold",
-                        transform=ax3.transAxes,
-                    )
-                else:
-                    ax3.text(0.02, y_pos, line, fontsize=10, transform=ax3.transAxes)
-                y_pos -= 0.045
-
-        except Exception as e:
-            logger.warning(f"Erro nos testes de estacionariedade: {e}")
-            ax3.text(
-                0.5,
-                0.5,
-                "Erro nos testes de estacionariedade",
-                ha="center",
-                va="center",
-                transform=ax3.transAxes,
-            )
-
-        # Plot 4: Estatisticas resumo
+        # Plot 4: Autocorrelacao de diferentes lags
         ax4 = axes[1, 1]
-        ax4.axis("off")
-
-        # Calcular estatisticas adicionais
-        data_values = df["target"].dropna()
-
-        # Teste de normalidade
-        jb_stat, jb_pvalue = jarque_bera(data_values)
-        sw_stat, sw_pvalue = normaltest(data_values)
-
-        # Teste de independencia (Ljung-Box)
-        try:
-            lb_result = acorr_ljungbox(data_values, lags=10, return_df=True)
-            lb_pvalue = lb_result["lb_pvalue"].iloc[-1]
-        except Exception:
-            lb_pvalue = None
-
-        stats_text = [
-            "TESTES ESTATISTICOS",
-            "",
-            "Normalidade:",
-            f"  Jarque-Bera: {jb_stat:.4f} (p={jb_pvalue:.4f})",
-            f"  D'Agostino-Pearson: {sw_stat:.4f} (p={sw_pvalue:.4f})",
-            f"  Normal: {'Sim' if jb_pvalue > 0.05 else 'Nao'}",
-            "",
-            "Autocorrelacao:",
-            f"  Ljung-Box (lag 10): {lb_pvalue:.4f}"
-            if lb_pvalue
-            else "  Ljung-Box: Nao disponivel",
-            f"  Independente: {'Sim' if lb_pvalue and lb_pvalue > 0.05 else 'Nao'}"
-            if lb_pvalue
-            else "",
-            "",
-            "Estatisticas Descritivas:",
-            f"  Assimetria: {stats.skew(data_values):.4f}",
-            f"  Curtose: {stats.kurtosis(data_values):.4f}",
-            f"  CV: {(data_values.std() / data_values.mean()):.4f}",
-        ]
-
-        y_pos = 0.95
-        for line in stats_text:
-            if line.startswith("TESTES"):
-                ax4.text(0.02, y_pos, line, fontsize=12, fontweight="bold", transform=ax4.transAxes)
-            elif line.endswith(":") and not line.startswith("  "):
-                ax4.text(0.02, y_pos, line, fontsize=11, fontweight="bold", transform=ax4.transAxes)
-            else:
-                ax4.text(0.02, y_pos, line, fontsize=10, transform=ax4.transAxes)
-            y_pos -= 0.06
+        # Calcular autocorrelacao para varios lags
+        lags = range(1, 25)
+        autocorr_values = [df["target"].corr(df["target"].shift(lag)) for lag in lags]
+        
+        ax4.bar(lags, autocorr_values, color="#ff7f0e", alpha=0.8, edgecolor="#d62728")
+        ax4.axhline(0, color="black", linewidth=0.5)
+        ax4.axhline(0.2, color="red", linewidth=1, linestyle="--", alpha=0.7, label="Limite 0.2")
+        ax4.axhline(-0.2, color="red", linewidth=1, linestyle="--", alpha=0.7)
+        
+        configure_axes(
+            ax4,
+            title="Autocorrelacao por Lag",
+            xlabel="Lag (Meses)",
+            ylabel="Correlacao",
+        )
+        ax4.legend()
 
         plt.tight_layout()
         save_figure(fig, self.output_dir / "04_propriedades_estatisticas.png")
@@ -716,48 +608,31 @@ class GeneralEDAPlotter:
         )
         ax3.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: self.format_currency(x)))
 
-        # Plot 4: Estatisticas de distribuicao
+        # Plot 4: Densidade de probabilidade comparativa
         ax4 = axes[1, 1]
-        ax4.axis("off")
-
-        # Calcular percentis
-        percentis = [5, 10, 25, 50, 75, 90, 95]
-        percentil_values = [data_values.quantile(p / 100) for p in percentis]
-
-        dist_stats = [
-            "ESTATISTICAS DE DISTRIBUICAO",
-            "",
-            "Medidas de Tendencia Central:",
-            f"  Media: {self.format_currency(data_values.mean())}",
-            f"  Mediana: {self.format_currency(data_values.median())}",
-            f"  Moda: {self.format_currency(data_values.mode().iloc[0] if not data_values.mode().empty else 0)}",
-            "",
-            "Medidas de Dispersao:",
-            f"  Desvio Padrao: {self.format_currency(data_values.std())}",
-            f"  Variancia: {self.format_currency(data_values.var())}",
-            f"  Coef. Variacao: {self.format_percentage((data_values.std() / data_values.mean()) * 100)}",
-            "",
-            "Medidas de Forma:",
-            f"  Assimetria: {stats.skew(data_values):.4f}",
-            f"  Curtose: {stats.kurtosis(data_values):.4f}",
-            "",
-            "Percentis Principais:",
-            f"  P5: {self.format_currency(percentil_values[0])}",
-            f"  P25: {self.format_currency(percentil_values[2])}",
-            f"  P50: {self.format_currency(percentil_values[3])}",
-            f"  P75: {self.format_currency(percentil_values[4])}",
-            f"  P95: {self.format_currency(percentil_values[6])}",
-        ]
-
-        y_pos = 0.95
-        for line in dist_stats:
-            if line.startswith("ESTATISTICAS"):
-                ax4.text(0.02, y_pos, line, fontsize=12, fontweight="bold", transform=ax4.transAxes)
-            elif line.endswith(":") and not line.startswith("  "):
-                ax4.text(0.02, y_pos, line, fontsize=11, fontweight="bold", transform=ax4.transAxes)
-            else:
-                ax4.text(0.02, y_pos, line, fontsize=10, transform=ax4.transAxes)
-            y_pos -= 0.042
+        
+        # Calcular densidade de kernel
+        from scipy.stats import gaussian_kde
+        kde = gaussian_kde(data_values)
+        x_range = np.linspace(data_values.min(), data_values.max(), 200)
+        density = kde(x_range)
+        
+        # Plotar densidade estimada e normal comparativa
+        ax4.plot(x_range, density, linewidth=2, color="#2ca02c", label="Densidade Estimada")
+        
+        # Densidade normal para comparacao
+        mu, sigma = data_values.mean(), data_values.std()
+        normal_density = stats.norm.pdf(x_range, mu, sigma)
+        ax4.plot(x_range, normal_density, linewidth=2, color="#d62728", linestyle="--", label="Distribuicao Normal")
+        
+        configure_axes(
+            ax4,
+            title="Comparacao de Densidade",
+            xlabel="Valor das Vendas (R$)",
+            ylabel="Densidade",
+        )
+        ax4.legend()
+        ax4.xaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: self.format_currency(x)))
 
         plt.tight_layout()
         save_figure(fig, self.output_dir / "05_analise_distribuicao.png")
@@ -838,59 +713,29 @@ class GeneralEDAPlotter:
         ax3.set_xticklabels([m[:3] for m in self.meses_pt])
         ax3.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: self.format_currency(x)))
 
-        # Plot 4: Analise de tendencia
+        # Plot 4: Regressao linear da tendencia
         ax4 = axes[1, 1]
-        ax4.axis("off")
-
-        # Calcular estatisticas de tendencia
+        
+        # Calcular tendencia linear nos dados anuais
         from scipy import stats as scipy_stats
-
-        # Tendencia linear nos dados anuais
         anos = vendas_anuais.index.values
         valores = vendas_anuais.values
         slope, intercept, r_value, p_value, std_err = scipy_stats.linregress(anos, valores)
-
-        # Crescimento medio
-        crescimento_medio = crescimento.mean()
-        crescimento_mediano = crescimento.median()
-
-        # Volatilidade
-        cv_anual = (vendas_anuais.std() / vendas_anuais.mean()) * 100
-        cv_mensal = (df["target"].std() / df["target"].mean()) * 100
-
-        tendencia_stats = [
-            "ANALISE DE TENDENCIA",
-            "",
-            "Tendencia Linear:",
-            f"  Inclinacao: {self.format_currency(slope)}/ano",
-            f"  R²: {r_value**2:.4f}",
-            f"  p-valor: {p_value:.4f}",
-            f"  Significativa: {'Sim' if p_value < 0.05 else 'Nao'}",
-            "",
-            "Crescimento:",
-            f"  Medio Anual: {self.format_percentage(crescimento_medio)}",
-            f"  Mediano Anual: {self.format_percentage(crescimento_mediano)}",
-            f"  Desvio do Crescimento: {self.format_percentage(crescimento.std())}",
-            "",
-            "Volatilidade:",
-            f"  CV Anual: {self.format_percentage(cv_anual)}",
-            f"  CV Mensal: {self.format_percentage(cv_mensal)}",
-            "",
-            "Periodo de Analise:",
-            f"  Inicio: {df.index.min().strftime('%m/%Y')}",
-            f"  Fim: {df.index.max().strftime('%m/%Y')}",
-            f"  Duracao: {len(df)} meses",
-        ]
-
-        y_pos = 0.95
-        for line in tendencia_stats:
-            if line.startswith("ANALISE"):
-                ax4.text(0.02, y_pos, line, fontsize=12, fontweight="bold", transform=ax4.transAxes)
-            elif line.endswith(":") and not line.startswith("  "):
-                ax4.text(0.02, y_pos, line, fontsize=11, fontweight="bold", transform=ax4.transAxes)
-            else:
-                ax4.text(0.02, y_pos, line, fontsize=10, transform=ax4.transAxes)
-            y_pos -= 0.045
+        
+        # Plotar vendas anuais e linha de tendencia
+        ax4.scatter(anos, valores, color="#1f77b4", s=80, alpha=0.8, label="Vendas Anuais")
+        linha_tendencia = slope * anos + intercept
+        ax4.plot(anos, linha_tendencia, color="#d62728", linewidth=2, 
+                label=f"Tendencia Linear (R² = {r_value**2:.3f})")
+        
+        configure_axes(
+            ax4,
+            title="Analise de Tendencia Linear",
+            xlabel="Ano",
+            ylabel="Vendas Anuais (R$)",
+        )
+        ax4.legend()
+        ax4.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: self.format_currency(x)))
 
         plt.tight_layout()
         save_figure(fig, self.output_dir / "06_evolucao_temporal.png")
@@ -983,63 +828,43 @@ class GeneralEDAPlotter:
                 0.5, 0.5, "Erro no calculo PACF", ha="center", va="center", transform=ax3.transAxes
             )
 
-        # Plot 4: Estatisticas de dependencia
+        # Plot 4: Correlacao com componentes temporais
         ax4 = axes[1, 1]
-        ax4.axis("off")
-
-        # Calcular estatisticas de dependencia
-        autocorr_1 = df["target"].corr(df["target"].shift(1))
-        autocorr_12 = df["target"].corr(df["target"].shift(12))
-
-        # Durbin-Watson
-        try:
-            from statsmodels.stats.stattools import durbin_watson
-
-            dw_stat = durbin_watson(df["target"].dropna().values)
-        except Exception:
-            dw_stat = None
-
-        # Correlacao com componentes temporais
+        
+        # Calcular correlacoes temporais
         df_temp = df.copy()
         df_temp["mes"] = df_temp.index.month
         df_temp["ano"] = df_temp.index.year - df_temp.index.year.min()
-
-        corr_mes = df_temp["target"].corr(df_temp["mes"])
-        corr_ano = df_temp["target"].corr(df_temp["ano"])
-
-        dependencia_stats = [
-            "ESTATISTICAS DE DEPENDENCIA",
-            "",
-            "Autocorrelacao:",
-            f"  Lag 1: {autocorr_1:.4f}",
-            f"  Lag 12: {autocorr_12:.4f}",
-            f"  Media (lags 1-12): {np.mean(correlations):.4f}",
-            "",
-            "Testes de Independencia:",
-            f"  Durbin-Watson: {dw_stat:.4f}" if dw_stat else "  Durbin-Watson: Nao disponivel",
-            f"  Interpretacao: {'Positiva' if dw_stat and dw_stat < 1.5 else 'Negativa' if dw_stat and dw_stat > 2.5 else 'Nenhuma'}"
-            if dw_stat
-            else "",
-            "",
-            "Correlacao Temporal:",
-            f"  Com Mes: {corr_mes:.4f}",
-            f"  Com Ano: {corr_ano:.4f}",
-            "",
-            "Lags Significativos:",
-            f"  Lag 1: {'Sim' if abs(autocorr_1) > 0.2 else 'Nao'}",
-            f"  Lag 12: {'Sim' if abs(autocorr_12) > 0.2 else 'Nao'}",
-            f"  Total > 0.2: {sum(1 for c in correlations if abs(c) > 0.2)}",
-        ]
-
-        y_pos = 0.95
-        for line in dependencia_stats:
-            if line.startswith("ESTATISTICAS"):
-                ax4.text(0.02, y_pos, line, fontsize=12, fontweight="bold", transform=ax4.transAxes)
-            elif line.endswith(":") and not line.startswith("  "):
-                ax4.text(0.02, y_pos, line, fontsize=11, fontweight="bold", transform=ax4.transAxes)
-            else:
-                ax4.text(0.02, y_pos, line, fontsize=10, transform=ax4.transAxes)
-            y_pos -= 0.045
+        df_temp["trimestre"] = df_temp.index.quarter
+        
+        # Correlacoes com diferentes componentes temporais
+        componentes = ["mes", "trimestre", "ano"]
+        correlacoes = [df_temp["target"].corr(df_temp[comp]) for comp in componentes]
+        
+        # Adicionar correlacao com lag 1 e lag 12
+        lag_1 = df["target"].corr(df["target"].shift(1))
+        lag_12 = df["target"].corr(df["target"].shift(12))
+        
+        todas_corr = correlacoes + [lag_1, lag_12]
+        labels = ["Mes", "Trimestre", "Ano", "Lag 1", "Lag 12"]
+        
+        colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd"]
+        bars = ax4.bar(labels, todas_corr, color=colors, alpha=0.8, edgecolor="black")
+        ax4.axhline(0, color="black", linewidth=0.5)
+        
+        # Adicionar valores nas barras
+        for bar, val in zip(bars, todas_corr):
+            height = bar.get_height()
+            ax4.text(bar.get_x() + bar.get_width()/2., height + (0.01 if height >= 0 else -0.03),
+                    f'{val:.3f}', ha='center', va='bottom' if height >= 0 else 'top', fontsize=10)
+        
+        configure_axes(
+            ax4,
+            title="Correlacao com Componentes Temporais",
+            xlabel="Componente",
+            ylabel="Correlacao",
+        )
+        ax4.tick_params(axis="x", rotation=45)
 
         plt.tight_layout()
         save_figure(fig, self.output_dir / "07_analise_correlacao.png")
@@ -1083,60 +908,42 @@ class GeneralEDAPlotter:
         mes_maior_venda = sazonalidade.idxmax()
         mes_menor_venda = sazonalidade.idxmin()
 
-        # Panel 1: Metricas Principais
+        # Panel 1: Distribuicao de vendas anuais
         ax1 = fig.add_subplot(gs[0, :2])
-        ax1.axis("off")
+        
+        # Box plot das vendas anuais
+        vendas_por_ano = [df_anual[df_anual["ano"] == ano]["target"].values for ano in vendas_anuais.index]
+        box_plot = ax1.boxplot(vendas_por_ano, labels=vendas_anuais.index, patch_artist=True)
+        
+        for patch in box_plot["boxes"]:
+            patch.set_facecolor("#5490d3")
+            patch.set_alpha(0.8)
+        
+        configure_axes(
+            ax1,
+            title="Distribuicao de Vendas por Ano",
+            xlabel="Ano",
+            ylabel="Vendas Mensais (R$)",
+        )
+        ax1.tick_params(axis="x", rotation=45)
+        ax1.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: self.format_currency(x)))
 
-        principais_metrics = [
-            "METRICAS PRINCIPAIS",
-            "",
-            f"Total de Vendas: {self.format_currency(total_vendas)}",
-            f"Media Mensal: {self.format_currency(media_mensal)}",
-            f"Mediana Mensal: {self.format_currency(mediana_mensal)}",
-            f"Desvio Padrao: {self.format_currency(desvio_padrao)}",
-            f"Coef. Variacao: {self.format_percentage(cv)}",
-            "",
-            f"Crescimento Anual Medio: {self.format_percentage(crescimento_medio)}",
-            f"Numero de Observacoes: {len(df)} meses",
-            f"Periodo: {df.index.min().strftime('%m/%Y')} a {df.index.max().strftime('%m/%Y')}",
-        ]
-
-        y_pos = 0.95
-        for line in principais_metrics:
-            if line.startswith("METRICAS"):
-                ax1.text(0.05, y_pos, line, fontsize=14, fontweight="bold", transform=ax1.transAxes)
-            elif line == "":
-                pass
-            else:
-                ax1.text(0.05, y_pos, line, fontsize=12, transform=ax1.transAxes)
-            y_pos -= 0.08
-
-        # Panel 2: Caracteristicas Sazonais
+        # Panel 2: Crescimento acumulado
         ax2 = fig.add_subplot(gs[0, 2:])
-        ax2.axis("off")
-
-        sazonais_metrics = [
-            "CARACTERISTICAS SAZONAIS",
-            "",
-            f"Mes de Maior Venda: {self.meses_pt[mes_maior_venda - 1]}",
-            f"Valor: {self.format_currency(sazonalidade.max())}",
-            "",
-            f"Mes de Menor Venda: {self.meses_pt[mes_menor_venda - 1]}",
-            f"Valor: {self.format_currency(sazonalidade.min())}",
-            "",
-            f"Amplitude Sazonal: {self.format_currency(sazonalidade.max() - sazonalidade.min())}",
-            f"Ratio Max/Min: {sazonalidade.max() / sazonalidade.min():.2f}x",
-        ]
-
-        y_pos = 0.95
-        for line in sazonais_metrics:
-            if line.startswith("CARACTERISTICAS"):
-                ax2.text(0.05, y_pos, line, fontsize=14, fontweight="bold", transform=ax2.transAxes)
-            elif line == "":
-                pass
-            else:
-                ax2.text(0.05, y_pos, line, fontsize=12, transform=ax2.transAxes)
-            y_pos -= 0.08
+        
+        # Calcular crescimento acumulado
+        vendas_cumsum = vendas_anuais.cumsum()
+        ax2.plot(vendas_cumsum.index, vendas_cumsum.values, marker="o", linewidth=3,
+                markersize=6, color="#2ca02c", markerfacecolor="#ff7f0e")
+        ax2.fill_between(vendas_cumsum.index, vendas_cumsum.values, alpha=0.3, color="#2ca02c")
+        
+        configure_axes(
+            ax2,
+            title="Vendas Acumuladas",
+            xlabel="Ano",
+            ylabel="Vendas Acumuladas (R$)",
+        )
+        ax2.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: self.format_currency(x)))
 
         # Panel 3: Serie temporal resumida
         ax3 = fig.add_subplot(gs[1, :])
@@ -1182,37 +989,49 @@ class GeneralEDAPlotter:
         configure_axes(ax5, title="Evolucao Anual", xlabel="Ano", ylabel="Vendas Anuais (R$)")
         ax5.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: self.format_currency(x)))
 
-        # Panel 6: Insights e Recomendacoes
-        ax6 = fig.add_subplot(gs[3, :])
-        ax6.axis("off")
-
-        # Gerar insights automaticos
-        insights = self._gerar_insights(df, vendas_anuais, sazonalidade, crescimento_medio, cv)
-
-        # Dividir insights em duas colunas
-        mid_point = len(insights) // 2
-
-        # Coluna esquerda
-        y_pos = 0.95
-        for line in insights[:mid_point]:
-            if line.startswith("INSIGHTS"):
-                ax6.text(0.02, y_pos, line, fontsize=14, fontweight="bold", transform=ax6.transAxes)
-            elif line.startswith("•"):
-                ax6.text(0.02, y_pos, line, fontsize=11, transform=ax6.transAxes)
-            else:
-                ax6.text(0.02, y_pos, line, fontsize=12, fontweight="bold", transform=ax6.transAxes)
-            y_pos -= 0.12
-
-        # Coluna direita
-        y_pos = 0.95
-        for line in insights[mid_point:]:
-            if line.startswith("INSIGHTS"):
-                ax6.text(0.52, y_pos, line, fontsize=14, fontweight="bold", transform=ax6.transAxes)
-            elif line.startswith("•"):
-                ax6.text(0.52, y_pos, line, fontsize=11, transform=ax6.transAxes)
-            else:
-                ax6.text(0.52, y_pos, line, fontsize=12, fontweight="bold", transform=ax6.transAxes)
-            y_pos -= 0.12
+        # Panel 6: Correlacao sazonal detalhada
+        ax6 = fig.add_subplot(gs[3, :2])
+        
+        # Criar heatmap de correlacao entre meses
+        monthly_corr = np.zeros((12, 12))
+        for i in range(1, 13):
+            for j in range(1, 13):
+                data_i = df_mensal[df_mensal["mes"] == i]["target"]
+                data_j = df_mensal[df_mensal["mes"] == j]["target"]
+                if len(data_i) > 0 and len(data_j) > 0:
+                    monthly_corr[i-1, j-1] = np.corrcoef(data_i, data_j)[0, 1] if len(data_i) == len(data_j) else np.nan
+        
+        # Usar apenas diagonal principal para mostrar correlacao com o mesmo mes
+        diag_corr = np.diag(monthly_corr)
+        meses_abrev = [m[:3] for m in self.meses_pt]
+        
+        bars = ax6.bar(meses_abrev, diag_corr, color="#5490d3", alpha=0.8, edgecolor="#1f77b4")
+        
+        configure_axes(
+            ax6,
+            title="Consistencia Sazonal (Autocorrelacao Mensal)",
+            xlabel="Mes",
+            ylabel="Correlacao",
+        )
+        ax6.tick_params(axis="x", rotation=45)
+        
+        # Panel 7: Volatilidade por ano
+        ax7 = fig.add_subplot(gs[3, 2:])
+        
+        # Calcular CV por ano
+        cv_anual = df_anual.groupby("ano")["target"].apply(lambda x: (x.std() / x.mean()) * 100)
+        
+        ax7.bar(cv_anual.index, cv_anual.values, color="#d62728", alpha=0.8, edgecolor="#8b0000")
+        ax7.axhline(cv_anual.mean(), color="black", linewidth=2, linestyle="--", 
+                   label=f"Media: {cv_anual.mean():.1f}%")
+        
+        configure_axes(
+            ax7,
+            title="Volatilidade Anual (Coeficiente de Variacao)",
+            xlabel="Ano",
+            ylabel="CV (%)",
+        )
+        ax7.legend()
 
         plt.tight_layout()
         save_figure(fig, self.output_dir / "08_resumo_executivo.png")

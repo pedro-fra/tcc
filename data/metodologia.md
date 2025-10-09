@@ -84,19 +84,54 @@ A nona etapa aplica escalonamento robusto às variáveis numéricas usando Robus
 
 A décima etapa consolida os dados transformados, resultando em um dataset final com 233.274 registros (após remoção de duplicatas) e 71 features (70 variáveis preditivas + 1 target), consumindo 67,41 MB de memória. O conjunto final apresenta distribuição equilibrada de tipos de dados: 36 variáveis booleanas (one-hot encoded), 28 variáveis float64, 3 variáveis int64, e outras distribuídas entre int16, int8, int32 e float32.
 
-## 3.1.4 Análise exploratória e estruturação da série temporal
+## 3.1.4 Análise exploratória da série temporal
 
-Com os dados devidamente pré-processados e estruturados, se iniciará a etapa de análise exploratória, com o objetivo de compreender o comportamento histórico da
+Com os dados devidamente pré-processados e estruturados, foi conduzida uma análise exploratória detalhada para compreender o comportamento histórico da série de faturamento e identificar padrões relevantes para o desenvolvimento dos modelos preditivos. Esta análise foi implementada através de um sistema automatizado de visualizações que gera oito análises específicas da série temporal.
 
-série  de  faturamento  e  identificar  padrões  relevantes  para  o  desenvolvimento  dos modelos preditivos.
+### 3.1.4.1 Visão geral da série temporal
 
-Primeiramente,  serão  construídas  visualizações  gráficas  da  série  temporal, como linhas de tendência, histogramas de distribuição e gráficos de decomposição, a fim  de  observar  aspectos  como  crescimento  ao  longo  do  tempo,  presença  de sazonalidade, variações abruptas e possíveis rupturas na estrutura dos dados. Essa análise  visual  é  essencial  para  a  identificação  inicial  de  tendências  e  ciclos econômicos característicos do contexto empresarial.
+A primeira análise apresenta uma visão geral abrangente da série temporal, incluindo a evolução das vendas ao longo do tempo com linha de tendência, distribuição dos valores por ano através de gráficos de boxplot, e análise das vendas acumuladas. Esta visão panorâmica revelou uma tendência de crescimento consistente de 2014 a 2022, seguida por um declínio significativo em 2023-2024, com valores variando de aproximadamente R$ 8 milhões em 2014 para um pico de R$ 400 milhões em 2022.
 
-Em seguida, serão aplicadas técnicas estatísticas para quantificar e validar os padrões observados. Serão calculadas medidas descritivas como média, mediana, desvio-padrão e coeficiente de variação, além da aplicação de testes formais para verificação de estacionariedade, como os testes ADF e KPSS. Os resultados desses testes  permitirão  avaliar  a  necessidade  de diferenciação  ou outras  transformações específicas para tornar a série adequada aos requisitos dos modelos estatísticos.
+### 3.1.4.2 Decomposição STL
 
-Além  disso,  serão  realizadas  análises  de  autocorrelação  e  autocorrelação parcial (ACF e PACF), fundamentais para a parametrização de modelos como ARIMA, além da identificação de lags relevantes.
+A análise de decomposição STL (Seasonal-Trend using Loess) foi aplicada para separar os componentes de tendência, sazonalidade e ruído da série temporal. A decomposição confirmou a presença de uma tendência de longo prazo bem definida e padrões sazonais consistentes, com a série original mostrando crescimento exponencial até 2022, seguido por declínio acentuado. O componente sazonal revelou padrões regulares de variação mensal, enquanto o resíduo indicou períodos de maior volatilidade, especialmente durante os anos de transição.
 
-Com base nos resultados desta análise, a série temporal será estruturada em diferentes formatos para atender às exigências de cada abordagem preditiva.
+### 3.1.4.3 Análise de sazonalidade
+
+A análise sazonal detalhada examinou os padrões mensais e de autocorrelação da série temporal. Foram calculadas as médias mensais históricas, revelando que os meses de janeiro, maio e dezembro apresentam consistentemente os maiores volumes de vendas, enquanto fevereiro e junho mostram os menores valores. A análise de autocorrelação identificou dependências temporais significativas até o lag 12, confirmando a presença de sazonalidade anual na série.
+
+### 3.1.4.4 Propriedades estatísticas
+
+A análise das propriedades estatísticas incluiu o cálculo das funções de autocorrelação (ACF) e autocorrelação parcial (PACF), fundamentais para a parametrização de modelos ARIMA. A ACF mostrou correlações significativas nos primeiros lags, decaindo gradualmente, enquanto a PACF apresentou cortes abruptos após os primeiros lags, sugerindo características autorregressivas na série. A análise da série diferenciada (primeira diferença) confirmou a remoção da tendência, tornando a série mais adequada para modelagem estatística.
+
+### 3.1.4.5 Análise de distribuição
+
+A análise de distribuição dos valores de vendas incluiu histograma com sobreposição de distribuição normal, gráfico Q-Q para teste de normalidade, box plot para identificação de outliers, e comparação de densidade entre a distribuição empírica e a normal teórica. Os resultados indicaram que a distribuição das vendas não segue uma distribuição normal, apresentando assimetria positiva e presença de valores extremos, identificados como 3 outliers no box plot.
+
+### 3.1.4.6 Evolução temporal detalhada
+
+A análise de evolução temporal examinou as taxas de crescimento anual, padrões sazonais por ano, e tendência linear geral. O cálculo das taxas de crescimento revelou variações significativas, com crescimento superior a 200% em 2015, estabilização em torno de 20-40% nos anos intermediários, e declínios acentuados de -10% a -50% nos anos finais. A análise de tendência linear mostrou um coeficiente de determinação (R²) de 0,966, indicando que 96,6% da variação dos dados é explicada pela tendência temporal.
+
+### 3.1.4.7 Análise de correlação temporal
+
+A análise de correlação incluiu correlações com lags de 1 a 12 meses, autocorrelação parcial detalhada, matriz de correlação para lags selecionados, e correlação com componentes temporais (ano, trimestre, mês). Os resultados mostraram correlações elevadas (>0,8) para os primeiros lags, decaindo gradualmente até o lag 12. A matriz de correlação dos lags selecionados revelou padrões de dependência temporal que orientaram a configuração dos modelos preditivos.
+
+### 3.1.4.8 Resumo executivo
+
+O resumo executivo consolidou todas as análises anteriores, apresentando características principais dos dados incluindo distribuição por ano, vendas acumuladas com tendência, série temporal com média móvel de 12 meses, distribuição mensal, evolução anual, consistência sazonal através de correlação mensal, e volatilidade anual medida pelo coeficiente de variação. Esta análise revelou alta consistência sazonal (correlações >0,9 entre meses equivalentes) e redução da volatilidade ao longo do tempo (de ~80% para ~20% no coeficiente de variação).
+
+### 3.1.4.9 Insights para modelagem
+
+Com base nesta análise exploratória abrangente, foram identificados os seguintes insights fundamentais para a modelagem preditiva:
+
+- **Estacionariedade**: A série original não é estacionária devido à forte tendência, requerendo diferenciação para modelos ARIMA
+- **Sazonalidade**: Presença confirmada de sazonalidade anual (período 12) com padrões consistentes
+- **Autocorrelação**: Dependências temporais significativas até 12 lags, orientando a parametrização dos modelos
+- **Distribuição**: Dados não seguem distribuição normal, com presença de outliers que requerem tratamento específico
+- **Tendência**: Tendência de longo prazo bem definida (R² = 0,966) mas com mudança estrutural após 2022
+- **Volatilidade**: Redução da volatilidade ao longo do tempo, indicando maior estabilidade nos padrões recentes
+
+Estes resultados orientaram diretamente a configuração dos parâmetros para cada modelo preditivo, a escolha das técnicas de pré-processamento específicas, e as estratégias de validação temporal adotadas nas etapas subsequentes.
 
 ## 3.2 MODELOS DE PREVISÃO UTILIZADOS
 
