@@ -16,7 +16,10 @@
       "Bash(dir:*)",
       "Bash(del:*)",
       "Bash(tree:*)",
-      "Bash(powershell:*)"
+      "Bash(powershell:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": []

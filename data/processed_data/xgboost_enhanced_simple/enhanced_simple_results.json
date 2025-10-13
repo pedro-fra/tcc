@@ -1,0 +1,44 @@
+{
+  "model_type": "XGBoost_Enhanced_Darts_Simple",
+  "data_info": {
+    "total_samples": 132,
+    "train_samples": 105,
+    "test_samples": 27,
+    "time_range": "2014-10-31 00:00:00 to 2025-09-30 00:00:00"
+  },
+  "enhancements": {
+    "lags": [
+      -1,
+      -2,
+      -3,
+      -4,
+      -5,
+      -6,
+      -9,
+      -12,
+      -18,
+      -24
+    ],
+    "lags_past_covariates": [
+      -1,
+      -2,
+      -3,
+      -6,
+      -12
+    ],
+    "temporal_encoders": [
+      "month",
+      "year",
+      "quarter",
+      "dayofyear"
+    ],
+    "data_scaling": "MaxAbsScaler",
+    "enhanced_parameters": true
+  },
+  "metrics": {
+    "mae": 17213333.703703705,
+    "rmse": 19359656.47650874,
+    "mape": 48.496416831982714
+  },
+  "model_fitted": true
+}

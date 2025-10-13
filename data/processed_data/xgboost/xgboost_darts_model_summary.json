@@ -1,0 +1,73 @@
+{
+  "model_type": "XGBoost_Darts",
+  "model_parameters": {
+    "lags": [
+      -1,
+      -2,
+      -3,
+      -6,
+      -12
+    ],
+    "n_estimators": 1000,
+    "max_depth": 6,
+    "learning_rate": 0.1,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "reg_alpha": 0.1,
+    "reg_lambda": 1.0,
+    "random_state": 42,
+    "test_ratio": 0.2,
+    "hyperparameter_tuning": false,
+    "cv_folds": 5,
+    "param_grid": {
+      "n_estimators": [
+        500,
+        1000,
+        1500
+      ],
+      "max_depth": [
+        3,
+        6,
+        9
+      ],
+      "learning_rate": [
+        0.01,
+        0.1,
+        0.2
+      ],
+      "subsample": [
+        0.8,
+        0.9,
+        1.0
+      ],
+      "colsample_bytree": [
+        0.8,
+        0.9,
+        1.0
+      ]
+    }
+  },
+  "training_period": {
+    "start": "2014-10-31 00:00:00",
+    "end": "2023-06-30 00:00:00",
+    "length": 105
+  },
+  "test_period": {
+    "start": "2023-07-31 00:00:00",
+    "end": "2025-09-30 00:00:00",
+    "length": 27
+  },
+  "evaluation_metrics": {
+    "mae": 19191510.592592593,
+    "rmse": 22088031.563917287,
+    "mape": 54.73356173707674
+  },
+  "model_fitted": true,
+  "lags_used": [
+    -1,
+    -2,
+    -3,
+    -6,
+    -12
+  ]
+}

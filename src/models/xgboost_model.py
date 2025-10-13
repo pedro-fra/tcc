@@ -1,19 +1,17 @@
 """
-XGBoost sales forecasting model implementation for tabular time series data.
-Implements XGBoost with hyperparameter tuning and comprehensive forecasting pipeline.
+XGBoost sales forecasting model implementation using Darts library.
+Implements XGBModel with automated lag feature creation and comprehensive forecasting pipeline.
 """
 
 import json
 import logging
-import pickle
 from pathlib import Path
 from typing import Any, Dict, Optional, Tuple
 
-import numpy as np
 import pandas as pd
-import xgboost as xgb
-from sklearn.metrics import mean_absolute_error, mean_squared_error
-from sklearn.model_selection import GridSearchCV, TimeSeriesSplit
+from darts import TimeSeries
+from darts.metrics import mae, mape, rmse
+from darts.models import XGBModel
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -34,8 +32,8 @@ except ImportError as e:
 
 class XGBoostForecaster:
     """
-    XGBoost forecasting model for sales prediction using tabular features.
-    Implements complete pipeline from data loading to prediction evaluation.
+    XGBoost forecasting model using Darts XGBModel for sales prediction.
+    Implements complete pipeline from data loading to prediction evaluation using Darts library.
     """
 
     def __init__(self, config: Dict[str, Any]):
@@ -48,14 +46,10 @@ class XGBoostForecaster:
         self.config = config
         self.xgboost_config = config.get("xgboost", {})
         self.model = None
-        self.best_model = None
-        self.X_train = None
-        self.X_test = None
-        self.y_train = None
-        self.y_test = None
+        self.train_series = None
+        self.test_series = None
         self.predictions = None
         self.metrics = {}
-        self.feature_importance = None
         self.model_fitted = False
 
         # Initialize visualizer if available
@@ -69,217 +63,87 @@ class XGBoostForecaster:
         else:
             self.visualizer = None
 
-        logger.info("XGBoostForecaster initialized with configuration")
+        logger.info("XGBoostForecaster initialized with Darts XGBModel")
 
-    def load_data(self, file_path: str) -> Tuple[pd.DataFrame, pd.Series]:
+    def load_time_series_data(self, data_path: Path) -> TimeSeries:
         """
-        Load and preprocess sales data for XGBoost using existing preprocessing pipeline.
+        Load preprocessed time series data for XGBoost modeling using Darts TimeSeries format.
 
         Args:
-            file_path: Path to the CSV data file
+            data_path: Path to time series data directory
 
         Returns:
-            Tuple of (features DataFrame, target Series)
+            TimeSeries object ready for XGBoost modeling
         """
-        logger.info(f"Loading and preprocessing data from {file_path}")
+        logger.info("Loading time series data for XGBoost model")
 
-        try:
-            # Import preprocessing modules
-            from preprocessing.data_preprocessor import MLDataPreprocessor
+        # Load Darts TimeSeries from CSV
+        ts_file = data_path / "time_series_darts.csv"
+        if not ts_file.exists():
+            raise FileNotFoundError(f"Time series file not found: {ts_file}")
 
-            # Initialize preprocessor
-            preprocessor = MLDataPreprocessor(self.config)
+        # Read CSV and convert to TimeSeries
+        df = pd.read_csv(ts_file, index_col=0, parse_dates=True)
+        series = TimeSeries.from_dataframe(df)
 
-            # Load and preprocess data
-            processed_df = preprocessor.process_data(Path(file_path))
+        logger.info(f"Loaded time series with {len(series)} time points")
+        logger.info(f"Date range: {series.start_time()} to {series.end_time()}")
+        logger.info(
+            f"Series statistics - Mean: {series.values().mean():.2f}, Std: {series.values().std():.2f}"
+        )
 
-            # First aggregate to time series format like other models
-            from preprocessing import aggregate_to_time_series
+        return series
 
-            # Reconstruct date information from temporal features
-            if all(col in processed_df.columns for col in ["year", "month", "day"]):
-                processed_df["date"] = pd.to_datetime(processed_df[["year", "month", "day"]])
-            else:
-                raise ValueError("Missing temporal features (year, month, day) in processed data")
-
-            # Aggregate to monthly time series like other models
-            ts_config = self.config["time_series"]
-            df_aggregated = aggregate_to_time_series(
-                processed_df,
-                date_column="date",
-                value_column="target",
-                frequency=ts_config["frequency"],
-                aggregation_method=ts_config["aggregation_method"],
-            )
-
-            # Create time-based features from aggregated data
-            features, target = self._create_xgboost_features_from_timeseries(df_aggregated)
-
-            logger.info("Data loaded and preprocessed successfully:")
-            logger.info(f"  - Features shape: {features.shape}")
-            logger.info(f"  - Target shape: {target.shape}")
-            logger.info(f"  - Feature columns: {len(features.columns)}")
-            logger.info(f"  - Date range: {features.index.min()} to {features.index.max()}")
-
-            return features, target
-
-        except Exception as e:
-            logger.error(f"Error loading and preprocessing data: {e}")
-            raise
-
-    def prepare_data(
-        self, features: pd.DataFrame, target: pd.Series
-    ) -> Tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
+    def prepare_data(self, series: TimeSeries) -> Tuple[TimeSeries, TimeSeries]:
         """
-        Split data into training and testing sets maintaining temporal order.
+        Split time series into training and testing sets maintaining temporal order.
 
         Args:
-            features: Features DataFrame
-            target: Target Series
+            series: Input TimeSeries
 
         Returns:
-            Tuple of (X_train, X_test, y_train, y_test)
+            Tuple of (train_series, test_series)
         """
-        logger.info("Preparing train/test split")
-
-        # Data already has proper date index from aggregation step
-        logger.info(f"Using date index: {features.index.min()} to {features.index.max()}")
+        logger.info("Preparing train/test split for time series")
 
         # Calculate split point based on test ratio
         test_ratio = self.xgboost_config.get("test_ratio", 0.2)
-        total_length = len(features)
+        total_length = len(series)
         train_length = int(total_length * (1 - test_ratio))
 
         # Ensure minimum training data
         min_train_length = max(24, int(total_length * 0.7))  # At least 24 months or 70%
         train_length = max(train_length, min_train_length)
 
-        # Split maintaining temporal order (no shuffling for time series)
-        X_train = features.iloc[:train_length]
-        X_test = features.iloc[train_length:]
-        y_train = target.iloc[:train_length]
-        y_test = target.iloc[train_length:]
+        # Split using Darts slicing - maintains temporal order
+        train_series = series[:train_length]
+        test_series = series[train_length:]
 
-        logger.info(f"Train period: {X_train.index.min()} to {X_train.index.max()}")
-        logger.info(f"Test period: {X_test.index.min()} to {X_test.index.max()}")
-        logger.info(f"Split: {len(X_train)} train, {len(X_test)} test samples")
+        logger.info(f"Train period: {train_series.start_time()} to {train_series.end_time()}")
+        logger.info(f"Test period: {test_series.start_time()} to {test_series.end_time()}")
+        logger.info(f"Split: {len(train_series)} train, {len(test_series)} test samples")
 
-        self.X_train = X_train
-        self.X_test = X_test
-        self.y_train = y_train
-        self.y_test = y_test
+        # Store for later use
+        self.train_series = train_series
+        self.test_series = test_series
 
-        return X_train, X_test, y_train, y_test
+        return train_series, test_series
 
-    def _create_xgboost_features_from_timeseries(
-        self, df_aggregated: pd.DataFrame
-    ) -> Tuple[pd.DataFrame, pd.Series]:
+    def initialize_model(self) -> XGBModel:
         """
-        Create XGBoost features from aggregated time series data.
-
-        Args:
-            df_aggregated: DataFrame with date index and aggregated target values
+        Initialize Darts XGBModel with configuration parameters.
 
         Returns:
-            Tuple of (features DataFrame, target Series)
+            Configured Darts XGBModel instance
         """
-        logger.info("Creating XGBoost features from aggregated time series data")
+        logger.info("Initializing Darts XGBModel")
 
-        # Reset index to work with date column
-        df_features = df_aggregated.reset_index()
+        # Get lag configuration
+        lags = self.xgboost_config.get("lags", [-1, -2, -3, -6, -12])
 
-        # Extract temporal features
-        df_features["year"] = df_features["date"].dt.year
-        df_features["month"] = df_features["date"].dt.month
-        df_features["quarter"] = df_features["date"].dt.quarter
-        df_features["day_of_week"] = df_features["date"].dt.dayofweek
-        df_features["day_of_month"] = df_features["date"].dt.day
-        df_features["week_of_year"] = df_features["date"].dt.isocalendar().week
-
-        # Cyclical encoding for temporal features
-        df_features["month_sin"] = np.sin(2 * np.pi * df_features["month"] / 12)
-        df_features["month_cos"] = np.cos(2 * np.pi * df_features["month"] / 12)
-        df_features["quarter_sin"] = np.sin(2 * np.pi * df_features["quarter"] / 4)
-        df_features["quarter_cos"] = np.cos(2 * np.pi * df_features["quarter"] / 4)
-        df_features["day_of_week_sin"] = np.sin(2 * np.pi * df_features["day_of_week"] / 7)
-        df_features["day_of_week_cos"] = np.cos(2 * np.pi * df_features["day_of_week"] / 7)
-
-        # Calendar-specific features
-        df_features["is_month_start"] = df_features["date"].dt.is_month_start.astype(int)
-        df_features["is_month_end"] = df_features["date"].dt.is_month_end.astype(int)
-        df_features["is_quarter_start"] = df_features["date"].dt.is_quarter_start.astype(int)
-        df_features["is_quarter_end"] = df_features["date"].dt.is_quarter_end.astype(int)
-        df_features["is_year_start"] = df_features["date"].dt.is_year_start.astype(int)
-        df_features["is_year_end"] = df_features["date"].dt.is_year_end.astype(int)
-
-        # Semester feature
-        df_features["semester"] = ((df_features["month"] - 1) // 6) + 1
-        df_features["semester_sin"] = np.sin(2 * np.pi * df_features["semester"] / 2)
-        df_features["semester_cos"] = np.cos(2 * np.pi * df_features["semester"] / 2)
-
-        # Create lag features
-        lag_periods = self.config["feature_engineering"]["lag_periods"]
-        for lag in lag_periods:
-            df_features[f"target_lag_{lag}"] = df_features["target"].shift(lag)
-
-        # Create moving averages
-        ma_windows = self.config["feature_engineering"]["ma_windows"]
-        for window in ma_windows:
-            df_features[f"target_ma_{window}"] = (
-                df_features["target"].rolling(window=window, min_periods=1).mean()
-            )
-
-        # Create rolling statistics
-        for window in [3, 6, 12]:
-            df_features[f"target_std_{window}"] = (
-                df_features["target"].rolling(window=window, min_periods=1).std()
-            )
-            df_features[f"target_min_{window}"] = (
-                df_features["target"].rolling(window=window, min_periods=1).min()
-            )
-            df_features[f"target_max_{window}"] = (
-                df_features["target"].rolling(window=window, min_periods=1).max()
-            )
-
-        # Create trend features
-        df_features["target_diff_1"] = df_features["target"].diff(1)
-        df_features["target_diff_12"] = df_features["target"].diff(12)  # Year-over-year
-        df_features["target_pct_change_1"] = df_features["target"].pct_change(1)
-        df_features["target_pct_change_12"] = df_features["target"].pct_change(12)
-
-        # Create interaction features
-        df_features["month_year_interaction"] = df_features["month"] * df_features["year"]
-        df_features["quarter_year_interaction"] = df_features["quarter"] * df_features["year"]
-
-        # Drop rows with NaN values (due to lag features)
-        df_features = df_features.dropna()
-
-        # Separate features and target
-        feature_columns = [col for col in df_features.columns if col not in ["date", "target"]]
-        features = df_features[feature_columns]
-        target = df_features["target"]
-
-        # Set date as index for visualization
-        features.index = df_features["date"]
-        target.index = df_features["date"]
-
-        logger.info(f"Created {len(feature_columns)} features from time series data")
-        logger.info(f"Final dataset: {len(features)} time points after handling NaN values")
-
-        return features, target
-
-    def initialize_model(self) -> xgb.XGBRegressor:
-        """
-        Initialize XGBoost model with configuration parameters.
-
-        Returns:
-            Configured XGBoost model instance
-        """
-        logger.info("Initializing XGBoost model")
-
-        # Get XGBoost configuration parameters
+        # XGBoost model parameters for the underlying XGBRegressor
         model_params = {
-            "n_estimators": self.xgboost_config.get("n_estimators", 1000),
+            "n_estimators": self.xgboost_config.get("n_estimators", 100),
             "max_depth": self.xgboost_config.get("max_depth", 6),
             "learning_rate": self.xgboost_config.get("learning_rate", 0.1),
             "subsample": self.xgboost_config.get("subsample", 0.8),
@@ -287,118 +151,86 @@ class XGBoostForecaster:
             "reg_alpha": self.xgboost_config.get("reg_alpha", 0.1),
             "reg_lambda": self.xgboost_config.get("reg_lambda", 1.0),
             "random_state": self.xgboost_config.get("random_state", 42),
-            "objective": self.xgboost_config.get("objective", "reg:squarederror"),
-            "eval_metric": self.xgboost_config.get("eval_metric", "rmse"),
-            "verbosity": 0,  # Suppress XGBoost output
         }
 
-        # Initialize model
-        self.model = xgb.XGBRegressor(**model_params)
+        # Initialize Darts XGBModel
+        self.model = XGBModel(lags=lags, **model_params)
 
-        logger.info(f"XGBoost initialized with parameters: {model_params}")
+        logger.info(f"Darts XGBModel initialized with lags: {lags}")
+        logger.info(f"XGBoost parameters: {model_params}")
 
         return self.model
 
-    def fit_model(self, X_train: pd.DataFrame, y_train: pd.Series) -> None:
+    def fit_model(self, train_series: TimeSeries) -> None:
         """
-        Fit XGBoost model with optional hyperparameter tuning.
+        Fit XGBModel using Darts API.
 
         Args:
-            X_train: Training features
-            y_train: Training target
+            train_series: Training TimeSeries
         """
-        logger.info("Fitting XGBoost model")
+        logger.info("Fitting XGBModel using Darts API")
 
         if self.model is None:
             self.initialize_model()
 
         # Log training data statistics
         logger.info("Training data statistics:")
-        logger.info(f"  - Features shape: {X_train.shape}")
-        logger.info(f"  - Target shape: {y_train.shape}")
-        logger.info(f"  - Target mean: {y_train.mean():.2f}")
-        logger.info(f"  - Target std: {y_train.std():.2f}")
+        logger.info(f"  - Series length: {len(train_series)}")
+        logger.info(f"  - Date range: {train_series.start_time()} to {train_series.end_time()}")
+        logger.info(
+            f"  - Value range: {float(train_series.min().values()[:, 0].min()):.2f} to {float(train_series.max().values()[:, 0].max()):.2f}"
+        )
+        logger.info(f"  - Mean value: {train_series.values().mean():.2f}")
 
         try:
-            # Check if hyperparameter tuning is enabled
-            if self.xgboost_config.get("hyperparameter_tuning", False):
-                logger.info("Starting hyperparameter tuning...")
-                self._perform_hyperparameter_tuning(X_train, y_train)
-            else:
-                # Fit model directly (XGBoost Regressor doesn't support early_stopping_rounds in fit)
-                self.model.fit(X_train, y_train)
-                self.best_model = self.model
-
+            # Fit model using Darts API
+            self.model.fit(train_series)
             self.model_fitted = True
 
-            # Get feature importance
-            self.feature_importance = self.best_model.feature_importances_
-
-            logger.info("XGBoost model fitted successfully")
+            logger.info("XGBModel fitted successfully using Darts API")
 
         except Exception as e:
-            logger.error(f"Error fitting XGBoost model: {e}")
+            logger.error(f"Error fitting XGBModel: {e}")
             raise
 
-    def _perform_hyperparameter_tuning(self, X_train: pd.DataFrame, y_train: pd.Series) -> None:
+    def generate_predictions(
+        self, n: int, series: Optional[TimeSeries] = None, num_samples: int = 1
+    ) -> TimeSeries:
         """
-        Perform hyperparameter tuning using GridSearchCV with TimeSeriesSplit.
+        Generate predictions using the fitted Darts XGBModel.
 
         Args:
-            X_train: Training features
-            y_train: Training target
-        """
-        param_grid = self.xgboost_config.get("param_grid", {})
-        cv_folds = self.xgboost_config.get("cv_folds", 5)
-
-        # Use TimeSeriesSplit for cross-validation to respect temporal order
-        tscv = TimeSeriesSplit(n_splits=cv_folds)
-
-        # Perform grid search
-        grid_search = GridSearchCV(
-            estimator=self.model,
-            param_grid=param_grid,
-            cv=tscv,
-            scoring="neg_mean_squared_error",
-            n_jobs=-1,
-            verbose=0,
-        )
-
-        grid_search.fit(X_train, y_train)
-
-        # Update model with best parameters
-        self.best_model = grid_search.best_estimator_
-
-        logger.info(f"Best parameters: {grid_search.best_params_}")
-        logger.info(f"Best CV score: {-grid_search.best_score_:.2f}")
-
-    def generate_predictions(self, X_test: Optional[pd.DataFrame] = None) -> np.ndarray:
-        """
-        Generate predictions using the fitted XGBoost model.
-
-        Args:
-            X_test: Test features (uses instance X_test if not provided)
+            n: Number of time steps to predict
+            series: Series to predict from (uses train_series if not provided)
+            num_samples: Number of samples for probabilistic forecasting
 
         Returns:
-            Array with predictions
+            TimeSeries with predictions
         """
         if not self.model_fitted:
             raise ValueError("Model must be fitted before generating predictions")
 
-        if X_test is None:
-            X_test = self.X_test
+        if series is None:
+            series = self.train_series
 
-        if X_test is None:
-            raise ValueError("No test data available for predictions")
+        if series is None:
+            raise ValueError("No series available for predictions")
 
-        logger.info(f"Generating predictions for {len(X_test)} samples")
+        logger.info(f"Generating predictions for {n} time steps")
+        if num_samples > 1:
+            logger.info(f"Probabilistic forecasting with {num_samples} samples")
 
         try:
-            # Generate predictions
-            predictions = self.best_model.predict(X_test)
+            # Generate predictions using Darts API
+            predictions = self.model.predict(n=n, series=series, num_samples=num_samples)
 
-            logger.info("Predictions generated successfully")
-            logger.info(f"Prediction range: {predictions.min():.2f} to {predictions.max():.2f}")
+            logger.info("Predictions generated successfully using Darts API")
+            logger.info(
+                f"Prediction period: {predictions.start_time()} to {predictions.end_time()}"
+            )
+            logger.info(
+                f"Prediction range: {float(predictions.min().values()[:, 0].min()):.2f} to {float(predictions.max().values()[:, 0].max()):.2f}"
+            )
 
             self.predictions = predictions
             return predictions
@@ -407,26 +239,24 @@ class XGBoostForecaster:
             logger.error(f"Error generating predictions: {e}")
             raise
 
-    def evaluate_model(self, y_true: pd.Series, y_pred: np.ndarray) -> Dict[str, float]:
+    def evaluate_model(self, actual: TimeSeries, predicted: TimeSeries) -> Dict[str, float]:
         """
-        Evaluate model performance using standard forecasting metrics.
+        Evaluate model performance using Darts metrics.
 
         Args:
-            y_true: Actual observed values
-            y_pred: Model predictions
+            actual: Actual observed TimeSeries
+            predicted: Model predictions TimeSeries
 
         Returns:
             Dictionary containing evaluation metrics
         """
-        logger.info("Evaluating model performance")
+        logger.info("Evaluating model performance using Darts metrics")
 
         try:
-            # Calculate metrics
-            mae_score = mean_absolute_error(y_true, y_pred)
-            rmse_score = np.sqrt(mean_squared_error(y_true, y_pred))
-
-            # Calculate MAPE (handling division by zero)
-            mape_score = np.mean(np.abs((y_true - y_pred) / np.where(y_true == 0, 1, y_true))) * 100
+            # Calculate metrics using Darts functions
+            mae_score = mae(actual, predicted)
+            rmse_score = rmse(actual, predicted)
+            mape_score = mape(actual, predicted)
 
             metrics = {
                 "mae": float(mae_score),
@@ -437,7 +267,7 @@ class XGBoostForecaster:
             # Store metrics
             self.metrics = metrics
 
-            logger.info("Model evaluation completed:")
+            logger.info("Model evaluation completed using Darts metrics:")
             logger.info(f"  - MAE: {mae_score:.4f}")
             logger.info(f"  - RMSE: {rmse_score:.4f}")
             logger.info(f"  - MAPE: {mape_score:.4f}%")
@@ -450,7 +280,7 @@ class XGBoostForecaster:
 
     def save_model(self, output_dir: Path) -> None:
         """
-        Save the fitted XGBoost model to disk.
+        Save the fitted Darts XGBModel to disk.
 
         Args:
             output_dir: Directory to save the model
@@ -460,29 +290,28 @@ class XGBoostForecaster:
             return
 
         output_dir.mkdir(parents=True, exist_ok=True)
-        model_path = output_dir / "xgboost_model.pkl"
+        model_path = output_dir / "xgboost_darts_model.pkl"
 
         try:
-            with open(model_path, "wb") as f:
-                pickle.dump(self.best_model, f)
-            logger.info(f"XGBoost model saved to {model_path}")
+            # Save using Darts model save method
+            self.model.save(model_path)
+            logger.info(f"Darts XGBModel saved to {model_path}")
         except Exception as e:
             logger.error(f"Error saving model: {e}")
             raise
 
     def load_model(self, model_path: Path) -> None:
         """
-        Load a previously saved XGBoost model.
+        Load a previously saved Darts XGBModel.
 
         Args:
             model_path: Path to the saved model file
         """
         try:
-            with open(model_path, "rb") as f:
-                self.best_model = pickle.load(f)
-                self.model = self.best_model
+            # Load using Darts model load method
+            self.model = XGBModel.load(model_path)
             self.model_fitted = True
-            logger.info(f"XGBoost model loaded from {model_path}")
+            logger.info(f"Darts XGBModel loaded from {model_path}")
         except Exception as e:
             logger.error(f"Error loading model: {e}")
             raise
@@ -498,30 +327,31 @@ class XGBoostForecaster:
 
         # Create model summary
         model_summary = {
-            "model_type": "XGBoost",
+            "model_type": "XGBoost_Darts",
             "model_parameters": self.xgboost_config,
             "training_period": {
-                "start": str(self.X_train.index.min()) if self.X_train is not None else None,
-                "end": str(self.X_train.index.max()) if self.X_train is not None else None,
-                "length": len(self.X_train) if self.X_train is not None else None,
+                "start": str(self.train_series.start_time())
+                if self.train_series is not None
+                else None,
+                "end": str(self.train_series.end_time()) if self.train_series is not None else None,
+                "length": len(self.train_series) if self.train_series is not None else None,
             },
             "test_period": {
-                "start": str(self.X_test.index.min()) if self.X_test is not None else None,
-                "end": str(self.X_test.index.max()) if self.X_test is not None else None,
-                "length": len(self.X_test) if self.X_test is not None else None,
+                "start": str(self.test_series.start_time())
+                if self.test_series is not None
+                else None,
+                "end": str(self.test_series.end_time()) if self.test_series is not None else None,
+                "length": len(self.test_series) if self.test_series is not None else None,
             },
             "evaluation_metrics": self.metrics,
-            "feature_importance": self.feature_importance.tolist()
-            if self.feature_importance is not None
-            else None,
-            "feature_names": self.X_train.columns.tolist() if self.X_train is not None else None,
             "model_fitted": self.model_fitted,
+            "lags_used": self.xgboost_config.get("lags", [-1, -2, -3, -6, -12]),
         }
 
-        with open(output_dir / "xgboost_model_summary.json", "w") as f:
+        with open(output_dir / "xgboost_darts_model_summary.json", "w") as f:
             json.dump(model_summary, f, indent=2)
 
-        logger.info(f"XGBoost results saved to {output_dir}")
+        logger.info(f"XGBoost Darts results saved to {output_dir}")
 
     def generate_plots(self, output_dir: Path) -> Dict[str, Any]:
         """
@@ -546,71 +376,70 @@ class XGBoostForecaster:
 
         plot_info = {"plots_generated": True, "plot_files": {}}
 
-        # 1. Feature analysis plots
-        if self.X_train is not None and self.feature_importance is not None:
-            logger.info("Creating feature analysis plots")
-            feature_plots = self.visualizer.create_feature_analysis(
-                features=self.X_train,
-                feature_importance=self.feature_importance,
-                output_dir=plots_dir,
-            )
-            plot_info["plot_files"]["features"] = feature_plots
+        try:
+            # Generate time series comparison plots
+            if (
+                self.train_series is not None
+                and self.test_series is not None
+                and self.predictions is not None
+            ):
+                logger.info("Creating prediction comparison plots")
+                prediction_plots = self.visualizer.create_prediction_comparison_plots(
+                    train_series=self.train_series,
+                    test_series=self.test_series,
+                    predictions=self.predictions,
+                    output_dir=plots_dir,
+                )
+                plot_info["plot_files"]["predictions"] = prediction_plots
 
-        # 2. Prediction comparison plots
-        if self.X_test is not None and self.y_test is not None and self.predictions is not None:
-            logger.info("Creating prediction comparison plots")
-            prediction_plots = self.visualizer.create_prediction_comparison_plots(
-                X_test=self.X_test,
-                y_test=self.y_test,
-                predictions=self.predictions,
-                X_train=self.X_train,
-                y_train=self.y_train,
-                output_dir=plots_dir,
-            )
-            plot_info["plot_files"]["predictions"] = prediction_plots
+            # Generate performance plots
+            if self.metrics and self.test_series is not None and self.predictions is not None:
+                logger.info("Creating model performance plots")
+                performance_plots = self.visualizer.create_performance_plots(
+                    actual_series=self.test_series,
+                    predicted_series=self.predictions,
+                    metrics=self.metrics,
+                    output_dir=plots_dir,
+                )
+                plot_info["plot_files"]["performance"] = performance_plots
 
-        # 3. Model performance plots
-        if self.metrics and self.y_test is not None and self.predictions is not None:
-            logger.info("Creating model performance plots")
-            performance_plots = self.visualizer.create_performance_plots(
-                y_test=self.y_test,
-                predictions=self.predictions,
-                metrics=self.metrics,
-                output_dir=plots_dir,
-            )
-            plot_info["plot_files"]["performance"] = performance_plots
+        except Exception as e:
+            logger.warning(f"Error generating plots: {e}")
+            plot_info["plots_generated"] = False
+            plot_info["error"] = str(e)
 
         logger.info(f"Plots saved to {plots_dir}")
         return plot_info
 
-    def run_complete_pipeline(self, data_file: str) -> Dict[str, Any]:
+    def run_complete_pipeline(self, data_path: Path) -> Dict[str, Any]:
         """
-        Execute the complete XGBoost forecasting pipeline.
+        Execute the complete XGBoost forecasting pipeline using Darts.
 
         Args:
-            data_file: Path to the input data file
+            data_path: Path to the input data directory
 
         Returns:
             Dictionary containing all results and metrics
         """
-        logger.info("Starting complete XGBoost forecasting pipeline")
+        logger.info("Starting complete XGBoost forecasting pipeline with Darts")
 
         try:
-            # 1. Load and preprocess data
-            features, target = self.load_data(data_file)
+            # 1. Load time series data
+            series = self.load_time_series_data(data_path)
 
             # 2. Prepare train/test split
-            X_train, X_test, y_train, y_test = self.prepare_data(features, target)
+            train_series, test_series = self.prepare_data(series)
 
             # 3. Initialize and fit model
             self.initialize_model()
-            self.fit_model(X_train, y_train)
+            self.fit_model(train_series)
 
             # 4. Generate predictions
-            predictions = self.generate_predictions(X_test)
+            n_predict = len(test_series)
+            predictions = self.generate_predictions(n=n_predict, series=train_series)
 
             # 5. Evaluate model
-            metrics = self.evaluate_model(y_test, predictions)
+            metrics = self.evaluate_model(test_series, predictions)
 
             # 6. Save results
             project_root = Path(__file__).parent.parent.parent
@@ -624,13 +453,13 @@ class XGBoostForecaster:
 
             # Compile complete results
             results = {
-                "model_type": "XGBoost",
+                "model_type": "XGBoost_Darts",
                 "data_info": {
-                    "total_samples": len(features),
-                    "train_samples": len(X_train),
-                    "test_samples": len(X_test),
-                    "features_count": features.shape[1],
-                    "time_range": f"{features.index.min()} to {features.index.max()}",
+                    "total_samples": len(series),
+                    "train_samples": len(train_series),
+                    "test_samples": len(test_series),
+                    "time_range": f"{series.start_time()} to {series.end_time()}",
+                    "lags_used": self.xgboost_config.get("lags", [-1, -2, -3, -6, -12]),
                 },
                 "metrics": metrics,
                 "model_fitted": self.model_fitted,
@@ -638,7 +467,7 @@ class XGBoostForecaster:
                 "output_directory": str(output_dir),
             }
 
-            logger.info("XGBoost forecasting pipeline completed successfully")
+            logger.info("XGBoost Darts forecasting pipeline completed successfully")
             return results
 
         except Exception as e:
@@ -647,4 +476,4 @@ class XGBoostForecaster:
 
 
 if __name__ == "__main__":
-    print("XGBoost forecasting model loaded successfully!")
+    print("XGBoost Darts forecasting model loaded successfully!")
