@@ -15,9 +15,6 @@ import pandas as pd
 import seaborn as sns
 from darts import TimeSeries
 from scipy import stats
-from scipy.stats import jarque_bera, normaltest
-from statsmodels.stats.diagnostic import acorr_ljungbox
-from statsmodels.tsa.stattools import adfuller, kpss
 
 from .plot_config import (
     apply_plot_style,
@@ -199,7 +196,7 @@ class GeneralEDAPlotter:
         ax4 = axes[1, 1]
         rolling_std = df["target"].rolling(window=12).std()
         ax4.plot(df.index, rolling_std, linewidth=2, color="#d62728", alpha=0.8)
-        
+
         configure_axes(
             ax4,
             title="Volatilidade Temporal (Desvio Padrao Movel 12 Meses)",
@@ -505,7 +502,7 @@ class GeneralEDAPlotter:
         diff_series = df["target"].diff().dropna()
         ax3.plot(df.index[1:], diff_series, linewidth=1.5, color="#9467bd", alpha=0.8)
         ax3.axhline(0, color="black", linewidth=0.5, linestyle="--")
-        
+
         configure_axes(
             ax3,
             title="Serie Diferenciada (1ª Diferenca)",
@@ -519,12 +516,12 @@ class GeneralEDAPlotter:
         # Calcular autocorrelacao para varios lags
         lags = range(1, 25)
         autocorr_values = [df["target"].corr(df["target"].shift(lag)) for lag in lags]
-        
+
         ax4.bar(lags, autocorr_values, color="#ff7f0e", alpha=0.8, edgecolor="#d62728")
         ax4.axhline(0, color="black", linewidth=0.5)
         ax4.axhline(0.2, color="red", linewidth=1, linestyle="--", alpha=0.7, label="Limite 0.2")
         ax4.axhline(-0.2, color="red", linewidth=1, linestyle="--", alpha=0.7)
-        
+
         configure_axes(
             ax4,
             title="Autocorrelacao por Lag",
@@ -610,21 +607,29 @@ class GeneralEDAPlotter:
 
         # Plot 4: Densidade de probabilidade comparativa
         ax4 = axes[1, 1]
-        
+
         # Calcular densidade de kernel
         from scipy.stats import gaussian_kde
+
         kde = gaussian_kde(data_values)
         x_range = np.linspace(data_values.min(), data_values.max(), 200)
         density = kde(x_range)
-        
+
         # Plotar densidade estimada e normal comparativa
         ax4.plot(x_range, density, linewidth=2, color="#2ca02c", label="Densidade Estimada")
-        
+
         # Densidade normal para comparacao
         mu, sigma = data_values.mean(), data_values.std()
         normal_density = stats.norm.pdf(x_range, mu, sigma)
-        ax4.plot(x_range, normal_density, linewidth=2, color="#d62728", linestyle="--", label="Distribuicao Normal")
-        
+        ax4.plot(
+            x_range,
+            normal_density,
+            linewidth=2,
+            color="#d62728",
+            linestyle="--",
+            label="Distribuicao Normal",
+        )
+
         configure_axes(
             ax4,
             title="Comparacao de Densidade",
@@ -715,19 +720,25 @@ class GeneralEDAPlotter:
 
         # Plot 4: Regressao linear da tendencia
         ax4 = axes[1, 1]
-        
+
         # Calcular tendencia linear nos dados anuais
         from scipy import stats as scipy_stats
+
         anos = vendas_anuais.index.values
         valores = vendas_anuais.values
         slope, intercept, r_value, p_value, std_err = scipy_stats.linregress(anos, valores)
-        
+
         # Plotar vendas anuais e linha de tendencia
         ax4.scatter(anos, valores, color="#1f77b4", s=80, alpha=0.8, label="Vendas Anuais")
         linha_tendencia = slope * anos + intercept
-        ax4.plot(anos, linha_tendencia, color="#d62728", linewidth=2, 
-                label=f"Tendencia Linear (R² = {r_value**2:.3f})")
-        
+        ax4.plot(
+            anos,
+            linha_tendencia,
+            color="#d62728",
+            linewidth=2,
+            label=f"Tendencia Linear (R² = {r_value**2:.3f})",
+        )
+
         configure_axes(
             ax4,
             title="Analise de Tendencia Linear",
@@ -830,34 +841,40 @@ class GeneralEDAPlotter:
 
         # Plot 4: Correlacao com componentes temporais
         ax4 = axes[1, 1]
-        
+
         # Calcular correlacoes temporais
         df_temp = df.copy()
         df_temp["mes"] = df_temp.index.month
         df_temp["ano"] = df_temp.index.year - df_temp.index.year.min()
         df_temp["trimestre"] = df_temp.index.quarter
-        
+
         # Correlacoes com diferentes componentes temporais
         componentes = ["mes", "trimestre", "ano"]
         correlacoes = [df_temp["target"].corr(df_temp[comp]) for comp in componentes]
-        
+
         # Adicionar correlacao com lag 1 e lag 12
         lag_1 = df["target"].corr(df["target"].shift(1))
         lag_12 = df["target"].corr(df["target"].shift(12))
-        
+
         todas_corr = correlacoes + [lag_1, lag_12]
         labels = ["Mes", "Trimestre", "Ano", "Lag 1", "Lag 12"]
-        
+
         colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd"]
         bars = ax4.bar(labels, todas_corr, color=colors, alpha=0.8, edgecolor="black")
         ax4.axhline(0, color="black", linewidth=0.5)
-        
+
         # Adicionar valores nas barras
         for bar, val in zip(bars, todas_corr):
             height = bar.get_height()
-            ax4.text(bar.get_x() + bar.get_width()/2., height + (0.01 if height >= 0 else -0.03),
-                    f'{val:.3f}', ha='center', va='bottom' if height >= 0 else 'top', fontsize=10)
-        
+            ax4.text(
+                bar.get_x() + bar.get_width() / 2.0,
+                height + (0.01 if height >= 0 else -0.03),
+                f"{val:.3f}",
+                ha="center",
+                va="bottom" if height >= 0 else "top",
+                fontsize=10,
+            )
+
         configure_axes(
             ax4,
             title="Correlacao com Componentes Temporais",
@@ -910,15 +927,17 @@ class GeneralEDAPlotter:
 
         # Panel 1: Distribuicao de vendas anuais
         ax1 = fig.add_subplot(gs[0, :2])
-        
+
         # Box plot das vendas anuais
-        vendas_por_ano = [df_anual[df_anual["ano"] == ano]["target"].values for ano in vendas_anuais.index]
+        vendas_por_ano = [
+            df_anual[df_anual["ano"] == ano]["target"].values for ano in vendas_anuais.index
+        ]
         box_plot = ax1.boxplot(vendas_por_ano, labels=vendas_anuais.index, patch_artist=True)
-        
+
         for patch in box_plot["boxes"]:
             patch.set_facecolor("#5490d3")
             patch.set_alpha(0.8)
-        
+
         configure_axes(
             ax1,
             title="Distribuicao de Vendas por Ano",
@@ -930,13 +949,20 @@ class GeneralEDAPlotter:
 
         # Panel 2: Crescimento acumulado
         ax2 = fig.add_subplot(gs[0, 2:])
-        
+
         # Calcular crescimento acumulado
         vendas_cumsum = vendas_anuais.cumsum()
-        ax2.plot(vendas_cumsum.index, vendas_cumsum.values, marker="o", linewidth=3,
-                markersize=6, color="#2ca02c", markerfacecolor="#ff7f0e")
+        ax2.plot(
+            vendas_cumsum.index,
+            vendas_cumsum.values,
+            marker="o",
+            linewidth=3,
+            markersize=6,
+            color="#2ca02c",
+            markerfacecolor="#ff7f0e",
+        )
         ax2.fill_between(vendas_cumsum.index, vendas_cumsum.values, alpha=0.3, color="#2ca02c")
-        
+
         configure_axes(
             ax2,
             title="Vendas Acumuladas",
@@ -991,7 +1017,7 @@ class GeneralEDAPlotter:
 
         # Panel 6: Correlacao sazonal detalhada
         ax6 = fig.add_subplot(gs[3, :2])
-        
+
         # Criar heatmap de correlacao entre meses
         monthly_corr = np.zeros((12, 12))
         for i in range(1, 13):
@@ -999,14 +1025,16 @@ class GeneralEDAPlotter:
                 data_i = df_mensal[df_mensal["mes"] == i]["target"]
                 data_j = df_mensal[df_mensal["mes"] == j]["target"]
                 if len(data_i) > 0 and len(data_j) > 0:
-                    monthly_corr[i-1, j-1] = np.corrcoef(data_i, data_j)[0, 1] if len(data_i) == len(data_j) else np.nan
-        
+                    monthly_corr[i - 1, j - 1] = (
+                        np.corrcoef(data_i, data_j)[0, 1] if len(data_i) == len(data_j) else np.nan
+                    )
+
         # Usar apenas diagonal principal para mostrar correlacao com o mesmo mes
         diag_corr = np.diag(monthly_corr)
         meses_abrev = [m[:3] for m in self.meses_pt]
-        
+
         bars = ax6.bar(meses_abrev, diag_corr, color="#5490d3", alpha=0.8, edgecolor="#1f77b4")
-        
+
         configure_axes(
             ax6,
             title="Consistencia Sazonal (Autocorrelacao Mensal)",
@@ -1014,17 +1042,22 @@ class GeneralEDAPlotter:
             ylabel="Correlacao",
         )
         ax6.tick_params(axis="x", rotation=45)
-        
+
         # Panel 7: Volatilidade por ano
         ax7 = fig.add_subplot(gs[3, 2:])
-        
+
         # Calcular CV por ano
         cv_anual = df_anual.groupby("ano")["target"].apply(lambda x: (x.std() / x.mean()) * 100)
-        
+
         ax7.bar(cv_anual.index, cv_anual.values, color="#d62728", alpha=0.8, edgecolor="#8b0000")
-        ax7.axhline(cv_anual.mean(), color="black", linewidth=2, linestyle="--", 
-                   label=f"Media: {cv_anual.mean():.1f}%")
-        
+        ax7.axhline(
+            cv_anual.mean(),
+            color="black",
+            linewidth=2,
+            linestyle="--",
+            label=f"Media: {cv_anual.mean():.1f}%",
+        )
+
         configure_axes(
             ax7,
             title="Volatilidade Anual (Coeficiente de Variacao)",
