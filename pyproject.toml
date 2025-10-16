@@ -50,3 +50,8 @@ ignore = ["E501"]  # Line too long (handled by formatter)
 quote-style = "double"
 indent-style = "space"
 skip-magic-trailing-comma = false
+
+[tool.uv.workspace]
+members = [
+    "pdf_to_md",
+]
