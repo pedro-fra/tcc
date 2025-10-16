@@ -27,7 +27,8 @@
       "Bash(python -c:*)",
       "Bash(rm:*)",
       "Bash(git restore:*)",
-      "Bash(git push)"
+      "Bash(git push)",
+      "Bash(mv:*)"
     ],
     "deny": [],
     "ask": []

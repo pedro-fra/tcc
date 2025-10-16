@@ -432,27 +432,39 @@ d) **Normalização**: Aplicada automaticamente via MaxAbsScaler para garantir e
 
 Esta abordagem eliminou a necessidade de criar manualmente features como médias móveis, codificações trigonométricas, e estatísticas agregadas, simplificando significativamente o pipeline e garantindo que apenas as features mais relevantes fossem utilizadas.
 
-#### 3.2.4.4 Configuração dos hiperparâmetros
+#### 3.2.4.4 Configuracao dos hiperparametros
 
-Os hiperparâmetros do XGBoost foram configurados com base em otimização prévia, resultando na seguinte configuração final:
+O modelo XGBoost implementado via Darts separou os parametros em duas categorias distintas: parametros especificos do framework Darts para processamento de series temporais e hiperparametros do algoritmo XGBoost propriamente dito.
 
-a) **n_estimators**: 2000 árvores de decisão para garantir capacidade adequada de aprendizado.
+**Parametros do framework Darts (configuracao de series temporais):**
 
-b) **max_depth**: 8 níveis de profundidade máxima, controlando a complexidade das árvores e evitando overfitting.
+a) **lags**: 17 valores de defasagem [-1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12, -15, -18, -24, -30, -36] para capturar dependencias temporais em multiplos horizontes.
 
-c) **learning_rate**: 0.05 para controlar o peso de cada nova árvore, garantindo aprendizado estável.
+b) **lags_past_covariates**: 8 lags adicionais [-1, -2, -3, -4, -5, -6, -12, -24] para padroes de dependencia temporal complementares.
 
-d) **subsample**: 0.9 (90% de amostragem) para aumentar a generalização do modelo.
+c) **add_encoders**: Encoders temporais automaticos incluindo month, year, quarter, dayofyear, weekofyear e dayofweek para captura de padroes ciclicos e sazonais.
 
-e) **colsample_bytree**: 0.9 para selecionar aleatoriamente 90% das features em cada árvore.
+d) **data_scaling**: MaxAbsScaler aplicado automaticamente para normalizacao robusta das features.
 
-f) **reg_alpha**: 0.2 (regularização L1) para penalizar complexidade e promover esparsidade.
+**Hiperparametros do algoritmo XGBoost (passados via kwargs):**
 
-g) **reg_lambda**: 1.5 (regularização L2) para controle adicional de complexidade.
+e) **n_estimators**: 2000 arvores de decisao para garantir capacidade adequada de aprendizado e convergencia do algoritmo de gradient boosting.
 
-h) **random_state**: 42 para garantir reprodutibilidade dos resultados.
+f) **max_depth**: 8 niveis de profundidade maxima, controlando a complexidade das arvores individuais e evitando overfitting.
 
-Estes parâmetros foram derivados de processo de otimização anterior e representam a configuração que melhor equilibrou capacidade preditiva e generalização para o dataset específico.
+g) **learning_rate**: 0.05 para controlar o peso de cada nova arvore no ensemble, garantindo aprendizado estavel e convergencia gradual.
+
+h) **subsample**: 0.9 (90% de amostragem) para aumentar a generalizacao do modelo atraves de variacao estocastica nas amostras de treinamento.
+
+i) **colsample_bytree**: 0.9 para selecionar aleatoriamente 90% das features em cada arvore, promovendo diversidade no ensemble.
+
+j) **reg_alpha**: 0.2 (regularizacao L1/Lasso) para penalizar complexidade e promover esparsidade nos pesos do modelo.
+
+k) **reg_lambda**: 1.5 (regularizacao L2/Ridge) para controle adicional de complexidade e suavizacao dos pesos.
+
+l) **random_state**: 42 para garantir reprodutibilidade total dos resultados entre execucoes.
+
+Esta configuracao hibrida aproveitou a especializacao da Darts em processamento de series temporais (geracao automatica de lags e encoders temporais) combinada com o poder preditivo do algoritmo XGBoost (ensemble de arvores com gradient boosting). Os hiperparametros do XGBoost foram definidos manualmente com base em praticas estabelecidas para modelos de previsao, priorizando capacidade de aprendizado (n_estimators alto e max_depth moderado) equilibrada com regularizacao (reg_alpha e reg_lambda) para evitar overfitting.
 
 #### 3.2.4.5 Treinamento do modelo
 
