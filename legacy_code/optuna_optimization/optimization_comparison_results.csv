@@ -1,2 +1,0 @@
-model_name,mae_improvement,rmse_improvement,mape_improvement,baseline_mae,optimized_mae,baseline_rmse,optimized_rmse,baseline_mape,optimized_mape,optimization_overhead
-xgboost,-13.940469392281882,-12.103680449085125,-21.674246479210886,6356730.0,7242888.0,7691304.286407605,8622235.179601168,15.820680849939087,19.2496942120442,15.506851196289062
