@@ -1,0 +1,15 @@
+[
+  {
+    "model_name": "xgboost",
+    "mae_improvement": -13.940469392281882,
+    "rmse_improvement": -12.103680449085125,
+    "mape_improvement": -21.674246479210886,
+    "baseline_mae": 6356730.0,
+    "optimized_mae": 7242888.0,
+    "baseline_rmse": 7691304.286407605,
+    "optimized_rmse": 8622235.179601168,
+    "baseline_mape": 15.820680849939087,
+    "optimized_mape": 19.2496942120442,
+    "optimization_overhead": 15.506851196289062
+  }
+]

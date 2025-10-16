@@ -20,7 +20,14 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(grep:*)",
-      "Bash(git log:*)"
+      "Bash(git log:*)",
+      "Bash(echo:*)",
+      "Bash(timeout 60 uv run:*)",
+      "Bash(timeout 120 uv run:*)",
+      "Bash(python -c:*)",
+      "Bash(rm:*)",
+      "Bash(git restore:*)",
+      "Bash(git push)"
     ],
     "deny": [],
     "ask": []
