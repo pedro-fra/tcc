@@ -1,0 +1,190 @@
+// ============================================================================
+// MEDIDAS DAX PARA POWER BI - ANÁLISE TCC
+// ============================================================================
+// Estas medidas devem ser adicionadas ao modelo Power BI para suportar
+// a comparação entre XGBoost e as projeções do Power BI
+// ============================================================================
+
+// ============================================================================
+// MEDIDA 1: TCC Valor Faturamento Realizado
+// ============================================================================
+// Calcula o faturamento realizado no período sem projeção
+// Base para cálculo de projeções
+
+TCC Valor Faturamento Realizado =
+    CALCULATE(
+        SUM('[Fato] Faturamento'[VALOR_LIQ]),
+        KEEPFILTERS('[Fato] Faturamento'[GERA_COBRANCA] = 1),
+        KEEPFILTERS('[Fato] Faturamento'[OPERACAO] = "VENDA")
+    )
+
+// Formatação: "R$" #,0;-"R$" #,0;"R$" #,0
+// Pasta: TCC\Comparacao
+// LineageTag: (será gerado automaticamente pelo Power BI)
+
+
+// ============================================================================
+// MEDIDA 2: TCC Faturamento Projetado Simples
+// ============================================================================
+// Projeção mensal simplificada baseada em média diária
+// NÃO usa dias úteis/feriados para permitir comparação justa com XGBoost
+// Lógica: (Faturamento até hoje / Dias decorridos) × Dias totais do mês
+
+TCC Faturamento Projetado Simples =
+    VAR vDiasNoMes =
+        CALCULATE(
+            COUNTROWS('[Dim] Calendário'),
+            KEEPFILTERS('[Dim] Calendário'[MesNum] = MONTH(TODAY())),
+            KEEPFILTERS('[Dim] Calendário'[Ano] = YEAR(TODAY())),
+            ALL(Aux_MesmoPeriodo)
+        )
+
+    VAR vDiasAteHoje =
+        CALCULATE(
+            DISTINCTCOUNT('[Dim] Calendário'[Data]),
+            KEEPFILTERS('[Dim] Calendário'[Data] <= TODAY()),
+            KEEPFILTERS('[Dim] Calendário'[MesNum] = MONTH(TODAY())),
+            KEEPFILTERS('[Dim] Calendário'[Ano] = YEAR(TODAY())),
+            ALL(Aux_MesmoPeriodo)
+        )
+
+    VAR vFaturamentoAteHoje = [TCC Valor Faturamento Realizado]
+
+    VAR vMediaDiaria = DIVIDE(vFaturamentoAteHoje, vDiasAteHoje)
+
+    VAR vProjecao = vMediaDiaria * vDiasNoMes
+
+    RETURN
+    SWITCH(
+        TRUE(),
+        MONTH(TODAY()) = MONTH([Primeira Data do Filtro]) && vDiasAteHoje > 0,
+        vProjecao,
+        vFaturamentoAteHoje
+    )
+
+// Formatação: "R$" #,0;-"R$" #,0;"R$" #,0
+// Pasta: TCC\Comparacao
+// Nota: Esta é a versão simplificada, sem dias úteis/feriados
+
+
+// ============================================================================
+// MEDIDA 3: TCC Diferenca XGBoost vs PowerBI
+// ============================================================================
+// Diferença absoluta entre previsão do XGBoost e Power BI
+// Positivo = XGBoost previu maior que Power BI
+// Negativo = XGBoost previu menor que Power BI
+
+TCC Diferenca XGBoost vs PowerBI =
+    [TCC XGBoost Previsao] - [TCC Faturamento Projetado Simples]
+
+// Formatação: "R$" #,0;-"R$" #,0;"R$" #,0
+// Pasta: TCC\Comparacao
+
+
+// ============================================================================
+// MEDIDA 4: TCC Diferenca Percentual
+// ============================================================================
+// Diferença percentual entre XGBoost e Power BI
+// (XGBoost - PowerBI) / PowerBI
+
+TCC Diferenca Percentual =
+    DIVIDE(
+        [TCC Diferenca XGBoost vs PowerBI],
+        [TCC Faturamento Projetado Simples]
+    )
+
+// Formatação: 0.00%;-0.00%;0.00%
+// Pasta: TCC\Comparacao
+
+
+// ============================================================================
+// MEDIDA 5: TCC XGBoost Previsao (IMPORTANTE)
+// ============================================================================
+// Esta medida deve referenciar os dados do XGBoost
+// Opção A: Se os dados forem importados como tabela
+// Opção B: Se os dados forem um CSV conectado
+
+// OPÇÃO A - Se criar tabela "[TCC] XGBoost Previsoes"
+TCC XGBoost Previsao =
+    CALCULATE(
+        SUM('[TCC] XGBoost Previsoes'[Previsao]),
+        KEEPFILTERS('[TCC] XGBoost Previsoes'[Data] = MAX('[Dim] Calendário'[Data]))
+    )
+
+// OU OPÇÃO B - Se importar como paramétrica
+// (Consultar o analista de dados para a melhor abordagem)
+
+
+// ============================================================================
+// MEDIDA 6: TCC MAE XGBoost
+// ============================================================================
+// Mean Absolute Error do XGBoost no período de teste
+
+TCC MAE XGBoost = 10,110,160.96
+
+// Formatação: "R$" #,0.00
+// Pasta: TCC\Metricas
+// Nota: Este valor é FIXO, obtido dos resultados do modelo
+
+
+// ============================================================================
+// MEDIDA 7: TCC RMSE XGBoost
+// ============================================================================
+// Root Mean Squared Error do XGBoost no período de teste
+
+TCC RMSE XGBoost = 13,302,309.10
+
+// Formatação: "R$" #,0.00
+// Pasta: TCC\Metricas
+// Nota: Este valor é FIXO, obtido dos resultados do modelo
+
+
+// ============================================================================
+// MEDIDA 8: TCC MAPE XGBoost
+// ============================================================================
+// Mean Absolute Percentage Error do XGBoost no período de teste
+
+TCC MAPE XGBoost = 0.269129
+
+// Formatação: 0.00%
+// Pasta: TCC\Metricas
+// Nota: Este valor é FIXO, obtido dos resultados do modelo
+
+
+// ============================================================================
+// NOTAS IMPORTANTES
+// ============================================================================
+
+/*
+1. DADOS DO XGBOOST:
+   - Os dados do XGBoost devem ser importados em uma tabela chamada
+     '[TCC] XGBoost Previsoes' com as colunas:
+     * Data (EOMONTH do período)
+     * Previsao (valor da previsão do XGBoost)
+
+2. PERÍODO DE ANÁLISE:
+   - Período de teste: Dezembro/2022 a Setembro/2025
+   - Total: 27 meses (mesmo período usado no treinamento/teste do ML)
+
+3. IMPORTAÇÃO DOS DADOS:
+   - Exportar as previsões do XGBoost em CSV
+   - Importar como tabela no Power BI
+   - Criar relacionamento com '[Dim] Calendário'[Data]
+
+4. VERSÃO SIMPLIFICADA:
+   - 'TCC Faturamento Projetado Simples' não usa dias úteis/feriados
+   - Isso permite comparação justa com XGBoost que projeta todo mês
+
+5. PRÓXIMOS PASSOS:
+   - Adicionar visualizações comparativas no report
+   - Criar tabela com valores para exportar
+   - Usar dados exportados para análise em Python
+
+6. CONTATO:
+   - Em caso de dúvidas sobre as medidas, revisar 'analise_powerbi_tmdl.md'
+   - Documentação técnica: 'COMPARACAO_XGBOOST_POWERBI.md'
+*/
+
+// ============================================================================
+// FIM DAS MEDIDAS DAX
+// ============================================================================
