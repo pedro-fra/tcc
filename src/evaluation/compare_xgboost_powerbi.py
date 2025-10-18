@@ -366,19 +366,22 @@ def compare_models(powerbi_csv_path: str, processed_data_dir: Path = None) -> Di
     xgboost_results = comparator.load_xgboost_predictions()
     powerbi_data = comparator.load_powerbi_data(powerbi_csv_path)
 
-    if "Faturamento_Real" in powerbi_data.columns and "PowerBI_Projecao" in powerbi_data.columns:
-        actual = powerbi_data["Faturamento_Real"].values
-        powerbi_forecast = powerbi_data["PowerBI_Projecao"].values
+    if (
+        "TCC Faturamento Realizado" in powerbi_data.columns
+        and "TCC Faturamento Projetado Power BI" in powerbi_data.columns
+    ):
+        actual = powerbi_data["TCC Faturamento Realizado"].values
+        powerbi_forecast = powerbi_data["TCC Faturamento Projetado Power BI"].values
 
         powerbi_metrics = comparator.calculate_metrics(actual, powerbi_forecast)
         comparator.comparison_results["powerbi_metrics"] = powerbi_metrics
 
         logger.info(f"Metricas Power BI calculadas: MAPE={powerbi_metrics['mape']:.2f}%")
 
-        if "XGBoost_Previsao" in powerbi_data.columns:
-            comparator.generate_forecast_comparison_plot(powerbi_data)
-            comparator.generate_difference_plot(powerbi_data)
-            comparator.generate_scatter_plot(powerbi_data)
+        powerbi_data_renamed = powerbi_data.copy()
+        powerbi_data_renamed.columns = ["Data", "Faturamento_Real", "PowerBI_Projecao"]
+        comparator.generate_forecast_comparison_plot(powerbi_data_renamed)
+        comparator.generate_difference_plot(powerbi_data_renamed)
 
         comparator.generate_metrics_comparison_plot(xgboost_results["metrics"], powerbi_metrics)
 

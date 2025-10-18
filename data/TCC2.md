@@ -148,15 +148,29 @@ XGBoost; Exponential Smoothing; Theta Method; Business Intelligence.
 
 Figura 1 - Metodologia geral do trabalho ................................................................... 30
 
-Figura 2 - Metodologia do modelo ARIMA ................................................................ 48
+Figura 2 - Metodologia do pré-processamento .......................................................... 32
 
-Figura 3 – Metodologia do modelo XGBoost ............................................................. 64
+Figura 3 - Visão geral da série temporal ................................................................... 36
 
-Figura 4 - Metodologia do modelo de Suavização Exponencial ... Erro! Indicador não
+Figura 4 – Decomposição da série temporal ............................................................. 37
 
-definido.
+Figura 5 - Análise da sazonalidade ........................................................................... 38
 
-Figura 5 - Metodologia do modelo Theta ...................... Erro! Indicador não definido.
+Figura 6 - Propriedades estatísticas da série temporal ............................................. 39
+
+Figura 7 - Análise de distribuição .............................................................................. 40
+
+Figura 8 - Evolução temporal das vendas ................................................................. 41
+
+Figura 9 - Análise de correlação temporal ................................................................. 42
+
+Figura 10 - Metodologia do modelo ARIMA .............................................................. 44
+
+Figura 11 – Metodologia do modelo Suavização Exponencial .................................. 51
+
+Figura 12 – Metodologia do modelo Theta ................................................................ 55
+
+Figura 13 – Metodologia do modelo XGBoost ........................................................... 58
 
 
 ---
@@ -167,9 +181,7 @@ Figura 5 - Metodologia do modelo Theta ...................... Erro! Indicador n�
 
 ## LISTA DE QUADROS
 
-Quadro 1 - Cronograma de Desenvolvimento do Projeto ............. Erro! Indicador não
-
-definido.
+Nenhuma entrada de índice de ilustrações foi encontrada.
 
 
 ---
@@ -356,65 +368,61 @@ Gradient Boosting Decision Tree
 
 3.1.1 Definição do problema e objetivos da previsão .......................................... 31
 
-3.1.2 Coleta e integração dos dados ..................................................................... 31
+3.1.2 Coleta e pré-processamento dos dados ...................................................... 31
 
-3.1.3 Pré-processamento e transformações dos dados Erro! Indicador não definido.
+3.1.2.1 Filtragem e agregação inicial ......................................................................... 32
 
-3.1.4 Análise exploratória e estruturação da série temporal ............................... 38
+3.1.2.3 Agregação temporal mensal .......................................................................... 33
 
-3.2 MODELOS DE PREVISÃO UTILIZADOS ........................................................... 47
+3.1.2.4 Conversão para formato Darts ...................................................................... 33
 
-3.2.1 ARIMA .............................................................................................................. 48
+3.1.2.5 Considerações sobre engenharia de features ............................................... 33
 
-3.2.1.1 Importação das bibliotecas e configuração do ambiente ............................... 48
+3.1.3 Análise exploratória e estruturação da série temporal ............................... 34
 
-3.2.1.2 Ingestão e conversão dos dados para série temporal ................................... 49
+3.1.3.1 Visão geral da série temporal ........................................................................ 35
 
-3.2.1.3 Verificação de estacionaridade e diferenciação ............................................ 50
+3.1.3.2 Decomposição STL ....................................................................................... 36
 
-3.2.1.4 Divisão dos dados em conjuntos de treino e teste ........................................ 51
+Fonte: elaborado pelo autor ...................................................................................... 37
 
-3.2.1.5 Definição dos parâmetros p, d e q ................................................................. 51
+3.1.3.3 Análise de sazonalidade ................................................................................ 37
 
-3.2.1.6 Treinamento do modelo ................................................................................. 52
+3.1.3.4 Propriedades estatísticas .............................................................................. 38
 
-3.2.1.7 Validação do modelo e ajustes finos ............................................................. 53
+Fonte: elaborado pelo autor ...................................................................................... 39
 
-3.2.1.8 Análise residual ............................................................................................. 54
+3.1.3.5 Análise de distribuição ................................................................................... 39
 
-3.2.1.9 Armazenamento dos resultados para comparação futura ............................. 54
+3.1.3.6 Evolução temporal detalhada ........................................................................ 40
 
-3.2.2 XGBoost .......................................................................................................... 64
+Fonte: elaborado pelo autor ...................................................................................... 41
 
-3.2.2.1 Preparação e engenharia de variáveis .......................................................... 65
+3.1.3.7 Análise de correlação temporal ..................................................................... 41
 
-3.2.2.2 Divisão dos dados em treino e teste ............................................................. 65
+Fonte: elaborado pelo autor ...................................................................................... 42
 
-3.2.2.3 Normalização e tratamento dos dados .......................................................... 65
+3.1.3.8 Insights para modelagem .............................................................................. 42
 
-3.2.2.4 Configuração dos hiper parâmetros iniciais ................................................... 65
+3.2 MODELOS DE PREVISÃO UTILIZADOS ........................................................... 43
 
-3.2.2.5 Treinamento inicial do modelo ....................................................................... 66
+3.2.1 ARIMA .............................................................................................................. 44
 
-3.2.2.6 Avaliação inicial de desempenho .................................................................. 67
+3.2.1.1 Importação das bibliotecas e configuração do ambiente ............................... 44
 
-3.2.2.7 Busca e ajuste de hiper parâmetros .............................................................. 67
+3.2.1.2 Ingestão e conversão dos dados para série temporal ................................... 45
 
-3.2.2.8 Validação cruzada e análise de resultados ................................................... 67
+3.2.1.3 Verificação de estacionaridade e diferenciação ............................................ 46
 
-3.2.2.9 Geração das previsões finais e armazenamento dos resultados .................. 67
+3.2.1.4 Divisão dos dados em conjuntos de treino e teste ........................................ 46
 
-3.2.3 Suavização exponencial .......................................... Erro! Indicador não definido.
+3.2.1.5 Definição dos parâmetros p, d e q ................................................................. 47
 
-3.2.3.1 Preparação dos dados ..................................... Erro! Indicador não definido.
+3.2.1.6 Treinamento do modelo ................................................................................. 48
 
-3.2.3.2 Análise exploratória e estrutura da série temporalErro!
+3.2.1.7 Validação do modelo e ajustes finos ............................................................. 49
 
-Indicador
-
-não
-
-definido.
+3.2.1.8 Análise residual ............................................................................................. 50
 
 
 ---
@@ -423,45 +431,57 @@ definido.
 
 10
 
-3.2.3.3 Divisão em conjunto de treino e teste............... Erro! Indicador não definido.
+3.2.1.9 Armazenamento dos resultados para comparação futura ............................. 50
 
-3.2.3.4 Seleção do tipo de suavização exponencial e parâmetrosErro! Indicador não
+3.2.2 Suavização Exponencial ................................................................................ 51
 
-definido.
+3.2.2.1 Análise de componentes para seleção do modelo ........................................ 52
 
-3.2.3.5 Treinamento inicial do modelo .......................... Erro! Indicador não definido.
+3.2.2.2 Decisão entre modelo aditivo e multiplicativo ................................................ 52
 
-3.2.3.6 Geração das previsões ..................................... Erro! Indicador não definido.
+3.2.2.3 Configuração e otimização de parâmetros .................................................... 53
 
-3.2.3.7 Avaliação do desempenho ............................... Erro! Indicador não definido.
+3.2.2.4 Treinamento por suavização recursiva .......................................................... 53
 
-3.2.3.8 Ajuste fino e revalidação .................................. Erro! Indicador não definido.
+3.2.2.5 Geração de previsões diretas ........................................................................ 54
 
-3.2.3.9 Geração das previsões finais e armazenamento dos resultados ............. Erro!
+3.2.2.6 Análise residual específica para suavização ................................................. 54
 
-Indicador não definido.
+3.2.3 Theta ................................................................................................................ 54
 
-3.2.4 Theta .......................................................................... Erro! Indicador não definido.
+3.2.3.1 Verificação de pré-condições do método Theta ............................................ 55
 
-3.2.4.1 Organização e pré-condições dos dados ......... Erro! Indicador não definido.
+3.2.3.2 Configuração automática vs. manual do modelo ........................................... 56
 
-3.2.4.2 Análise inicial e sazonalidade ........................... Erro! Indicador não definido.
+3.2.3.3 Decomposição e criação das linhas Theta .................................................... 56
 
-3.2.4.3 Separação temporal para avaliação ................. Erro! Indicador não definido.
+3.2.3.4 Treinamento e ajuste das componentes ........................................................ 57
 
-3.2.4.4 Configuração e execução do algoritmo ............ Erro! Indicador não definido.
+3.2.3.5 Combinação de previsões e extrapolação ..................................................... 57
 
-3.2.4.5 Produção das previsões e pós-processamento Erro! Indicador não definido.
+3.2.3.6 Avaliação e diagnósticos específicos ............................................................ 57
 
-3.2.4.6 Avaliação quantitativa e diagnóstico ................ Erro! Indicador não definido.
+3.2.4 XGBoost .......................................................................................................... 58
 
-3.2.4.7 Iteração e consolidação dos resultados ........... Erro! Indicador não definido.
+3.2.4.1 Preparação e integração com Darts .............................................................. 58
 
-3.3 AVALIAÇÃO E COMPARAÇÃO DOS MODELOS .............................................. 68
+3.2.4.2 Divisão dos dados em treino e teste Engenharia automática de features ..... 59
 
-3.4 CRONOGRAMA .................................................................................................. 68
+3.2.4.3 Engenharia automática de features ............................................................... 59
 
-REFERÊNCIAS ......................................................................................................... 69
+3.2.4.4 Configuração dos hiper parâmetros iniciais ................................................... 60
+
+3.2.4.5 Treinamento do modelo ................................................................................. 61
+
+3.2.4.6 Avaliação inicial de desempenho .................................................................. 62
+
+3.2.4.7 Validação e análise de resultados ................................................................. 62
+
+3.2.4.8 Geração das previsões finais e armazenamento dos resultados .................. 62
+
+3.3 AVALIAÇÃO E COMPARAÇÃO DOS MODELOS .............................................. 62
+
+REFERÊNCIAS ......................................................................................................... 63
 
 
 ---
@@ -724,7 +744,7 @@ covariância, permanecem constantes ao longo do tempo. A condição de
 
 estacionariedade é importante para aplicação correta de diversos modelos,
 
-como os modelos ARIMA.
+como os modelos ARIMA;
 
 b) Tendência: Refere-se à direção predominante da série ao longo do tempo,
 
@@ -732,7 +752,7 @@ podendo ser crescente, decrescente ou estável. Segundo Makridakis,
 
 Wheelwright e Hyndman (1999), a tendência é fundamental para entender o
 
-comportamento das séries e escolher modelos adequados.
+comportamento das séries e escolher modelos adequados;
 
 c) Sazonalidade: Corresponde às variações periódicas e regulares que
 
@@ -750,7 +770,7 @@ recorrentes
 
 ## WHEELWRIGHT;
 
-## HYNDMAN, 1999).
+## HYNDMAN, 1999);
 
 d) Autocorrelação: Representa a correlação da série consigo mesma em
 
@@ -758,7 +778,7 @@ diferentes momentos do tempo (lags). De acordo com Parzen (1961), esse
 
 conceito é fundamental para identificar e compreender o comportamento das
 
-séries temporais.
+séries temporais;
 
 e) Ruído branco: Para Bezerra (2006), é a parcela aleatória da série
 
@@ -776,13 +796,13 @@ a) Séries estacionárias: Caracterizam-se por apresentar média e variância
 
 constantes ao longo do tempo. São frequentemente observadas em séries
 
-financeiras de retorno.
+financeiras de retorno;
 
 b) Séries não estacionárias: São séries cujas propriedades estatísticas, como
 
 média e/ou variância, alteram-se com o tempo. Exemplos comuns incluem
 
-séries econômicas como PIB e inflação.
+séries econômicas como PIB e inflação;
 
 c) Séries lineares e não lineares: Séries lineares podem ser modeladas por
 
@@ -811,7 +831,7 @@ avançados como redes neurais LSTM e CNN para previsão das vendas
 
 sazonais de móveis. Os resultados mostraram que as redes neurais LSTM
 
-apresentaram maior precisão na captura de padrões complexos e sazonais.
+apresentaram maior precisão na captura de padrões complexos e sazonais;
 
 b) Previsão de vendas semanais em lojas de departamento: Pao e Sullivan
 
@@ -821,7 +841,7 @@ neurais feed-forward com entradas temporais defasadas, concluindo que as
 
 redes neurais tiveram um desempenho superior, capturando com eficiência
 
-as sazonalidades das vendas semanais.
+as sazonalidades das vendas semanais;
 
 c) Aplicação de Deep Learning em séries temporais complexas: Shiri et al.
 
@@ -880,7 +900,7 @@ a) Decomposição da série temporal: a série original é dividida em múltipla
 
 linhas Theta, destacando diferentes características como tendências de
 
-curto e longo prazo (ASSIMAKOPOULOS; NIKOLOPOULOS, 2000).
+curto e longo prazo (ASSIMAKOPOULOS; NIKOLOPOULOS, 2000);
 
 b) Parâmetro θ (Theta): controla a curvatura das linhas, com 𝜃< 1 enfatizando
 
@@ -894,19 +914,19 @@ tendências de longo prazo e 𝜃> 1 destacando variações de curto prazo.
 
 ## SPILIOTIS;
 
-## ASSIMAKOPOULOS; MAKRIDAKIS, 2020).
+## ASSIMAKOPOULOS; MAKRIDAKIS, 2020);
 
 c) Combinação de previsões: as previsões geradas a partir das linhas Theta
 
 são combinadas usando ponderações específicas para gerar resultados
 
-mais robustos e precisos (FIORUCCI et al., 2016).
+mais robustos e precisos (FIORUCCI et al., 2016);
 
 d) Flexibilidade e robustez: permite ajuste e adaptação automática dos
 
 parâmetros para diferentes séries temporais, tornando-o versátil para
 
-diversos contextos (SPILIOTIS; ASSIMAKOPOULOS; MAKRIDAKIS, 2020).
+diversos contextos (SPILIOTIS; ASSIMAKOPOULOS; MAKRIDAKIS, 2020);
 
 e) Eficiência computacional: destaca-se pela simplicidade computacional,
 
@@ -914,7 +934,7 @@ sendo fácil e rápido de implementar, especialmente quando comparado com
 
 métodos mais complexos como ARIMA ou redes neurais (FIORUCCI et al.,
 
-2016).
+2016);
 
 f) Capacidade de generalização: é aplicável em séries temporais com
 
@@ -939,7 +959,7 @@ irregulares
 
 ## (SPILIOTIS;
 
-## ASSIMAKOPOULOS; MAKRIDAKIS, 2020).
+## ASSIMAKOPOULOS; MAKRIDAKIS, 2020);
 
 g) Simplicidade na interpretação: oferece resultados facilmente interpretáveis,
 
@@ -973,7 +993,7 @@ a) Modelo aditivo: é o modelo original do método Theta, no qual as previsões
 
 são obtidas pela combinação linear aditiva das linhas Theta ajustadas
 
-## (ASSIMAKOPOULOS; NIKOLOPOULOS, 2000).
+## (ASSIMAKOPOULOS; NIKOLOPOULOS, 2000);
 
 b) Modelo multiplicativo: é uma extensão recente do método, permitindo
 
@@ -1010,7 +1030,7 @@ Para prever dados futuros, o método Theta realiza as seguintes etapas
 
 a) Decomposição: a série temporal é decomposta em linhas Theta com
 
-diferentes curvaturas.
+diferentes curvaturas;
 
 b) Extrapolação: cada linha é extrapolada individualmente, frequentemente
 
@@ -1018,7 +1038,7 @@ usando métodos simples, como suavização exponencial simples (SES) para
 
 tendências de curto prazo e regressão linear para tendências de longo
 
-prazo.
+prazo;
 
 c) Combinação das linhas: as previsões individuais são combinadas,
 
@@ -1040,7 +1060,7 @@ internacional focada em métodos de previsão de séries temporais,
 
 especialmente em séries mensais e microeconômicas, destacando-se por
 
-sua precisão e simplicidade (MAKRIDAKIS; HIBON, 2000).
+sua precisão e simplicidade (MAKRIDAKIS; HIBON, 2000);
 
 b) Diagnóstico automotivo: Lozia (2022) utilizou o método Theta na avaliação
 
@@ -1048,7 +1068,7 @@ diagnóstica de amortecedores automotivos, demonstrando a eficácia do
 
 método em modelar e prever o comportamento dinâmico de sistemas
 
-mecânicos complexos.
+mecânicos complexos;
 
 c) Previsão automática: Spiliotis, Assimakopoulos e Makridakis (2020)
 
@@ -1087,9 +1107,9 @@ integrados (I) e de médias móveis (MA), definidos pela seguinte notação gera
 
 a) p: ordem do termo autorregressivo (AR), representa a relação linear entre a
 
-observação atual e as anteriores.
+observação atual e as anteriores;
 
-b) d: número de diferenciações necessárias para tornar a série estacionária.
+b) d: número de diferenciações necessárias para tornar a série estacionária;
 
 c) q: ordem dos termos de média móvel (MA), que refletem os erros anteriores
 
@@ -1148,13 +1168,13 @@ FATTAH et al., 2018):
 
 a) Flexibilidade: Pode ajustar-se a diversas séries temporais, incorporando
 
-tendência, ciclos e sazonalidade.
+tendência, ciclos e sazonalidade;
 
 b) Necessidade de estacionariedade: Séries temporais precisam ser
 
 estacionárias para utilização correta do modelo. A estacionariedade é
 
-geralmente obtida por diferenciação sucessiva das séries temporais.
+geralmente obtida por diferenciação sucessiva das séries temporais;
 
 c) Simplicidade: Fácil de compreender e implementar, apresentando
 
@@ -1176,17 +1196,17 @@ a) Identificação do modelo: Determinação das ordens p, d e q, com base na
 
 análise gráfica das funções de autocorrelação (ACF) e autocorrelação
 
-parcial (PACF).
+parcial (PACF);
 
 b) Estimação dos parâmetros: Os coeficientes do modelo são estimados,
 
-normalmente utilizando o método da máxima verossimilhança.
+normalmente utilizando o método da máxima verossimilhança;
 
 c) Diagnóstico do modelo: Verificação da adequação do modelo por meio da
 
 análise dos resíduos (erros), usando testes como o teste de Ljung-Box e
 
-critérios estatísticos como AIC (Critério de Informação de Akaike).
+critérios estatísticos como AIC (Critério de Informação de Akaike);
 
 d) Previsão: Realização da previsão de valores futuros utilizando o modelo
 
@@ -1211,7 +1231,7 @@ mostraram que o modelo ARIMA (1,0,1) foi eficaz em prever a demanda
 
 futura, ajudando a empresa na gestão eficiente de estoques e redução de
 
-custos.
+custos;
 
 b) Previsão de vendas no e-commerce: Um modelo híbrido combinando
 
@@ -1219,7 +1239,7 @@ ARIMA com redes neurais LSTM foi utilizado para previsão precisa em
 
 ambientes com alta volatilidade, como o comércio eletrônico (VAVLIAKIS et
 
-al., 2021).
+al., 2021);
 
 c) Previsão no mercado farmacêutico: Fourkiotis e Tsadiras (2024) utilizaram
 
@@ -1270,7 +1290,7 @@ modelo ARIMA ainda obteve desempenho competitivo e foi considerado
 
 eficaz especialmente em séries temporais com forte componente linear e
 
-sazonalidade bem definida.
+sazonalidade bem definida;
 
 d) Previsão de preços no mercado financeiro: Mondal et al. (2014) utilizaram
 
@@ -1407,7 +1427,7 @@ a) Adaptabilidade: capacidade de responder rapidamente às alterações
 
 estruturais na série temporal, atribuindo pesos exponenciais aos dados
 
-recentes (GARDNER, 1985).
+recentes (GARDNER, 1985);
 
 
 ---
@@ -1420,13 +1440,13 @@ b) Simplicidade computacional: a estrutura recursiva dos cálculos torna o
 
 método atrativo em aplicações práticas, especialmente onde é necessária
 
-atualização constante das previsões (BROWN, 1962).
+atualização constante das previsões (BROWN, 1962);
 
 c) Flexibilidade estrutural: diferentes versões, como simples, dupla e tripla
 
 (Holt-Winters), permitem modelar comportamentos como tendência e
 
-sazonalidade com eficiência (MCKENZIE, 1984).
+sazonalidade com eficiência (MCKENZIE, 1984);
 
 d) Robustez: versões robustas do método, que usam a minimização dos
 
@@ -1454,7 +1474,7 @@ tornam significativamente maiores do que as percebidas pelos varejistas,
 
 aumentando os desafios de gestão e planejamento logístico nas
 
-organizações.
+organizações;
 
 b) Robustez a outliers em séries temporais: Cipra (1992) avaliou o
 
@@ -1472,7 +1492,7 @@ na presença de valores extremos, superando métodos tradicionais
 
 especialmente em séries financeiras e industriais onde valores atípicos são
 
-comuns.
+comuns;
 
 c) Aplicações em controle de estoques: Gardner (1985) destacou o uso bem-
 
@@ -1495,7 +1515,7 @@ inventário. Esse exemplo demonstra claramente como o exponential
 
 smoothing pode auxiliar gestores a otimizarem recursos financeiros e
 
-logísticos nas organizações.
+logísticos nas organizações;
 
 d) Previsões de demanda em séries sazonais e com tendência: McKenzie
 
@@ -1562,7 +1582,7 @@ meio da combinação sequencial de modelos fracos. Cada novo modelo tenta
 
 corrigir os erros dos modelos anteriores (MALIK; HARODE; KUNWAR,
 
-2020).
+2020);
 
 b) Regularização: O XGBoost incorpora penalidades ao modelo para evitar o
 
@@ -1574,7 +1594,7 @@ complexidade (gamma) e regularização dos pesos das folhas (lambda).
 
 Essa abordagem resulta em modelos mais generalizáveis (CHEN;
 
-## GUESTRIN, 2016).
+## GUESTRIN, 2016);
 
 c) Sparsity-aware Split Finding: Um algoritmo que otimiza o processo de
 
@@ -1590,7 +1610,7 @@ executado em múltiplas CPUs, permitindo o processamento paralelo dos
 
 dados e acelerando significativamente o treinamento de grandes modelos
 
-## (CHEN; GUESTRIN, 2016).
+## (CHEN; GUESTRIN, 2016);
 
 e) Shrinking e Column Subsampling: Técnicas adicionais que ajudam a
 
@@ -1625,7 +1645,7 @@ serve como ponto de partida para o modelo e representa a estimativa mais
 
 simples possível sem considerar ainda as relações complexas entre as
 
-variáveis (CHEN; GUESTRIN, 2016; NIELSEN, 2016).
+variáveis (CHEN; GUESTRIN, 2016; NIELSEN, 2016);
 
 b) Cálculo dos resíduos: Após a obtenção da previsão inicial, calcula-se a
 
@@ -1637,7 +1657,7 @@ previsão. O objetivo do XGBoost é reduzir esses resíduos a cada nova
 
 iteração, corrigindo gradualmente as falhas do modelo anterior (NIELSEN,
 
-2016; ZHANG et al., 2021).
+2016; ZHANG et al., 2021);
 
 c) Treinamento iterativo das árvores: Em cada iteração, uma nova árvore de
 
@@ -1649,7 +1669,7 @@ seguinte busca aprender e corrigir os erros cometidos pelo conjunto das
 
 árvores anteriores, ajustando-se a padrões ainda não capturados (XIE;
 
-## ZHANG, 2021; NIELSEN, 2016).
+## ZHANG, 2021; NIELSEN, 2016);
 
 d) Atualização das previsões: As previsões do modelo são atualizadas
 
@@ -1712,7 +1732,7 @@ desempenho superior em relação ao ARIMA no conjunto de teste,
 
 demonstrando maior eficácia na previsão da produção de arroz para o
 
-contexto analisado.
+contexto analisado;
 
 b) Previsão de volume de vendas no varejo: No setor de utilidades e comércio,
 
@@ -1810,29 +1830,27 @@ O problema que este trabalho propõe a investigar consiste em avaliar se é
 
 possível aprimorar essa estimativa por meio da aplicação de modelos de aprendizado
 
-de máquina. Para isso, serão desenvolvidos diferentes modelos preditivos utilizando
+de máquina e métodos estatísticos avançados. Para isso, foram desenvolvidos
 
-os mesmos dados utilizados atualmente no dashboard, buscando simular o contexto
+diferentes modelos preditivos (ARIMA, Theta, Suavização Exponencial e XGBoost)
 
-real de previsão. Em seguida, será avaliado o desempenho de cada modelo com base
+utilizando os mesmos dados disponíveis no dashboard, buscando simular o contexto
 
-em métricas estatísticas, e comparado o resultado mais eficaz com a previsão
+real de previsão. O desempenho de cada modelo foi avaliado com base em métricas
 
-atualmente gerada pelo Power BI.
+estatísticas padronizadas.
 
-O objetivo principal deste estudo é verificar se algum dos modelos testados
+O objetivo principal deste estudo é verificar qual dos modelos testados
 
-apresenta desempenho superior ao cálculo de previsão utilizado hoje no produto da
+apresenta melhor desempenho preditivo. A adoção do melhor modelo poderá resultar
 
-empresa. Caso isso ocorra, a adoção do modelo poderá resultar em previsões mais
-
-precisas e na geração de insights mais robustos e estratégicos.
+em previsões mais precisas e na geração de insights mais robustos e estratégicos.
 
 3.1.2 Coleta e pré-processamento dos dados
 
-A coleta e a o pré-processamento dos dados utilizados neste trabalho foram
+A coleta e o pré-processamento dos dados utilizados neste trabalho foram
 
-realizadas através da ferramenta Visual Studio Code. Os dados empregados
+realizados através da ferramenta Visual Studio Code. Os dados empregados
 
 correspondem às séries históricas de faturamento disponíveis em um produto interno
 
@@ -1863,29 +1881,27 @@ para preparar os dados para diferentes tipos de modelos de machine learning.
 
 Fonte: elaborado pelo autor
 
-3.1.2.1 Criação da variável target
+3.1.2.1 Filtragem e agregação inicial
 
-A primeira etapa do pipeline de pré-processamento consistiu na definição e
+O processo de pré-processamento iniciou com a filtragem exclusiva de
 
-criação da variável dependente para os modelos preditivos. O processo realizou a
+transações classificadas como "VENDA", excluindo devoluções e outros tipos de
 
-filtragem exclusiva de transações classificadas como "VENDA", excluindo devoluções
+operações comerciais. O valor líquido das vendas foi estabelecido como variável
 
-e outros tipos de operações comerciais.
+target, representando a quantidade que os modelos tentariam prever.
 
-O valor líquido das vendas foi então estabelecido como variável target,
+3.1.2.2 Anonimização dos dados
 
-representando a quantidade que os modelos tentariam prever. Esta escolha foi
+Para garantir a privacidade e conformidade com requisitos de proteção de
 
-justificada pela relevância direta do valor monetário para decisões de negócio e
+dados, foi implementado um processo de anonimização utilizando função de hash
 
-planejamento financeiro.
+criptográfico MD5 para transformar identificações de clientes em códigos anônimos.
 
-3.1.2.2 Criação de features temporais
+O sistema gerou identificadores no formato "CLIENTE_####" onde os quatro dígitos
 
-A segunda etapa foi a implementação da extração e engenharia de
-
-características temporais a partir da data das transações. Este processo foi
+foram derivados deterministicamente do hash do nome original. Esta abordagem
 
 Figura 2 - Metodologia do pré-processamento
 
@@ -1896,65 +1912,59 @@ Figura 2 - Metodologia do pré-processamento
 
 33
 
-fundamental pois padrões temporais foram cruciais em previsão de vendas,
+protegeu a privacidade dos clientes enquanto preservou a capacidade de
 
-capturando sazonalidades, tendências e ciclos de negócio.
+rastreamento consistente ao longo do tempo.
 
-O sistema extraiu features lineares tradicionais como ano, mês, dia, dia da
+3.1.2.3 Agregação temporal mensal
 
-semana, trimestre, dia do ano e semana do ano. Estas variáveis capturaram diferentes
+Após a filtragem inicial, os dados transacionais foram agregados
 
-granularidades temporais que puderam influenciar o comportamento de vendas.
+temporalmente em períodos mensais, calculando a soma total de vendas para cada
 
-Adicionalmente, implementou-se codificação trigonométrica (cyclical encoding)
+mês. Este processo foi fundamental pois os modelos de séries temporais operam com
 
-para variáveis temporais cíclicas. Esta técnica matemática utilizou funções seno e
+observações sequenciais regularmente espaçadas no tempo.
 
-cosseno para representar a natureza circular de variáveis como mês e dia da semana.
+O procedimento consistiu em agrupar todas as transações por mês e ano,
 
-Por exemplo, dezembro e janeiro são numericamente distantes (12 e 1) mas
+gerando uma série temporal com frequência mensal cobrindo o período completo dos
 
-temporalmente adjacentes. A codificação trigonométrica preservou esta proximidade,
+dados. Cada observação representou o faturamento total do mês correspondente,
 
-permitindo que os modelos compreendessem corretamente as transições cíclicas.
+resultando em aproximadamente 132 pontos temporais mensais.
 
-3.1.2.3 Tratamento de valores ausentes
+3.1.2.4 Conversão para formato Darts
 
-O tratamento de valores ausentes foi implementado através de estratégias
+Os dados agregados foram então convertidos para o formato TimeSeries da
 
-diferenciadas por tipo de dados, reconhecendo que diferentes tipos de variáveis
+biblioteca Darts, utilizada para implementação de todos os modelos neste estudo. A
 
-requereram abordagens distintas.
+biblioteca Darts oferece uma interface unificada para modelagem de séries temporais,
 
-Para variáveis categóricas, adotou-se o preenchimento com valor constante
+suportando tanto métodos estatísticos tradicionais (ARIMA, Theta, Suavização
 
-"Desconhecido", preservando a informação de ausência como categoria específica.
+Exponencial) quanto algoritmos de machine learning (XGBoost) especializados em
 
-Esta abordagem evitou a perda de registros e permitiu que os modelos aprendessem
+séries temporais.
 
-padrões associados à ausência de informação.
+Esta conversão incluiu a definição adequada do índice temporal (datas mensais
 
-Para variáveis numéricas, utilizou-se preenchimento com zero como valor
+no formato ISO), especificação da coluna de valores (faturamento mensal agregado),
 
-padrão, considerando que em contexto de vendas, ausência de informação
+e configuração da frequência da série temporal (mensal). A estrutura TimeSeries
 
-frequentemente indicou ausência de atividade comercial.
+permitiu que todos os modelos acessassem funcionalidades avançadas como divisão
 
-3.1.2.4 Remoção de registros duplicados
+temporal apropriada, geração automática de features, e aplicação de transformações
 
-A identificação e remoção de duplicatas foi realizada mantendo a primeira
+específicas para cada algoritmo.
 
-ocorrência de registros idênticos. Esta etapa foi crítica para evitar viés nos modelos
+3.1.2.5 Considerações sobre engenharia de features
 
-causado por registros repetidos que poderiam inflar artificialmente certas
+Diferentemente de abordagens tradicionais que requerem engenharia manual
 
-características dos dados, levando a overfitting e previsões incorretas.
-
-O processo examinou todas as colunas simultaneamente para identificar
-
-registros completamente idênticos, garantindo que apenas duplicatas verdadeiras
-
-fossem removidas, preservando variações legítimas nos dados.
+extensiva de features (criação de lags, médias móveis, codificações trigonométricas
 
 
 ---
@@ -1963,291 +1973,49 @@ fossem removidas, preservando variações legítimas nos dados.
 
 34
 
-3.1.2.5 Criação de features agregadas
+etc.), a biblioteca Darts realiza automaticamente a criação das features necessárias
 
-Esta etapa implementou engenharia de características avançada, criando
+para cada tipo de modelo durante o processo de treinamento.
 
-features derivadas que capturaram padrões temporais e comportamentais essenciais
+Para os modelos estatísticos (ARIMA, Theta, Suavização Exponencial), a Darts
 
-para previsão de séries temporais.
+opera diretamente sobre a série temporal univariada, aplicando internamente as
 
-As features de lag (defasagem temporal) capturaram dependências históricas
+transformações e diferenciações necessárias.
 
-ao incluir valores passados como preditores. Implementaram-se lags de 1, 2, 3, 6 e
+Para o modelo XGBoost, a Darts utiliza o módulo XGBModel, que cria
 
-12 períodos, permitindo que os modelos identificassem padrões de dependência
+automaticamente features temporais através de:
 
-temporal em diferentes horizontes. Por exemplo, lag de 12 meses capturou
+a) Lags configuráveis da variável target;
 
-sazonalidade anual, enquanto lags menores capturaram tendências de curto prazo.
+b) Lags de covariadas passadas (quando aplicável);
 
-As médias móveis foram calculadas para janelas de 3, 6 e 12 períodos,
+c) Encoders temporais (mês, ano, trimestre, dia do ano, semana do ano, dia da
 
-suavizando flutuações aleatórias e destacando tendências subjacentes. Estas
+semana);
 
-features foram particularmente valiosas para modelos de machine learning que
+d) Normalização apropriada via MaxAbsScaler.
 
-pudessem ter dificuldade em capturar automaticamente padrões temporais
+Esta
 
-suavizados.
+abordagem
 
-Features agregadas por cliente foram criadas calculando estatísticas
+simplificou
 
-descritivas do comportamento histórico de cada cliente. Estas incluíram valor médio
+significativamente
 
-de compras, desvio padrão (indicando variabilidade do comportamento), frequência
+o
 
-de compras e valor total acumulado. Estas características permitiram que os modelos
+pipeline
 
-personalizassem previsões baseadas no perfil específico de cada cliente.
+de
 
-3.1.2.6 Codificação de variáveis categóricas e processo de anonimização
+pré-
 
-O processo de codificação foi implementado de forma adaptativa baseada na
+processamento, eliminando a necessidade de engenharia manual de features e
 
-cardinalidade das variáveis categóricas, reconhecendo que diferentes técnicas foram
-
-apropriadas para diferentes cenários.
-
-Para variáveis de baixa cardinalidade (até 50 categorias únicas), utilizou-se
-
-One-Hot Encoding, criando variáveis dummy binárias para cada categoria. Esta
-
-abordagem preservou completamente a informação categórica sem impor relações
-
-ordinais artificiais.
-
-Para variáveis de alta cardinalidade (mais de 50 categorias), aplicou-se Label
-
-Encoding, convertendo categorias para valores numéricos ordinais. Esta escolha
-
-equilibrou a preservação de informação com eficiência computacional, evitando
-
-
----
-
-# Page 35
-
-35
-
-explosão dimensional que ocorreria com One-Hot Encoding em variáveis muito
-
-categóricas.
-
-O processo de anonimização foi implementado utilizando função de hash
-
-criptográfico MD5 para transformar identificações de clientes em códigos anônimos.
-
-Este processo garantiu três propriedades essenciais: consistência (mesmo cliente
-
-sempre recebeu o mesmo ID anônimo), anonimização irreversível (identidade original
-
-não pôde ser recuperada) e formato padronizado.
-
-O sistema gerou identificadores no formato "CLIENTE_####" onde os quatro
-
-dígitos foram derivados deterministicamente do hash do nome original. Esta
-
-abordagem protegeu a privacidade dos clientes enquanto preservou a capacidade de
-
-análise por cliente individual.
-
-3.1.2.7 Remoção de colunas irrelevantes
-
-Removeram-se colunas que se tornaram redundantes após o processamento,
-
-incluindo a coluna de data original (substituída por features temporais derivadas),
-
-coluna de valor original (substituída pela variável target processada) e coluna de
-
-operação (após filtragem por vendas). Esta limpeza reduziu dimensionalidade e
-
-eliminou informações redundantes que poderiam confundir os algoritmos de
-
-aprendizado.
-
-3.1.2.7 Aplicação de normalização
-
-Implementou-se normalização robusta das variáveis numéricas utilizando
-
-técnica baseada em mediana e quartis ao invés de média e desvio padrão. Esta
-
-escolha foi justificada pela resistência a outliers, particularmente importante em dados
-
-de vendas que frequentemente apresentaram valores extremos devido a transações
-
-excepcionalmente grandes ou pequenas.
-
-A normalização padronizou as escalas das diferentes variáveis, garantindo que
-
-features com magnitudes diferentes contribuíssem equitativamente para o
-
-aprendizado dos modelos. Variáveis como a target e features temporais discretas
-
-foram excluídas da normalização para preservar suas interpretações originais.
-
-
----
-
-# Page 36
-
-36
-
-3.1.2.7 Consolidação final dos dados
-
-A etapa final realizou validação e limpeza final dos dados processados.
-
-Qualquer valor ausente remanescente foi tratado através de preenchimento com zero,
-
-garantindo uma base de dados completa para os modelos.
-
-3.1.2.8 Validação de qualidade dos dados
-
-Como filtragem final, removeram-se transações com valores inválidos (zero ou
-
-negativos), garantindo que apenas transações comerciais legítimas fossem utilizadas
-
-no treinamento dos modelos. Este filtro foi aplicado com valor mínimo de 0,01 reais
-
-para eliminar registros potencialmente problemáticos.
-
-3.1.2.9 Saída do processo de pré-processamento
-
-O pipeline de pré-processamento gerou uma base de dados final otimizada
-
-contendo aproximadamente 35.000 transações válidas de venda, mais de 40 variáveis
-
-preditoras, dados mensais agregados cobrindo período do ano de 2014 a 2025,
-
-formato padronizado sem valores ausentes ou duplicatas e variáveis normalizadas
-
-apropriadamente para machine learning.
-
-3.1.2.10 Formatação específica por tipo de modelo
-
-Após a conclusão do pipeline principal de pré-processamento, os dados foram
-
-formatados de maneiras distintas para atender às necessidades específicas de cada
-
-categoria de modelo implementado neste estudo. Esta etapa foi fundamental pois
-
-diferentes algoritmos de machine learning requerem estruturas de dados particulares
-
-para funcionamento otimizado.
-
-3.1.2.10.1 Formato de séries temporais
-
-Para os modelos ARIMA, Theta e Suavização Exponencial, os dados foram
-
-transformados em formato de séries temporais univariadas. Este processo envolveu
-
-a agregação temporal dos dados transacionais em períodos mensais, utilizando a
-
-soma dos valores de vendas como método de agregação.
-
-
----
-
-# Page 37
-
-37
-
-O procedimento consistiu em agrupar todas as transações por mês e ano,
-
-calculando o valor total de vendas para cada período mensal. Esta agregação foi
-
-necessária pois os modelos de séries temporais operam com observações
-
-sequenciais regularmente espaçadas no tempo, diferentemente dos dados
-
-transacionais originais que apresentavam múltiplas observações por período.
-
-A série temporal resultante apresentou frequência mensal cobrindo o período
-
-completo dos dados, com cada observação representando o faturamento total do mês
-
-correspondente.
-
-Os dados foram então convertidos para o formato específico da biblioteca
-
-Darts, utilizada para implementação dos modelos de séries temporais. Esta conversão
-
-incluiu a definição adequada do índice temporal e a estruturação dos dados em objeto
-
-TimeSeries compatível com os algoritmos implementados.
-
-3.1.2.10.2 Formato tabular para XGBoost
-
-Para o modelo XGBoost, os dados foram mantidos em formato tabular
-
-expandido, preservando todas as features engenheiradas durante o pré-
-
-processamento. Esta abordagem foi necessária pois algoritmos de gradient boosting,
-
-como o XGBoost, requerem múltiplas variáveis explicativas em formato tabular para
-
-construir árvores de decisão.
-
-A base de dados tabular final conteve 45+ features derivadas das etapas de
-
-pré-processamento, incluindo:
-
-a) Features temporais originais: Ano, mês, dia, trimestre, dia da semana, e
-
-suas respectivas codificações trigonométricas (seno e cosseno) para
-
-capturar padrões cíclicos.
-
-b) Features de dependência temporal: Lags de 1, 2, 3, 6 e 12 períodos que
-
-permitiram ao modelo acessar valores históricos como preditores,
-
-essenciais para capturar dependências temporais em formato tabular.
-
-c) Features de suavização: Médias móveis calculadas para janelas de 3, 6 e
-
-12 períodos, fornecendo versões suavizadas da série que destacam
-
-tendências subjacentes.
-
-
----
-
-# Page 38
-
-38
-
-d) Features estatísticas: Medidas de dispersão como desvio padrão, valores
-
-mínimos e máximos calculados em janelas deslizantes, capturando a
-
-variabilidade local dos dados.
-
-e) Features de tendência: Diferenças primeiro-ordem e variações percentuais
-
-que quantificaram mudanças direcionais na série, permitindo ao modelo
-
-identificar padrões de crescimento ou decréscimo.
-
-f) Features comportamentais: Estatísticas agregadas por cliente (média,
-
-desvio padrão, frequência e soma total) que personalizaram as previsões
-
-baseadas no perfil histórico de cada cliente.
-
-g) Features de interação: Combinações multiplicativas entre variáveis
-
-temporais (mês × ano, trimestre × ano) que capturaram efeitos de interação
-
-temporal.
-
-Cada linha da base de dados tabular representou uma observação temporal
-
-com todas as features calculadas para aquele período específico. A variável target foi
-
-mantida como coluna separada, preservando sua escala original para facilitar
-
-interpretação dos resultados.
+garantindo consistência na preparação dos dados para todos os modelos.
 
 3.1.3 Análise exploratória e estruturação da série temporal
 
@@ -2255,7 +2023,7 @@ A análise exploratória de dados (EDA) constitui uma etapa fundamental no
 
 processo de modelagem de séries temporais, precedendo a aplicação de modelos
 
-preditivos e fornecendo insights essenciais sobre a estrutura, padrões e
+preditivos e fornecendo informações essenciais sobre a estrutura, padrões e
 
 características dos dados históricos. Conforme destacado por Bezerra (2006), a
 
@@ -2277,16 +2045,16 @@ precisa desses componentes através de técnicas exploratórias adequadas é
 
 fundamental para orientar as decisões metodológicas subsequentes, incluindo a
 
-
----
-
-# Page 39
-
-39
-
 escolha de modelos estatísticos apropriados e a definição de estratégias de pré-
 
 processamento.
+
+
+---
+
+# Page 35
+
+35
 
 3.1.3.1 Visão geral da série temporal
 
@@ -2296,7 +2064,7 @@ de visualizações desenvolvido em Python, utilizando bibliotecas especializadas
 
 análise de séries temporais. Os dados utilizados correspondem à série temporal de
 
-vendas mensais no período de janeiro de 2014 a setembro de 2024, totalizando 133
+vendas mensais no período de outubro de 2014 a setembro de 2025, totalizando 132
 
 observações após o pré-processamento e agregação temporal mensal.
 
@@ -2316,26 +2084,22 @@ A primeira análise apresenta uma visão geral abrangente da série temporal,
 
 incluindo a evolução das vendas ao longo do tempo com linha de tendência,
 
-distribuição dos valores por ano através de gráficos de boxplot, análise das vendas
+distribuição dos valores por ano, análise das vendas acumuladas e volatilidade
 
-acumuladas e volatilidade temporal. Esta visão panorâmica revelou uma tendência de
+temporal. Esta visão panorâmica revelou uma tendência de crescimento consistente
 
-crescimento consistente de 2014 a 2022, seguida por um declínio significativo entre
+de 2014 a 2022, seguida por um declínio significativo entre os anos 2023 e 2025, com
 
-os anos 2023 e 2024, com valores variando de aproximadamente R$ 8 milhões em
+valores variando de aproximadamente R$ 1 milhão em 2014 para um pico acima de
 
-2014 para um pico de R$ 400 milhões em 2022. A análise de tendência linear mostrou
-
-um coeficiente de determinação (R²) de 0,966, indicando que 96,6% da variação dos
-
-dados é explicada pela tendência temporal.
+R$ 80 milhões em 2022.
 
 
 ---
 
-# Page 40
+# Page 36
 
-40
+36
 
 Fonte: elaborado pelo autor
 
@@ -2349,22 +2113,20 @@ de uma tendência de longo prazo bem definida e padrões sazonais consistentes, 
 
 a série original mostrando crescimento exponencial até 2022, seguido por declínio
 
-acentuado. O componente sazonal revelou padrões regulares de variação mensal
+acentuado. O componente sazonal revelou padrões regulares de variação mensal,
 
-com amplitude média de aproximadamente R$ 15 milhões, enquanto o resíduo indicou
+enquanto o resíduo indicou períodos de maior volatilidade, especialmente durante os
 
-períodos de maior volatilidade, especialmente durante os anos de transição
-
-econômica.
+anos de transição econômica.
 
 Figura 3 - Visão geral da série temporal
 
 
 ---
 
-# Page 41
+# Page 37
 
-41
+37
 
 Fonte: elaborado pelo autor
 
@@ -2372,13 +2134,9 @@ Fonte: elaborado pelo autor
 
 A análise sazonal detalhada examinou os padrões mensais e de autocorrelação
 
-da série temporal. Foram calculadas as médias mensais históricas, revelando que os
+da série temporal. Foram calculadas as médias mensais históricas, revelando que
 
-meses de janeiro (R$ 125 milhões), maio (R$ 112 milhões) e dezembro (R$ 118
-
-milhões) apresentam consistentemente os maiores volumes de vendas, enquanto
-
-fevereiro (R$ 87 milhões) e junho (R$ 94 milhões) mostram os menores valores. A
+determinados meses apresentam consistentemente maiores volumes de vendas. A
 
 análise de autocorrelação identificou dependências temporais significativas até o lag
 
@@ -2389,9 +2147,9 @@ Figura 4 – Decomposição da série temporal
 
 ---
 
-# Page 42
+# Page 38
 
-42
+38
 
 Fonte: elaborado pelo autor
 
@@ -2403,24 +2161,22 @@ autocorrelação (ACF) e autocorrelação parcial (PACF), fundamentais para a
 
 parametrização de modelos ARIMA. A ACF mostrou correlações significativas nos
 
-primeiros lags (0,95 no lag 1), decaindo gradualmente até o lag 12, enquanto a PACF
+primeiros lags, decaindo gradualmente até o lag 12, enquanto a PACF apresentou
 
-apresentou cortes abruptos após o primeiro lag (PACF₁ = 0,95, PACF₂ = 0,15),
+cortes abruptos após o primeiro lag, sugerindo características autorregressivas na
 
-sugerindo características autorregressivas na série. A análise da série diferenciada
+série. A análise da série diferenciada (primeira diferença) confirmou a remoção da
 
-(primeira diferença) confirmou a remoção da tendência, tornando a série mais
-
-adequada para modelagem estatística.
+tendência, tornando a série mais adequada para modelagem estatística.
 
 Figura 5 - Análise da sazonalidade
 
 
 ---
 
-# Page 43
+# Page 39
 
-43
+39
 
 Fonte: elaborado pelo autor
 
@@ -2434,16 +2190,16 @@ para identificação de outliers, e comparação de densidade. Os resultados ind
 
 que a distribuição das vendas não segue uma distribuição normal, apresentando
 
-assimetria positiva (skewness = 1,85) e presença de valores extremos.
+assimetria positiva e presença de valores extremos.
 
 Figura 6 - Propriedades estatísticas da série temporal
 
 
 ---
 
-# Page 44
+# Page 40
 
-44
+40
 
 Fonte: elaborado pelo autor
 
@@ -2455,20 +2211,16 @@ padrões sazonais por ano, e tendência linear geral. O cálculo das taxas de
 
 crescimento revelou crescimento superior a 200% em 2015, estabilização em torno
 
-de 20 a 40% nos anos intermediários, e declínios acentuados de -15% a -48% nos
-
-anos finais. A análise de regressão linear confirmou a equação: Vendas = -2.470.000
-
-× Ano + 5.000.000.000, com R² = 0,966.
+de 20 a 40% nos anos intermediários, e declínios acentuados nos anos finais.
 
 Figura 7 - Análise de distribuição
 
 
 ---
 
-# Page 45
+# Page 41
 
-45
+41
 
 Fonte: elaborado pelo autor
 
@@ -2493,9 +2245,9 @@ Figura 8 - Evolução temporal das vendas
 
 ---
 
-# Page 46
+# Page 42
 
-46
+42
 
 Fonte: elaborado pelo autor
 
@@ -2517,22 +2269,26 @@ c) Autocorrelação: Dependências temporais significativas até 12 lags,
 
 orientando a parametrização dos modelos;
 
-d) Distribuição: Dados não seguem distribuição normal;
+d) Distribuição: Dados não seguem distribuição normal, apresentando
 
-e) Tendência: Tendência de longo prazo bem definida (R² = 0,966);
+assimetria positiva;
 
 Figura 9 - Análise de correlação temporal
 
 
 ---
 
-# Page 47
+# Page 43
 
-47
+43
 
-f) Volatilidade: Redução da volatilidade ao longo do tempo, indicando maior
+e) Tendência: Tendência de longo prazo bem definida com crescimento até
 
-estabilidade nos padrões recentes.
+2022 seguido de declínio;
+
+f) Volatilidade: Variação da volatilidade ao longo do tempo, com períodos de
+
+maior instabilidade.
 
 Estes resultados orientaram diretamente a configuração dos parâmetros para
 
@@ -2544,48 +2300,52 @@ as estratégias de validação temporal adotadas nas etapas subsequentes.
 
 A modelagem preditiva é a etapa central deste trabalho, sendo responsável por
 
-transformar os dados estruturados em previsões quantitativas para o faturamento do
+transformar os dados estruturados em previsões quantitativas para o faturamento.
 
-produto analisado. Considerando as diferentes abordagens e características dos
+Considerando as diferentes abordagens e características dos dados, foram
 
-dados, serão selecionados múltiplos modelos de previsão, cada um com suas próprias
+selecionados múltiplos modelos de previsão, cada um com suas próprias vantagens,
 
-vantagens, desvantagens e requisitos específicos de pré-processamento.
+desvantagens e características específicas de implementação.
 
 Os modelos escolhidos para este estudo incluem técnicas tradicionais de séries
 
-temporais, como ARIMA e Theta, bem como algoritmos mais recentes e avançados,
+temporais, como ARIMA, Theta e Suavização Exponencial, bem como o algoritmo
 
-como XGBoost, que são amplamente utilizados em aplicações empresariais para
+XGBoost, amplamente utilizado em aplicações empresariais para problemas de
 
-problemas de previsão com séries temporais. Cada um desses modelos foi avaliado
+previsão com séries temporais. Cada um desses modelos foi avaliado quanto à sua
 
-quanto à sua capacidade de capturar padrões históricos, prever tendências futuras e
+capacidade de capturar padrões históricos, prever tendências futuras e lidar com os
 
-lidar com os desafios típicos desse tipo de dado, como sazonalidade, tendência e
+desafios típicos desse tipo de dado, como sazonalidade, tendência e variações
 
-variações irregulares.
+irregulares.
 
 Para garantir uma análise comparativa robusta, foram considerados fatores
 
 como a facilidade de implementação, complexidade computacional e a precisão das
 
-previsões geradas. Além disso, cada modelo será treinado e validado com os mesmos
+previsões geradas. Todos os modelos foram implementados utilizando a biblioteca
 
-conjuntos de dados, permitindo uma comparação justa e direta de seu desempenho.
+Darts, que oferece uma interface unificada e padronizada para modelagem de séries
+
+temporais, garantindo consistência na preparação dos dados, divisão temporal e
+
+avaliação de desempenho.
 
 Nos subtópicos a seguir, cada modelo é apresentado individualmente, incluindo
 
-os requisitos específicos para pré-processamento dos dados e o diagrama do fluxo
+os requisitos específicos de implementação e o diagrama do fluxo metodológico
 
-metodológico correspondente.
+correspondente.
 
 
 ---
 
-# Page 48
+# Page 44
 
-48
+44
 
 ## 3.2.1 ARIMA
 
@@ -2608,29 +2368,29 @@ Figura 10 - Metodologia do modelo ARIMA
 
 ---
 
-# Page 49
+# Page 45
 
-49
+45
 
 a) Darts: Biblioteca especializada em séries temporais que forneceu o módulo
 
-AutoARIMA/SARIMA, algoritmos de seleção automática de parâmetros,
+ARIMA (com seleção automática de parâmetros via AutoARIMA), métodos
 
-métodos de divisão temporal apropriados para séries temporais e funções
+de divisão temporal apropriados para séries temporais, e funções integradas
 
-integradas de avaliação e diagnóstico.
+de avaliação e diagnóstico;
 
 b) Pandas: Utilizado para manipulação e estruturação inicial dos dados,
 
 conversão de tipos de dados temporais, e operações de agregação e
 
-filtragem durante o pré-processamento.
+filtragem durante o pré-processamento;
 
 c) Matplotlib e Seaborn: Empregados para geração de visualizações
 
-diagnósticas, incluindo gráficos de série temporal, correlogramas, análise
+diagnósticas, incluindo gráficos de série temporal, correlogramas, análise de
 
-de resíduos e comparações entre valores observados e previstos.
+resíduos e comparações entre valores observados e previstos.
 
 Esta preparação foi fundamental para garantir que todas as operações
 
@@ -2642,21 +2402,19 @@ O processo de ingestão iniciou com o carregamento dos dados de faturamento
 
 mensal previamente processados na etapa 3.1.2, obtidos do arquivo CSV estruturado
 
-com 133 observações mensais (janeiro 2014 a setembro 2024). Os dados foram
-
-validados quanto à:
+com 132 observações mensais. Os dados foram validados quanto à:
 
 a) Integridade temporal: Verificação de continuidade mensal sem lacunas,
 
 confirmação da ordenação cronológica correta, e validação do formato de
 
-datas no padrão ISO (YYYY-MM-DD).
+datas no padrão ISO (YYYY-MM-DD);
 
 b) Qualidade dos valores: Identificação de valores nulos, negativos ou
 
 extremos que poderiam comprometer a modelagem, e confirmação da
 
-escala monetária consistente (valores em reais).
+escala monetária consistente (valores em reais);
 
 c) Estrutura adequada: Configuração do índice temporal como DatetimeIndex
 
@@ -2666,16 +2424,16 @@ A conversão para o objeto TimeSeries da Darts foi realizada especificando a
 
 coluna de valores (faturamento mensal), o índice temporal (datas mensais), e a
 
-frequência da série ('M' para mensal). Esta estrutura otimizada permitiu que o modelo
+frequência da série ('MS' para mensal). Esta estrutura otimizada permitiu que o modelo
 
 ARIMA acessasse funcionalidades avançadas como detecção automática de
 
 
 ---
 
-# Page 50
+# Page 46
 
-50
+46
 
 periodicidade sazonal, aplicação de transformações temporais (diferenciação), e
 
@@ -2689,31 +2447,39 @@ análise exploratória que evidenciaram forte tendência não linear (cresciment
 
 exponencial até 2022, seguido de declínio acentuado) e padrões sazonais anuais
 
-consistentes.
+consistentes usando o seguinte:
 
-a) Testes de estacionariedade: Embora o AutoARIMA realize testes internos,
+a) Testes de estacionariedade: O AutoARIMA da Darts realiza testes internos
 
-foram realizadas verificações complementares utilizando o teste ADF para
+(ADF - Augmented Dickey-Fuller) para detectar a presença de raiz unitária
 
-detectar a presença de raiz unitária, e o teste KPSS para confirmar
-
-estacionariedade ao redor de uma tendência determinística.
+e determinar automaticamente a necessidade de diferenciação.
 
 b) Estratégia de diferenciação: O AutoARIMA foi configurado para explorar
 
 automaticamente:
 
-a. Diferenciação não sazonal (d): Testadas ordens de 0 a 2, sendo d =
+a. Diferenciação não sazonal (d): Testadas ordens de 0 a 2, sendo d = 1
 
-1 (primeira diferença) a mais comum para remover tendência linear,
-
-e d = 2 para tendências mais complexas.
+(primeira diferença) a mais comum para remover tendência linear.
 
 b. Diferenciação sazonal (D): Avaliada com período 12 (sazonalidade
 
 anual), testando D = 0 (sem diferenciação sazonal) e D = 1 (uma
 
-diferenciação sazonal para remover padrões sazonais não
+diferenciação
+
+sazonal
+
+para
+
+remover
+
+padrões
+
+sazonais
+
+não
 
 estacionários).
 
@@ -2721,18 +2487,11 @@ O processo de diferenciação foi crucial para transformar a série não
 
 estacionária original em uma série com propriedades estatísticas estáveis, evitando
 
-regressões ilegítimas e garantindo a validade dos pressupostos do modelo ARIMA. A
+regressões espúrias e garantindo a validade dos pressupostos do modelo ARIMA. A
 
 biblioteca Darts aplicou estas transformações de forma automática e reversível para
 
 as previsões finais.
-
-
----
-
-# Page 51
-
-51
 
 3.2.1.4 Divisão dos dados em conjuntos de treino e teste
 
@@ -2742,39 +2501,46 @@ não-sobreposição temporal, essencial para validação realística de modelos 
 
 temporais. A estratégia adotada foi:
 
-a) Conjunto de treino: Primeiros 107 meses da série (janeiro 2014 a novembro
 
-2022), representando aproximadamente 80% dos dados disponíveis. Este
+---
+
+# Page 47
+
+47
+
+a) Conjunto de treino: Primeiros 80% da série (aproximadamente 105 meses),
+
+representando o período de outubro de 2014 até meados de 2023. Este
 
 período incluiu a fase de crescimento consistente e o pico histórico das
 
 vendas, fornecendo ao modelo informação suficiente sobre tendências de
 
-longo prazo e padrões sazonais estabelecidos.
+longo prazo e padrões sazonais estabelecidos;
 
-b) Conjunto de teste: Últimos 26 meses da série (dezembro 2022 a setembro
+b) Conjunto de teste: Últimos 20% da série (aproximadamente 27 meses),
 
-2024), correspondendo a aproximadamente 20% dos dados. Este período
+correspondendo ao período final até setembro de 2025. Este período
 
 capturou a fase de declínio das vendas, representando um desafio real de
 
-generalização para o modelo.
+generalização para o modelo;
 
 c) Justificativa da divisão: A proporção 80/20 foi escolhida para garantir
 
 quantidade suficiente de dados para o treinamento (especialmente
 
-importante para capturar múltiplos ciclos sazonais anuais), ao mesmo
+importante para capturar múltiplos ciclos sazonais anuais), ao mesmo tempo
 
-tempo que preservou um horizonte de teste representativo para avaliar
+que preservou um horizonte de teste representativo para avaliar
 
-performance preditiva em condições adversas.
+performance preditiva.
 
-A implementação utilizou métodos da Darts, que garantiu preservação da
+A implementação utilizou métodos nativos da Darts, que garantiram
 
-estrutura temporal e evitou vazamento de informações futuras para o conjunto de
+preservação da estrutura temporal e evitaram vazamento de informações futuras para
 
-treino.
+o conjunto de treino.
 
 3.2.1.5 Definição dos parâmetros p, d e q
 
@@ -2784,28 +2550,26 @@ que implementou uma busca sistemática e otimizada pelos melhores parâmetros
 
 SARIMA(p,d,q)(P,D,Q)s. Os parâmetros foram definidos como:
 
+b) Parâmetros não sazonais:
+
+a. p (ordem autorregressiva): Número de lags da série defasada utilizados
+
+como preditores. Testadas ordens de 0 a 5, onde p = 1 indica
+
+dependência do valor anterior, p = 2 inclui os dois valores anteriores etc;
+
+b. d (ordem de diferenciação): Número de diferenciações aplicadas para
+
+tornar a série estacionária. Avaliadas ordens de 0 a 2, baseadas nos
+
+testes de estacionariedade;
+
 
 ---
 
-# Page 52
+# Page 48
 
-52
-
-a) Parâmetros não sazonais:
-
-a. p (ordem autorregressiva): Número de lags da série defasada
-
-utilizados como preditores. Testadas ordens de 0 a 5, onde p = 1
-
-indica dependência do valor anterior, p = 2 inclui os dois valores
-
-anteriores etc.
-
-b. d (ordem de diferenciação): Número de diferenciações aplicadas
-
-para tornar a série estacionária. Avaliadas ordens de 0 a 2, baseadas
-
-nos testes de estacionariedade.
+48
 
 c. q (ordem de média móvel): Número de erros de previsão defasados
 
@@ -2813,46 +2577,49 @@ incluídos no modelo. Testadas ordens de 0 a 5, capturando
 
 dependências nos termos de erro.
 
-b) Parâmetros sazonais (período s = 12):
+c) Parâmetros sazonais (período s = 12):
 
 a. P (autorregressivo sazonal): Dependência de valores sazonais
 
-defasados (ex.: mesmo mês do ano anterior). Testadas ordens de 0
+defasados (ex.: mesmo mês do ano anterior). Testadas ordens de 0 a 2;
 
-a 2.
+b. D (diferenciação sazonal): Diferenciação aplicada com período sazonal
 
-b. D (diferenciação sazonal): Diferenciação aplicada com período
-
-sazonal para remover não estacionariedade sazonal. Avaliadas
-
-ordens de 0 a 1.
+para remover não estacionariedade sazonal. Avaliadas ordens de 0 a 1;
 
 c. Q (média móvel sazonal): Erros sazonais defasados incluídos no
 
 modelo. Testadas ordens de 0 a 2.
 
-Para critério de seleção, o AutoARIMA utilizou o AIC para balancear qualidade
+Para critério de seleção, o AutoARIMA utilizou o AIC (Akaike Information
 
-do ajuste com parcimônia do modelo, selecionando automaticamente a configuração
+Criterion) para balancear qualidade do ajuste com parcimônia do modelo,
 
-que minimizou o AIC. O algoritmo implementou busca stepwise para eficiência
+selecionando automaticamente a configuração que minimizou o AIC. O algoritmo
 
-computacional, explorando configurações vizinhas de forma inteligente.
+implementou
+
+busca
+
+stepwise
+
+para
+
+eficiência
+
+computacional,
+
+explorando
+
+configurações vizinhas de forma inteligente.
 
 3.2.1.6 Treinamento do modelo
 
 O processo de treinamento foi executado após a seleção automática dos
 
-melhores parâmetros utilizando os algoritmos de estimação implementados na Darts.
+melhores parâmetros, utilizando os algoritmos de estimação implementados na Darts.
 
 O treinamento envolveu:
-
-
----
-
-# Page 53
-
-53
 
 a) Estimação por máxima verossimilhança: Os coeficientes do modelo foram
 
@@ -2860,35 +2627,28 @@ estimados através da maximização da função de verossimilhança, que
 
 encontrou os parâmetros que melhor explicaram os dados observados no
 
-conjunto de treino.
+conjunto de treino;
 
 b) Otimização numérica: O processo utilizou algoritmos de otimização não
 
-linear para encontrar os valores ótimos dos coeficientes, iniciando de
+linear para encontrar os valores ótimos dos coeficientes, iniciando de valores
 
-valores iniciais estimados e iterando até convergência.
+iniciais estimados e iterando até convergência;
 
-c) Ajuste
+c) Ajuste da componente sazonal: O modelo SARIMA ajustou simultaneamente
 
-da
+os padrões não sazonais (tendência de curto prazo, dependências de lags
 
-componente
+próximos) e sazonais (padrões anuais, dependências de períodos
 
-sazonal:
+equivalentes em anos anteriores);
 
-## O
 
-modelo
+---
 
-## SARIMA
+# Page 49
 
-ajustou
-
-simultaneamente os padrões não sazonais (tendência de curto prazo,
-
-dependências de lags próximos) e sazonais (padrões anuais, dependências
-
-de períodos equivalentes em anos anteriores).
+49
 
 d) Validação do ajuste: Durante o treinamento, foram monitoradas métricas de
 
@@ -2906,9 +2666,7 @@ identificados na análise exploratória.
 
 A etapa de validação consistiu na geração de previsões para todo o horizonte
 
-do conjunto de teste (26 períodos futuros) e avaliação sistemática da performance
-
-preditiva:
+do conjunto de teste e avaliação sistemática da performance preditiva:
 
 a) Geração de previsões: O modelo treinado foi utilizado para produzir
 
@@ -2916,50 +2674,42 @@ previsões recursivas, onde cada previsão utilizou apenas informações
 
 disponíveis até aquele ponto temporal. Este processo simulou fielmente o
 
-cenário real de previsão operacional.
+cenário real de previsão operacional;
 
 b) Intervalos de confiança: Foram gerados intervalos de previsão (tipicamente
 
 95% de confiança) baseados na variância estimada dos erros do modelo,
 
-fornecendo medida de incerteza associada a cada previsão.
+fornecendo medida de incerteza associada a cada previsão;
 
 c) Métricas de avaliação: A performance foi avaliada através do conjunto
 
 padronizado de métricas:
 
+a. MAE (Mean Absolute Error): Erro absoluto médio em reais, interpretável
 
----
+diretamente na escala do problema;
 
-# Page 54
+b. RMSE (Root Mean Squared Error): Raiz do erro quadrático médio,
 
-54
+penalizando mais fortemente grandes desvios;
 
-a. MAE: Erro absoluto médio em reais, interpretável diretamente na
+c. MAPE (Mean Absolute Percentage Error): Erro percentual absoluto
 
-escala do problema.
-
-b. RMSE: Raiz do erro quadrático médio, penalizando mais fortemente
-
-grandes desvios.
-
-c. MAPE: Erro percentual absoluto médio, permitindo interpretação
-
-relativa independente da escala.
-
-d. R²: Coeficiente de determinação, medindo proporção da variância
-
-explicada pelo modelo.
-
-e. Acurácia Direcional: Proporção de acertos na direção de variação
-
-(crescimento/decrescimento) entre períodos consecutivos.
+médio, permitindo interpretação relativa independente da escala.
 
 d) Análise temporal das previsões: Foi conduzida análise período a período
 
 para identificar padrões nos erros, sazonalidade residual, e performance
 
 diferencial ao longo do horizonte de previsão.
+
+
+---
+
+# Page 50
+
+50
 
 3.2.1.8 Análise residual
 
@@ -2991,39 +2741,28 @@ e previstos, análise de resíduos ao longo do tempo e representação gráfica 
 
 estrutura de correlação do conjunto de dados para diagnóstico.
 
-
----
-
-# Page 55
-
-55
-
 Os resultados do modelo ARIMA, incluindo previsões, métricas de
 
-desempenho, parâmetros selecionados e diagnósticos foram salvos de forma
+desempenho, parâmetros selecionados e diagnósticos, foram salvos de forma
 
 estruturada para posterior comparação com os demais modelos (Theta, Suavização
 
-Exponencial e XGBoost) e com as previsões atualmente utilizadas no Power BI. Esta
+Exponencial e XGBoost). Esta documentação foi essencial para a análise comparativa
 
-documentação foi essencial para a análise comparativa final e escolha da abordagem
+final e escolha da abordagem preditiva mais adequada.
 
-preditiva mais adequada ao contexto empresarial.
+
+---
+
+# Page 51
+
+51
 
 3.2.2 Suavização Exponencial
 
 A figura a seguir mostra a metodologia utilizada para o modelo.
 
 Fonte: elaborado pelo autor
-
-Figura 11 – Metodologia do modelo Suavização Exponencial
-
-
----
-
-# Page 56
-
-56
 
 O modelo de Suavização Exponencial compartilhou grande parte da
 
@@ -3037,6 +2776,15 @@ ARIMA, utilizando a mesma biblioteca Darts, mesma estrutura TimeSeries, e mesma
 
 proporção 80/20 com divisão temporal rigorosa.
 
+Figura 11 – Metodologia do modelo Suavização Exponencial
+
+
+---
+
+# Page 52
+
+52
+
 3.2.2.1 Análise de componentes para seleção do modelo
 
 Diferentemente do ARIMA, que se baseou em testes de estacionariedade e
@@ -3047,48 +2795,31 @@ da decomposição STL já realizada na análise exploratória para orientar a se
 
 tipo apropriado de modelo.
 
-Com base nos componentes já extraídos na EDA, foram calculadas métricas
+Com base nos componentes já extraídos na EDA, a biblioteca Darts
 
-quantitativas específicas para Suavização Exponencial:
+implementou critérios automáticos para escolha entre:
 
-a) Força da tendência: Este cálculo utilizou os componentes da decomposição
+a) Suavização Exponencial Simples (SES): Para séries sem tendência ou
 
-STL previamente realizada.
+sazonalidade significativas;
 
-b) Força da sazonalidade: Novamente utilizando os resultados da EDA.
+b) Método de Holt: Para séries com tendência forte, mas sazonalidade fraca;
 
-c) Lógica de seleção automática: A biblioteca Darts implementou critérios
+c) Método de Holt-Winters: Para séries com ambos os componentes
 
-automáticos para escolha entre:
-
-a. Suavização Exponencial Simples (SES): Para séries sem tendência
-
-ou sazonalidade significativas
-
-b. Método de Holt: Para séries com tendência forte, mas sazonalidade
-
-fraca
-
-c. Método de Holt-Winters: Para séries com ambos os componentes
-
-significativos (caso esperado desta série)
-
-
----
-
-# Page 57
-
-57
+significativos (caso esperado desta série).
 
 3.2.2.2 Decisão entre modelo aditivo e multiplicativo
 
-Uma etapa específica da Suavização Exponencial foi a escolha entre formulações
+Uma etapa específica da Suavização Exponencial foi a escolha entre
 
-aditiva e multiplicativa, baseada na análise dos componentes sazonais da EDA:
+formulações aditiva e multiplicativa, baseada na análise dos componentes sazonais
+
+da EDA:
 
 a) Modelo Aditivo: Selecionado quando a amplitude da sazonalidade
 
-permaneceu relativamente constante ao longo do tempo.
+permaneceu relativamente constante ao longo do tempo;
 
 b) Modelo Multiplicativo: Selecionado quando a amplitude da sazonalidade
 
@@ -3096,139 +2827,89 @@ variou proporcionalmente ao nível da série.
 
 A decisão foi automatizada pela Darts baseada na análise da variância relativa
 
-dos componentes sazonais já extraídos na EDA, evitando recompilação
+dos componentes sazonais já extraídos na EDA.
 
-desnecessária.
+
+---
+
+# Page 53
+
+53
 
 3.2.2.3 Configuração e otimização de parâmetros
 
-Ao contrário do ARIMA, que utilizou parâmetros discretos (p, d, q), a Suavização
+Ao contrário do ARIMA, que utilizou parâmetros discretos (p, d, q), a
 
-Exponencial otimizou parâmetros contínuos de suavização:
+Suavização Exponencial otimizou parâmetros contínuos de suavização:
 
 a) Parâmetros do modelo Holt-Winters:
 
-a. α (alfa): Parâmetro de suavização do nível (0 < α ≤ 1)
+a. α (alfa): Parâmetro de suavização do nível (0 < α ≤ 1);
 
-b. β (beta): Parâmetro de suavização da tendência (0 ≤ β ≤ 1)
+b. β (beta): Parâmetro de suavização da tendência (0 ≤ β ≤ 1);
 
-c. γ (gama): Parâmetro de suavização sazonal (0 ≤ γ ≤ 1)
+c. γ (gama): Parâmetro de suavização sazonal (0 ≤ γ ≤ 1).
 
-b) Período sazonal: Fixado em 12 meses conforme evidenciado na EDA
+b) Período sazonal: Fixado em 12 meses conforme evidenciado na EDA;
 
 c) Processo de otimização: A Darts utilizou algoritmos de minimização
 
 numérica para encontrar os valores ótimos que minimizaram o erro
 
-quadrático médio no conjunto de treino, diferindo do critério AIC usado no
-
-## ARIMA.
-
-
----
-
-# Page 58
-
-58
+quadrático médio no conjunto de treino.
 
 3.2.2.4 Treinamento por suavização recursiva
 
-## O
+O processo de treinamento diferiu fundamentalmente do ARIMA por utilizar
 
-processo
-
-de
-
-treinamento
-
-diferiu
-
-fundamentalmente
-
-do
-
-## ARIMA
-
-por
-
-utilizar suavização exponencial recursiva ao invés de estimação de máxima
-
-verossimilhança:
+suavização exponencial recursiva ao invés de estimação de máxima verossimilhança:
 
 a) Inicialização dos componentes:
 
-a. Nível inicial: Estimado como média dos primeiros períodos
+a. Nível inicial estimado como média dos primeiros períodos;
 
-b. Tendência inicial: Calculada como diferença média inicial
+b. Tendência inicial calculada como diferença média inicial;
 
-b) Índices sazonais: Estimados através dos primeiros ciclos da série
+c. Índices sazonais estimados através dos primeiros ciclos da série.
 
-c) Atualização recursiva: Para cada período t do treino, os componentes foram
+b) Atualização recursiva: Para cada período t do treino, os componentes foram
 
-atualizados:
+atualizados através de combinações ponderadas dos valores observados e
 
-a. Nível suavizado através de combinação ponderada do valor
-
-observado e nível anterior projetado
-
-b. Tendência suavizada através de combinação da diferença de nível
-
-recente e tendência anterior
-
-c. Índice sazonal atualizado com base no desvio sazonal observado
+componentes anteriores projetados.
 
 Este processo iterativo permitiu ao modelo adaptar-se gradualmente aos
 
 padrões, diferindo da estimação simultânea de todos os parâmetros no ARIMA.
 
-3.2.2.5 Geração de previsões diretas
-
-A geração de previsões na Suavização Exponencial utilizou abordagem direta (não
-
-recursiva) baseada nos componentes finais:
-
-1. Mecânica de previsão: Para cada horizonte h:
-
-a. Nível futuro projetado adicionando tendência × h ao último nível
-
-b. Componente sazonal obtido do índice correspondente ao período do
-
-ano
-
-c. Previsão final através de combinação aditiva ou multiplicativa
-
 
 ---
 
-# Page 59
+# Page 54
 
-59
+54
 
-Esta abordagem diferiu das previsões recursivas do ARIMA, sendo mais
+3.2.2.5 Geração de previsões diretas
 
-apropriada para modelos de suavização.
+A geração de previsões na Suavização Exponencial utilizou abordagem direta
+
+(não recursiva) baseada nos componentes finais, projetando o nível futuro
+
+adicionando tendência multiplicada pelo horizonte ao último nível, e obtendo o
+
+componente sazonal do índice correspondente ao período do ano.
 
 3.2.2.6 Análise residual específica para suavização
 
-A análise residual seguiu protocolo similar ao ARIMA (seção 3.2.1.8), mas com focos
+A análise residual seguiu protocolo similar ao ARIMA, mas com focos
 
-específicos:
+específicos na validação de componentes (tendência e sazonalidade), estabilidade
 
-a) Validação de componentes: Além da análise de aleatoriedade dos resíduos,
+dos parâmetros otimizados (α, β e γ), e adequação do modelo selecionado (aditivo vs.
 
-foi verificada a tendência e sazonalidade.
+multiplicativo) através de análise visual dos resíduos padronizados e métricas de
 
-b) Estabilidade dos parâmetros: Foram analisados os valores otimizados de α,
-
-β e γ para confirmar estabilidade numérica (valores não próximos aos limites
-
-0 ou 1, que indicariam problemas de convergência).
-
-c) Adequação do modelo selecionado: Foi confirmada a escolha entre
-
-aditivo/multiplicativo através de análise visual dos resíduos padronizados e
-
-métricas de ajuste.
+ajuste.
 
 3.2.3 Theta
 
@@ -3238,13 +2919,238 @@ modelos anteriores, diferindo principalmente na abordagem de decomposição e
 
 extrapolação. As etapas de importação de bibliotecas, ingestão e conversão de dados
 
-e divisão treino/teste foram executadas de forma idêntica ao ARIMA, utilizando a
+e divisão treino/teste foram executadas de forma idêntica aos modelos anteriores,
 
-mesma biblioteca Darts, mesma estrutura TimeSeries, e mesma divisão temporal
+utilizando a mesma biblioteca Darts, mesma estrutura TimeSeries, e mesma divisão
 
-80/20.
+temporal 80/20.
 
 A figura a seguir mostra a metodologia utilizada para o modelo.
+
+
+---
+
+# Page 55
+
+55
+
+Fonte: elaborado pelo autor
+
+3.2.3.1 Verificação de pré-condições do método Theta
+
+O método Theta na biblioteca Darts exigiu verificações específicas antes da
+
+aplicação:
+
+a) Validação da série temporal: Confirmação da ausência de valores nulos na
+
+série, pois o Theta da Darts não possui tratamento automático para dados
+
+ausentes;
+
+Figura 12 – Metodologia do modelo Theta
+
+
+---
+
+# Page 56
+
+56
+
+b) Verificação de univariância: O método foi aplicado exclusivamente à série
+
+temporal univariada de faturamento mensal, sem variáveis explicativas
+
+adicionais, seguindo a natureza original do método proposto por
+
+Assimakopoulos e Nikolopoulos (2000);
+
+c) Confirmação de regularidade temporal: Verificação da frequência mensal
+
+constante da série, requisito para a decomposição Theta funcionar
+
+adequadamente.
+
+3.2.3.2 Configuração automática vs. manual do modelo
+
+No quesito de configuração, o método Theta da Darts ofereceu configuração
+
+totalmente automática:
+
+a) Parâmetro Theta (θ): A Darts implementou seleção automática do parâmetro
+
+θ, que controla a curvatura das linhas Theta. Valores θ < 1 enfatizam
+
+tendências de longo prazo, enquanto θ > 1 destacam variações de curto
+
+prazo;
+
+b) Detecção automática de sazonalidade: O Theta detectou automaticamente
+
+a presença e o período da sazonalidade (12 meses) com base nos padrões
+
+da série;
+
+c) Configuração de decomposição: O modelo foi configurado para aplicar
+
+decomposição automática da série em componentes Theta, sem
+
+necessidade de especificação manual.
+
+3.2.3.3 Decomposição e criação das linhas Theta
+
+Esta etapa foi específica do método Theta, onde os seguintes pontos foram
+
+realizados:
+
+a) Aplicação das segundas diferenças: O método aplicou o operador de
+
+segundas diferenças à série original conforme a formulação matemática de
+
+Assimakopoulos e Nikolopoulos (2000);
+
+b) Geração das linhas Theta: Foram criadas múltiplas linhas Theta através de
+
+transformações matemáticas, incluindo:
+
+
+---
+
+# Page 57
+
+57
+
+a. Linha Theta 0 (θ = 0): Representa tendência linear de longo prazo
+
+b. Linha Theta 2 (θ = 2): Captura variações de curto prazo e sazonalidade.
+
+3.2.3.4 Treinamento e ajuste das componentes
+
+O processo de treinamento do Theta diferiu dos outros modelos no seguinte:
+
+a) Ajuste das linhas individuais: Cada linha Theta foi ajustada separadamente:
+
+a. Linha Theta 0: Ajustada por regressão linear para capturar tendência de
+
+longo prazo;
+
+b. Linha Theta 2: Ajustada por Suavização Exponencial Simples (SES)
+
+para variações de curto prazo.
+
+b) Otimização automática: A Darts implementou otimização automática dos
+
+parâmetros de cada componente.
+
+3.2.3.5 Combinação de previsões e extrapolação
+
+A geração de previsões seguiu abordagem única de combinação de
+
+extrapolações, onde cada linha Theta foi extrapolada separadamente para o horizonte
+
+de teste, e as previsões finais foram obtidas através de combinação ponderada das
+
+extrapolações individuais, tipicamente com pesos iguais ou otimizados baseados na
+
+performance histórica.
+
+3.2.3.6 Avaliação e diagnósticos específicos
+
+A avaliação seguiu protocolo similar aos modelos anteriores, com análises
+
+específicas de validação das linhas Theta, verificação da capacidade de reconstrução
+
+da série original, e análise de estabilidade dos parâmetros otimizados.
+
+
+---
+
+# Page 58
+
+58
+
+3.2.4 XGBoost
+
+A figura 3 mostra a metodologia utilizada para o modelo.
+
+Fonte: elaborado pelo autor
+
+3.2.4.1 Preparação e integração com Darts
+
+O modelo XGBoost foi implementado utilizando o módulo `XGBModel` da
+
+biblioteca Darts, que integra o algoritmo XGBoost com a infraestrutura de séries
+
+temporais da Darts. Diferentemente da implementação tradicional que requer
+
+engenharia manual extensiva de features, o `XGBModel` da Darts automatiza a
+
+criação de features temporais necessárias para o treinamento.
+
+A entrada do modelo foi a mesma série temporal univariada utilizada pelos
+
+outros modelos (faturamento mensal agregado), mantendo consistência na
+
+preparação dos dados. A Darts se encarregou automaticamente de transformar esta
+
+Figura 13 – Metodologia do modelo XGBoost
+
+
+---
+
+# Page 59
+
+59
+
+série temporal em formato tabular apropriado para o XGBoost durante o processo de
+
+treinamento.
+
+3.2.4.2 Divisão dos dados em treino e teste Engenharia automática de features
+
+Assim como nos demais modelos, os dados foram divididos respeitando
+
+rigorosamente a ordem cronológica na proporção 80/20, evitando vazamento de
+
+informações futuras. A Darts garantiu que a divisão temporal fosse consistente com
+
+os outros modelos implementados.
+
+3.2.4.3 Engenharia automática de features
+
+O XGBModel da Darts criou automaticamente as features necessárias através
+
+de parâmetros configuráveis:
+
+a) Lags da variável target: Foram configurados 17 lags principais [-1, -2, -3, -4,
+
+-5, -6, -7, -8, -9, -10, -11, -12, -15, -18, -24, -30, -36] para capturar
+
+dependências temporais em diferentes horizontes.
+
+b) Lags de covariadas passadas: Configurados 8 lags [-1, -2, -3, -4, -5, -6, -12,
+
+-24] para capturar padrões adicionais de dependência temporal.
+
+c) Encoders temporais: Foram adicionados automaticamente 6 encoders
+
+temporais (mês, ano, trimestre, dia do ano, semana do ano, dia da semana)
+
+para capturar padrões cíclicos e sazonais.
+
+d) Normalização: Aplicada automaticamente via MaxAbsScaler para garantir
+
+escala apropriada das features, particularmente importante para lidar com
+
+outliers em dados de vendas.
+
+Esta abordagem eliminou a necessidade de criar manualmente features como
+
+médias móveis, codificações trigonométricas, e estatísticas agregadas, simplificando
+
+significativamente o pipeline e garantindo que apenas as features mais relevantes
+
+fossem utilizadas.
 
 
 ---
@@ -3253,19 +3159,73 @@ A figura a seguir mostra a metodologia utilizada para o modelo.
 
 60
 
-Fonte: elaborado pelo autor
+3.2.4.4 Configuração dos hiper parâmetros iniciais
 
-3.2.3.1 Verificação de pré-condições do método Theta
+O modelo XGBoost implementado via Darts separou os parâmetros em duas
 
-O método Theta na biblioteca Darts exigiu verificações específicas antes da aplicação,
+categorias distintas: parâmetros específicos do framework Darts para processamento
 
-diferindo dos modelos anteriores:
+de series temporais e hiper parâmetros do algoritmo XGBoost propriamente dito.
 
-a) Validação da série temporal: Foi confirmada a ausência de valores nulos na
+a) Parâmetros do framework Darts (configuração de series temporais):
 
-série, pois o Theta da Darts não possui tratamento automático para dados
+a. lags: 17 valores de defasagem [-1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -
 
-Figura 12 – Metodologia do modelo Theta
+12, -15, -18, -24, -30, -36] para capturar dependências temporais em
+
+múltiplos horizontes.
+
+b. lags_past_covariates: 8 lags adicionais [-1, -2, -3, -4, -5, -6, -12, -24] para
+
+padrões de dependência temporal complementares.
+
+c. add_encoders: Encoders temporais automáticos incluindo mês, ano,
+
+trimestre, dia do ano, semana do ano e dia da semana para captura de
+
+padrões cíclicos e sazonais.
+
+d. data_scaling:
+
+MaxAbsScaler
+
+aplicado
+
+automaticamente
+
+para
+
+normalização robusta das features.
+
+b) Hiper parâmetros do algoritmo XGBoost (passados via kwargs):
+
+a. n_estimators: 2000 arvores de decisão para garantir capacidade
+
+adequada de aprendizado e convergência do algoritmo de gradient
+
+boosting.
+
+b. max_depth: 8 níveis de profundidade máxima, controlando a
+
+complexidade das arvores individuais e evitando overfitting.
+
+c. learning_rate: 0.05 para controlar o peso de cada nova arvore no
+
+ensemble, garantindo aprendizado estável e convergência gradual.
+
+d. subsample: 0.9 (90% de amostragem) para aumentar a generalização
+
+do modelo através de variação estocástica nas amostras de
+
+treinamento.
+
+e. colsample_bytree: 0.9 para selecionar aleatoriamente 90% das features
+
+em cada arvore, promovendo diversidade no ensemble.
+
+f. reg_alpha: 0.2 (regularização L1/Lasso) para penalizar complexidade e
+
+promover esparsidade nos pesos do modelo.
 
 
 ---
@@ -3274,67 +3234,61 @@ Figura 12 – Metodologia do modelo Theta
 
 61
 
-ausentes, diferentemente do ARIMA que pode interpolar valores durante o
+g. reg_lambda: 1.5 (regularização L2/Ridge) para controle adicional de
 
-ajuste.
+complexidade e suavização dos pesos.
 
-b) Verificação de univariância: O método foi aplicado exclusivamente à série
+h. random_state: 42 para garantir reprodutibilidade total dos resultados
 
-temporal univariada de faturamento mensal, sem variáveis explicativas
+entre execuções.
 
-adicionais,
+Esta configuração hibrida aproveitou a especialização da Darts em
 
-seguindo
+processamento de series temporais (geração automática de lags e encoders
 
-a
+temporais) combinada com o poder preditivo do algoritmo XGBoost (ensemble de
 
-natureza
+arvores com gradient boosting). Os hiper parâmetros do XGBoost foram definidos
 
-original
+manualmente com base em práticas estabelecidas para modelos de previsão,
 
-do
+priorizando capacidade de aprendizado (n_estimators alto e max_depth moderado)
 
-método
+equilibrada com regularização (reg_alpha e reg_lambda) para evitar overfitting.
 
-proposto
+3.2.4.5 Treinamento do modelo
 
-por Assimakopoulos e Nikolopoulos (2000).
+O processo de treinamento do XGBoost seguiu o paradigma de gradient
 
-c) Confirmação de regularidade temporal: Foi verificada a frequência mensal
+boosting:
 
-constante da série (133 observações consecutivas), requisito para a
+a) Inicialização: O processo iniciou com uma previsão inicial simples
 
-decomposição Theta funcionar adequadamente.
+(geralmente a média dos valores de treino);
 
-3.2.3.2 Configuração automática vs. manual do modelo
+b) Treinamento iterativo: Em cada iteração, uma nova árvore de decisão foi
 
-O método Theta da Darts ofereceu configuração totalmente automática:
+treinada para modelar os resíduos (erros) das árvores anteriores, corrigindo
 
-a) Parâmetro Theta (θ): A Darts implementou seleção automática do parâmetro
+gradualmente as falhas do modelo;
 
-θ, que controla a curvatura das linhas Theta. Valores θ < 1 enfatizam
+c) Atualização das previsões: As previsões foram atualizadas somando as
 
-tendências de longo prazo, enquanto θ > 1 destacam variações de curto
+previsões das novas árvores às previsões acumuladas das árvores
 
-prazo, conforme Spiliotis, Assimakopoulos e Makridakis (2020).
+anteriores, multiplicadas pela taxa de aprendizado (learning_rate);
 
-b) Detecção automática de sazonalidade: O Theta detectou automaticamente
+d) Regularização: Durante o treinamento, os termos de regularização L1 e L2
 
-a presença e o período da sazonalidade (12 meses) com base nos padrões
+foram aplicados para penalizar complexidade excessiva e promover
 
-da série.
+modelos mais simples e generalizáveis.
 
-c) Configuração de decomposição: O modelo foi configurado para aplicar
+A integração com Darts garantiu que todo este processo respeitasse a natureza
 
-decomposição automática da série em componentes Theta, sem
+temporal dos dados, utilizando apenas informações disponíveis até cada ponto
 
-necessidade de especificação manual de ordens ou tipos de componentes.
-
-3.2.3.3 Decomposição e criação das linhas Theta
-
-Esta etapa foi específica do método Theta e diferiu fundamentalmente dos outros
-
-modelos:
+temporal durante o treinamento.
 
 
 ---
@@ -3343,337 +3297,35 @@ modelos:
 
 62
 
-a) Aplicação das segundas diferenças: O método aplicou o operador de
-
-segundas diferenças à série original conforme a formulação matemática
-
-de Assimakopoulos e Nikolopoulos (2000).
-
-b) Geração das linhas Theta: Foram criadas múltiplas linhas Theta através de
-
-transformações matemáticas.
-
-c) Extração de componentes: O processo extraiu automaticamente:
-
-a. Linha Theta 0 (θ = 0): Representa tendência linear de longo prazo
-
-b. Linha Theta 2 (θ = 2): Captura variações de curto prazo e
-
-sazonalidade
-
-c. Linhas
-
-intermediárias:
-
-Quando
-
-aplicável,
-
-para
-
-capturar
-
-características específicas da série
-
-3.2.3.4 Treinamento e ajuste das componentes
-
-O processo de treinamento do Theta diferiu dos modelos de suavização exponencial
-
-e ARIMA:
-
-a) Ajuste das linhas individuais: Cada linha Theta foi ajustada separadamente
-
-utilizando métodos apropriados:
-
-a. Linha Theta 0: Ajustada por regressão linear para capturar tendência
-
-de longo prazo
-
-b. Linha Theta 2: Ajustada por Suavização Exponencial Simples (SES)
-
-para variações de curto prazo
-
-b) Otimização automática: A Darts implementou otimização automática dos
-
-parâmetros de cada componente, incluindo constantes de suavização para
-
-as linhas de curto prazo e coeficientes de tendência para linhas de longo
-
-prazo.
-
-c) Validação da decomposição: O processo verificou a adequação da
-
-decomposição através de análise dos componentes extraídos e sua
-
-capacidade de reconstruir a série original.
-
-
----
-
-# Page 63
-
-63
-
-3.2.3.5 Combinação de previsões e extrapolação
-
-A geração de previsões seguiu abordagem única de combinação de extrapolações:
-
-a) Extrapolação individual: Cada linha Theta foi extrapolada separadamente
-
-para o horizonte de teste:
-
-a. Tendência de longo prazo: Extrapolada linearmente baseada na
-
-linha Theta 0
-
-b. Componente de curto prazo: Extrapolada através do último nível
-
-suavizado da linha Theta 2
-
-b) Combinação ponderada: As previsões finais foram obtidas através de
-
-combinação das extrapolações individuais, tipicamente com pesos iguais
-
-(0,5 para cada componente) ou pesos otimizados baseados na performance
-
-histórica, seguindo Fiorucci et al. (2016).
-
-c) Tratamento de sazonalidade: Quando presente, a sazonalidade foi
-
-incorporada através da extrapolação da linha Theta 2, que capturou padrões
-
-de curto prazo incluindo variações sazonais.
-
-3.2.3.6 Avaliação e diagnósticos específicos
-
-A avaliação seguiu protocolo similar aos modelos anteriores, com análises
-
-específicas:
-
-a) Validação das linhas Theta: Foi verificada a adequação da decomposição
-
-através de:
-
-a. Análise da suavidade das linhas extraídas
-
-b. Verificação da capacidade de reconstrução da série original
-
-c. Avaliação da interpretabilidade das componentes (tendência vs.
-
-variações)
-
-
----
-
-# Page 64
-
-64
-
-d. Análise de estabilidade: Foram examinados os parâmetros
-
-otimizados de cada linha para confirmar convergência e estabilidade
-
-numérica.
-
-3.2.4 XGBoost
-
-A figura 3 mostra a metodologia utilizada para o modelo.
-
-Fonte: elaborado pelo autor
-
-Figura 13 – Metodologia do modelo XGBoost
-
-
----
-
-# Page 65
-
-65
-
-3.2.4.1 Preparação e engenharia de variáveis
-
-Diferentemente do ARIMA, cuja entrada é a própria série temporal univariada,
-
-o XGBoost exige que a série seja transformada em uma base tabular. Serão criadas
-
-variáveis defasadas, médias móveis e estatísticas que descrevam a série ao longo do
-
-tempo. Além disso, poderão ser adicionadas variáveis de calendário (mês, dia da
-
-semana, feriados etc.), enriquecendo o conjunto de treinamento com informações
-
-contextuais. Esta etapa é exclusiva e essencial para o XGBoost, pois permite ao
-
-modelo explorar dependências temporais e efeitos sazonais/exógenos.
-
-3.2.4.2 Divisão dos dados em treino e teste
-
-Assim como no ARIMA, os dados serão divididos em conjuntos de treino e
-
-teste, sempre respeitando a ordem cronológica para evitar vazamento de informações
-
-futuras.
-
-3.2.4.3 Normalização e tratamento dos dados
-
-Esta etapa, embora similar à limpeza realizada no ARIMA, será orientada para
-
-o contexto tabular. Serão tratados valores ausentes gerados na criação de lags e
-
-médias móveis por meio de imputação ou exclusão. Se necessário, as variáveis
-
-poderão ser normalizadas ou padronizadas para garantir melhor desempenho do
-
-algoritmo.
-
-3.2.4.4 Configuração dos hiper parâmetros iniciais
-
-Diferentemente do ARIMA, em que os parâmetros de configuração são (p, d, q)
-
-definidos com base em análise de autocorrelação da própria série temporal, o modelo
-
-XGBoost depende de um conjunto mais amplo de hiper parâmetros que controlam
-
-tanto a complexidade quanto o desempenho do algoritmo de árvores de decisão.
-
-Entre os principais hiper parâmetros que deverão ser configurados inicialmente,
-
-destacam-se:
-
-a) n_estimators (número de árvores): Define quantas árvores de decisão serão
-
-criadas e combinadas pelo modelo.
-
-
----
-
-# Page 66
-
-66
-
-b) max_depth (profundidade máxima): Limita a quantidade de divisões que
-
-cada árvore pode fazer, afetando a capacidade de capturar padrões
-
-complexos sem sobre ajuste.
-
-c) learning_rate (taxa de aprendizado): Controla o peso de cada nova árvore
-
-adicionada no processo de boosting, influenciando diretamente a velocidade
-
-e a estabilidade do treinamento.
-
-d) subsample (amostragem): Determina a fração de exemplos utilizados para
-
-treinar cada árvore, o que pode aumentar a generalização do modelo.
-
-e) colsample_bytree: Define a proporção de variáveis consideradas em cada
-
-divisão, reduzindo a chance de sobre ajuste.
-
-A seleção inicial desses hiper parâmetros poderão ser realizadas com base em
-
-estudos prévios, valores sugeridos na literatura ou ainda com valores padrão do
-
-próprio XGBoost. É importante salientar que, diferentemente do ARIMA, o XGBoost
-
-permite grande flexibilidade na escolha e combinação desses hiper parâmetros,
-
-tornando o processo de ajuste potencialmente mais complexo e exigente em termos
-
-de experimentação.
-
-3.2.4.5 Treinamento inicial do modelo
-
-O processo de treinamento inicial do XGBoost se diferencia substancialmente
-
-do ARIMA, principalmente pela estrutura dos dados e pelo mecanismo de
-
-aprendizado.
-
-Enquanto o ARIMA utiliza uma série temporal univariada e ajusta seus
-
-parâmetros para capturar padrões autorregressivos e de média móvel, o XGBoost irá
-
-trabalhar sobre uma base tabular composta por múltiplas features, incluindo variáveis
-
-defasadas (lags), médias móveis, variáveis sazonais e de calendário, entre outras. O
-
-modelo será treinado utilizando o conjunto de treino previamente definido, buscando
-
-construir sucessivas árvores de decisão (de acordo com o número definido em
-
-n_estimators) que, em conjunto, minimizarão o erro de previsão.
-
-Durante esse processo, cada nova árvore será construída para corrigir os erros
-
-cometidos pelas árvores anteriores, em um procedimento iterativo chamado boosting.
-
-O ajuste do modelo será realizado até que todos os dados de treino tenham sido
-
-
----
-
-# Page 67
-
-67
-
-utilizados para aprender os padrões relevantes da série temporal e de suas variáveis
-
-derivadas.
-
-Ao final do treinamento inicial, o modelo estará preparado para realizar
-
-previsões sobre o conjunto de teste, e os resultados obtidos servirão como base para
-
-a avaliação inicial de desempenho e para eventuais ajustes de hiper parâmetros em
-
-etapas subsequentes.
-
 3.2.4.6 Avaliação inicial de desempenho
 
-A avaliação do desempenho inicial será realizada de maneira análoga ao
+A avaliação do desempenho foi realizada de maneira análoga aos outros
 
-ARIMA, por meio de métricas como RMSE, MAE ou MAPE, aplicadas ao conjunto de
+modelos, através das métricas MAE, RMSE e MAPE aplicadas ao conjunto de teste.
 
-teste. A análise dos erros também poderá indicar a necessidade de ajuste nas features
+A análise dos erros permitiu verificar a capacidade do modelo em capturar padrões
 
-ou nos hiper parâmetros.
+complexos presentes nos dados de vendas.
 
-3.2.4.7 Busca e ajuste de hiper parâmetros
+3.2.4.7 Validação e análise de resultados
 
-Enquanto o ajuste de parâmetros do ARIMA envolve os valores de p, d, q, no
+Foi empregada validação temporal adequada a séries temporais, assegurando
 
-XGBoost será realizada uma busca sistemática para identificar os melhores hiper
+a robustez dos resultados e a ausência de overfitting. Os resultados da validação
 
-parâmetros do modelo, como taxa de aprendizado, número de árvores e profundidade
+foram analisados quanto à consistência e possíveis padrões residuais, confirmando a
 
-máxima.
+adequação do modelo.
 
-3.2.4.8 Validação cruzada e análise de resultados
+3.2.4.8 Geração das previsões finais e armazenamento dos resultados
 
-Assim como no ARIMA, será empregada validação cruzada adequada a séries
+As previsões finais geradas pelo modelo XGBoost foram armazenadas em
 
-temporais, assegurando a robustez dos resultados e a ausência de sobre ajuste. Os
+formato estruturado para comparação direta com os resultados dos demais modelos
 
-resultados da validação serão analisados quanto à consistência e possíveis padrões
+(ARIMA, Theta e Suavização Exponencial), permitindo análise comparativa
 
-residuais.
-
-3.2.4.9 Geração das previsões finais e armazenamento dos resultados
-
-Por fim, as previsões finais geradas pelo modelo XGBoost serão armazenadas
-
-para comparação direta com os resultados do ARIMA, dos demais modelos avaliados
-
-e com as previsões atualmente geradas pelo Power BI.
-
-
----
-
-# Page 68
-
-68
+abrangente baseada nas mesmas métricas padronizadas.
 
 ## 3.3 AVALIAÇÃO E COMPARAÇÃO DOS MODELOS
 
@@ -3695,6 +3347,13 @@ Essas métricas serão calculadas para o conjunto de teste de cada modelo. O
 
 modelo que apresentar o menor valor de erro (considerando principalmente MAE e
 
+
+---
+
+# Page 63
+
+63
+
 RMSE), será selecionado como o modelo de melhor desempenho, conforme
 
 abordagem utilizada por Hyndman et al. (1999) e Gardner (1985).
@@ -3715,13 +3374,6 @@ quantitativo, mas também na sua viabilidade de implementação e integração �
 
 plataforma existente, conforme recomendam Gardner (1985) e Hyndman et al. (1999).
 
-
----
-
-# Page 69
-
-69
-
 ## REFERÊNCIAS
 
 ASSIMAKOPOULOS, V.; NIKOLOPOULOS, K. The Theta model: a decomposition
@@ -3729,6 +3381,13 @@ ASSIMAKOPOULOS, V.; NIKOLOPOULOS, K. The Theta model: a decomposition
 approach to forecasting. International Journal of Forecasting, v. 16, n. 4, p. 521–
 
 530, out. 2000. Disponível em: https://doi.org/10.1016/S0169-2070(00)00066-2.
+
+
+---
+
+# Page 64
+
+64
 
 BEZERRA, Manoel Ivanildo Silvestre. Apostila de Análise de Séries Temporais.
 
@@ -3750,13 +3409,6 @@ and Data Mining - KDD ’16, v. 1, n. 1, p. 785–794, 13 ago. 2016. Disponível
 
 https://doi.org/10.1145/2939672.2939785.
 
-
----
-
-# Page 70
-
-70
-
 DAIRU, X.; SHILONG, Z. Machine Learning Model for Sales Forecasting by
 
 Using XGBoost. Disponível em:
@@ -3773,7 +3425,7 @@ https://doi.org/10.1016/j.jjimei.2022.100058.
 
 FATTAH, J. et al. Forecasting of demand using ARIMA model. International Journal
 
-of Engineering Business Management, v. 10, n. 1, p. 184797901880867, jan.
+of Engineering Business Management, v. 10, n. 1, p. 184797901880867, Jan.
 
 2018. Disponível em: https://journals.sagepub.com/doi/10.1177/1847979018808673.
 
@@ -3791,6 +3443,13 @@ v. 6, n. 1, p. 170–186, 1 mar. 2024. Disponível em:
 
 https://doi.org/10.3390/forecast6010010.
 
+
+---
+
+# Page 65
+
+65
+
 GARDNER, E. S. Exponential smoothing: The state of the art. Journal of
 
 Forecasting, v. 4, n. 1, p. 1–28, 1985. Disponível em:
@@ -3806,13 +3465,6 @@ for Time Series Forecasting in Data Driven Networks. Future Internet, v. 15, n. 
 LOZIA, Z. Application of modelling and simulation to evaluate the theta method used
 
 in diagnostics of automotive shock absorbers. The Archives of Automotive
-
-
----
-
-# Page 71
-
-71
 
 Engineering – Archiwum Motoryzacji, v. 96, n. 2, p. 5–30, 30 jun. 2022. Disponível
 
@@ -3842,13 +3494,20 @@ http://dx.doi.org/10.13140/RG.2.2.15243.64803.
 
 MCKENZIE, ED. General exponential smoothing and the equivalent arma
 
-process. Journal of Forecasting, v. 3, n. 3, p. 333–344, jul. 1984. Disponível em:
+process. Journal of Forecasting, v. 3, n. 3, p. 333–344, Jul. 1984. Disponível em:
 
 https://doi.org/10.1002/for.3980030312.
 
 MONDAL, P.; SHIT, L.; GOSWAMI, S. Study of Effectiveness of Time Series
 
 Modeling (Arima) in Forecasting Stock Prices. International Journal of Computer
+
+
+---
+
+# Page 66
+
+66
 
 Science, Engineering and Applications, v. 4, n. 2, p. 13–29, 30 abr. 2014.
 
@@ -3862,16 +3521,9 @@ Disponível em: https://doi.org/10.1515/intag-2017-0007.
 
 NEWBOLD, P. ARIMA model building and the time series analysis approach to
 
-forecasting. Journal of Forecasting, v. 2, n. 1, p. 23–35, jan. 1983. Disponível em:
+forecasting. Journal of Forecasting, v. 2, n. 1, p. 23–35, Jan. 1983. Disponível em:
 
 https://doi.org/10.1002/for.3980020104.
-
-
----
-
-# Page 72
-
-72
 
 PAO, James J.; SULLIVAN, Danielle S. Time series sales forecasting. Final year
 
@@ -3893,9 +3545,9 @@ Disponível em: https://doi.org/10.32604/jai.2024.054314.
 
 SPILIOTIS, E.; ASSIMAKOPOULOS, V.; MAKRIDAKIS, S. Generalizing the Theta
 
-method for automatic forecasting. European Journal of Operational Research, jan.
+method for automatic forecasting. European Journal of Operational Research,
 
-2020. Disponível em: http://dx.doi.org/10.1016/j.ejor.2020.01.007.
+Jan. 2020. Disponível em: http://dx.doi.org/10.1016/j.ejor.2020.01.007.
 
 VAVLIAKIS, K.; SIAILIS, A.; SYMEONIDIS, A. Optimizing Sales Forecasting in e-
 
