@@ -29,21 +29,22 @@ TCC Faturamento Realizado =
 // Lógica: (Faturamento até hoje / Dias decorridos) × Dias totais do mês
 
 TCC Faturamento Projetado Power BI =
+    VAR vMesAtual = MONTH(TODAY())
+    VAR vAnoAtual = YEAR(TODAY())
+
     VAR vDiasNoMes =
         CALCULATE(
             COUNTROWS('[Dim] Calendário'),
-            KEEPFILTERS('[Dim] Calendário'[MesNum] = MONTH(TODAY())),
-            KEEPFILTERS('[Dim] Calendário'[Ano] = YEAR(TODAY())),
-            ALL(Aux_MesmoPeriodo)
+            KEEPFILTERS('[Dim] Calendário'[MesNum] = vMesAtual),
+            KEEPFILTERS('[Dim] Calendário'[Ano] = vAnoAtual)
         )
 
     VAR vDiasAteHoje =
         CALCULATE(
             DISTINCTCOUNT('[Dim] Calendário'[Data]),
             KEEPFILTERS('[Dim] Calendário'[Data] <= TODAY()),
-            KEEPFILTERS('[Dim] Calendário'[MesNum] = MONTH(TODAY())),
-            KEEPFILTERS('[Dim] Calendário'[Ano] = YEAR(TODAY())),
-            ALL(Aux_MesmoPeriodo)
+            KEEPFILTERS('[Dim] Calendário'[MesNum] = vMesAtual),
+            KEEPFILTERS('[Dim] Calendário'[Ano] = vAnoAtual)
         )
 
     VAR vFaturamentoAteHoje = [TCC Faturamento Realizado]
@@ -53,9 +54,8 @@ TCC Faturamento Projetado Power BI =
     VAR vProjecao = vMediaDiaria * vDiasNoMes
 
     RETURN
-    SWITCH(
-        TRUE(),
-        MONTH(TODAY()) = MONTH([Primeira Data do Filtro]) && vDiasAteHoje > 0,
+    IF(
+        AND(vDiasAteHoje > 0, vDiasNoMes > 0),
         vProjecao,
         vFaturamentoAteHoje
     )
