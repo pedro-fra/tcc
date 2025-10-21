@@ -1,0 +1,68 @@
+================================================================================
+RESUMO DA CORRECAO CRITICA: ALINHAMENTO DE PERIODOS DE TESTE
+================================================================================
+
+PROBLEMA IDENTIFICADO:
+  Períodos de teste do Power BI (backtest.csv e backtest_alt.csv) estavam
+  desalinhados com o período de teste do XGBoost em 18 MESES.
+
+DADOS DO XGBOOST:
+  - Dados Totais: Out/2014 até Set/2025 (132 meses)
+  - Treino: Out/2014 até Jun/2023 (105 meses - 80%)
+  - Teste: Jul/2023 até Set/2025 (26 meses - 20%)
+
+CORRECOES REALIZADAS NO ARQUIVO data/Medidas.txt:
+
+  ANTES (INCORRETO):
+  ─────────────────────────────────────────────────────────────
+  'TCC Data Corte Treino'   = DATE(2021, 12, 31)  ✗ Muito cedo
+  'TCC Data Inicio Teste'   = DATE(2022, 1, 1)    ✗ 18 meses cedo
+  'TCC Data Fim Teste'      = DATE(2025, 10, 31)  ✗ 1 mês demais
+
+  DEPOIS (CORRETO):
+  ─────────────────────────────────────────────────────────────
+  'TCC Data Corte Treino'   = DATE(2023, 6, 30)   ✓ Alinhado
+  'TCC Data Inicio Teste'   = DATE(2023, 7, 31)   ✓ Alinhado
+  'TCC Data Fim Teste'      = DATE(2025, 9, 30)   ✓ Alinhado
+
+IMPACTO DA CORRECAO:
+
+  Antes:
+    - XGBoost testava em: Jul/2023 - Set/2025 (26 meses desconhecidos)
+    - Power BI testava em: Jan/2022 - Out/2025 (44 meses)
+    - Sobreposição problemática: Jan/2022 - Jun/2023 era TREINO do XGBoost
+                                 mas TESTE do Power BI
+
+  Depois:
+    - XGBoost testa em: Jul/2023 - Set/2025 (26 meses desconhecidos)
+    - Power BI testa em: Jul/2023 - Set/2025 (26 meses desconhecidos)
+    - COMPARACAO VALIDA: Ambos fazem previsões para o mesmo período
+
+CONSEQUENCIAS PARA O TCC:
+
+  1. VALIDADE CIENTIFICA: A comparação agora é válida
+  2. REPRODUCIBILIDADE: Dados consistentes entre modelos
+  3. MÉTRICAS: Precisam ser recalculadas com os novos períodos
+  4. CONCLUSOES: Serão agora baseadas em comparação justa
+
+PROXIMOS PASSOS:
+
+  1. Importar o arquivo Medidas.txt atualizado no Power BI
+  2. Regenerar os backtests (backtest.csv e backtest_alt.csv)
+  3. Recalcular MAE, RMSE, MAPE com os novos períodos
+  4. Documentar a correção no relatório final do TCC
+
+ARQUIVOS MODIFICADOS:
+
+  ✓ data/Medidas.txt (3 medidas corrigidas)
+  + data/analise_alinhamento_periodos.md (documentação detalhada)
+
+COMMITS CRIADOS:
+
+  1. "Corrige datas de teste Power BI para alinhar com periodo de teste
+      do XGBoost (Jul/2023 ate Set/2025)"
+
+  2. "Adiciona documento de analise do alinhamento de periodos entre
+      XGBoost e Power BI"
+
+================================================================================
