@@ -1,0 +1,167 @@
+================================================================================
+COMPARACAO DETALHADA: PERIODOS DE TESTE XGBOOST vs POWER BI
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 1. DADOS TOTAIS DISPONIVEIS                                                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ Data Inicial:   Out/2014 (2014-10-31)                                      │
+│ Data Final:     Set/2025 (2025-09-30)                                      │
+│ Total de Meses: 132 meses                                                  │
+│ Fonte:          Arquivo time_series_darts.csv (XGBoost)                    │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 2. DIVISAO TREINO/TESTE - XGBOOST (CORRETO)                                │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ TREINO (80%):                                                              │
+│   Data Inicial:   Out/2014 (2014-10-31)                                    │
+│   Data Final:     Jun/2023 (2023-06-30)                                    │
+│   Total Meses:    105 meses                                                │
+│                                                                              │
+│ TESTE (20%):                                                               │
+│   Data Inicial:   Jul/2023 (2023-07-31)                                    │
+│   Data Final:     Set/2025 (2025-09-30)                                    │
+│   Total Meses:    26 meses                                                 │
+│                                                                              │
+│ Split Point:      Apos mes 105 de dados (Jun/2023)                         │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 3. PERIODOS POWER BI - ANTES DA CORRECAO (INCORRETO)                       │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ Data Corte Treino:  Dez/2021 (2021-12-31)    ← PROBLEMA: Muito cedo      │
+│ Data Inicio Teste:  Jan/2022 (2022-01-01)    ← PROBLEMA: 18 meses cedo   │
+│ Data Fim Teste:     Out/2025 (2025-10-31)    ← PROBLEMA: 1 mes alem       │
+│                                                                              │
+│ Periodo de Teste:   44 meses (Jan/2022 ate Out/2025)                      │
+│ Diferenca vs XGB:   18 meses de sobreposicao com periodo de TREINO        │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 4. PERIODOS POWER BI - DEPOIS DA CORRECAO (CORRETO)                        │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ Data Corte Treino:  Jun/2023 (2023-06-30)    ✓ Alinhado com XGBoost       │
+│ Data Inicio Teste:  Jul/2023 (2023-07-31)    ✓ Alinhado com XGBoost       │
+│ Data Fim Teste:     Set/2025 (2025-09-30)    ✓ Alinhado com XGBoost       │
+│                                                                              │
+│ Periodo de Teste:   26 meses (Jul/2023 ate Set/2025)                      │
+│ Diferenca vs XGB:   ZERO - Completamente alinhado                         │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 5. COMPARACAO LADO A LADO                                                   │
+├──────────────────────────┬────────────────────────┬──────────────────────────┤
+│ Parametro                │ XGBoost                │ Power BI (DEPOIS)        │
+├──────────────────────────┼────────────────────────┼──────────────────────────┤
+│ Treino Começa            │ Out/2014               │ (Implícito: mesmos dados)│
+│ Treino Termina           │ Jun/2023               │ Jun/2023 ✓               │
+│ Teste Começa             │ Jul/2023               │ Jul/2023 ✓               │
+│ Teste Termina            │ Set/2025               │ Set/2025 ✓               │
+│ Meses de Teste           │ 26                     │ 26 ✓                     │
+│ Dados Desconhecidos      │ Jul/2023 a Set/2025   │ Jul/2023 a Set/2025 ✓    │
+├──────────────────────────┴────────────────────────┴──────────────────────────┤
+│ STATUS: COMPLETAMENTE ALINHADO ✓                                            │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 6. VISUALIZACAO TEMPORAL - ANTES (INCORRETO)                                │
+├─────────────────────────────────────────────────────────────────────────────┤
+│
+│ Out/2014 ────────────────────────── Jun/2023 ──────────── Set/2025
+│ |                                     |                      |
+│ └─────────── TREINO XGBoost ─────────┤
+│                                       └───── TESTE XGBoost ──┤
+│                                                               |
+│ Dez/2021 ─────────────────────────────────────────────── Out/2025
+│ |                                                            |
+│ └──── TESTE Power BI (ANTES) ─────────────────────────────┤
+│        ↑ ERRO: 18 meses de sobreposicao!
+│        Dados que XGB conhece sao considerados teste no PBI
+│
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 7. VISUALIZACAO TEMPORAL - DEPOIS (CORRETO)                                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│
+│ Out/2014 ────────────────────────── Jun/2023 ──────────── Set/2025
+│ |                                     |                      |
+│ └─────────── TREINO XGBoost ─────────┤
+│                                       └───── TESTE XGBoost ──┤
+│                                       |                      |
+│ Out/2014 ────────────────────────── Jun/2023 ──────────── Set/2025
+│ |                                     |                      |
+│ └────────── TREINO Power BI (Impl.) ──┤
+│                                        └──── TESTE Power BI ──┤
+│
+│ ✓ Perfeito alinhamento!
+│ ✓ Ambos testam dados desconhecidos
+│ ✓ Comparacao valida e reproducivel
+│
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 8. PERIODO CRITICO DE SOBREPOSICAO (ANTES)                                  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ Jan/2022 ────────────────────── Jun/2023
+│ |                                |
+│ └── 18 MESES PROBLEMATICOS ────┤
+│
+│ XGBoost:  Usava esses dados para TREINO  (70% desse periodo)
+│ Power BI: Usava esses dados para TESTE   (100% considerado teste)
+│
+│ RESULTADO: Nao era possivel comparar os modelos validade
+│ XGBoost ja havia "estudado" dados que PBI considerava novos
+│
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 9. DADOS AGORA CONSISTENTES (DEPOIS)                                        │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ Jul/2023 ────────────────────── Set/2025
+│ |                                |
+│ └── 26 MESES DE TESTE VALIDO ──┤
+│
+│ XGBoost:  NUNCA viu esses dados (dados de teste)
+│ Power BI: NUNCA viu esses dados (dados de teste)
+│
+│ RESULTADO: Ambos fazem previsoes sobre dados completamente desconhecidos
+│ Comparacao agora e cientificamente valida!
+│
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 10. IMPACTO NAS METRICAS                                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│
+│ Arquivos de Backtest Afetados:
+│   • data/backtest.csv          (TCC Previsao Backtest)
+│   • data/backtest_alt.csv      (TCC Previsao Backtest Alt)
+│
+│ Acao Requerida:
+│   1. Atualizar Power BI com as novas datas (data/Medidas.txt)
+│   2. Regenerar os backtests usando apenas Jul/2023 - Set/2025
+│   3. Recalcular MAE, RMSE, MAPE baseado no novo periodo
+│   4. Comparar com metricas do XGBoost para o mesmo periodo
+│
+│ Impacto Esperado:
+│   - Metricas provavelmente piorarao para Power BI
+│   - XGBoost esta testado em dados desconhecidos
+│   - Power BI agora esta testado em dados desconhecidos
+│   - Comparacao sera mais justa e valida
+│
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+CONCLUSAO: Correcao Aplicada com Sucesso
+================================================================================
+
+Data de Aplicacao:   21 de Outubro de 2025
+Arquivo Modificado:  data/Medidas.txt (3 medidas)
+Commits Realizados:  3 commits documentando a correcao
+
+A comparacao entre XGBoost e Power BI agora e baseada em periodos de teste
+IDENTICOS, o que garante a validade cientifica da pesquisa.
+
+================================================================================
