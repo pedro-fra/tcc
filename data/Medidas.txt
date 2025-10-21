@@ -1,0 +1,344 @@
+createOrReplace
+
+	table Medidas
+		lineageTag: 624783ef-c471-401e-872b-44f72219ed5e
+
+		measure 'TCC Acuracia' = ```
+				
+				VAR TabelaReais =
+				FILTER(
+				Calendario,
+				NOT(ISBLANK([TCC Real Teste]))
+				)
+				VAR MediaReal = AVERAGEX(TabelaReais, [TCC Real Teste])
+				VAR Acuracia = 1 - DIVIDE([TCC MAE], MediaReal)
+				RETURN
+				IF(Acuracia < 0, 0, Acuracia) 
+				```
+			formatString: 0.00%;-0.00%;0.00%
+			lineageTag: 6dfd54a9-6388-48fb-aab4-ba250443792d
+
+		measure 'TCC Data Corte Treino' = DATE(2023, 6, 30)
+			formatString: General Date
+			lineageTag: 1bbcf4fd-d436-494a-b83f-b9a3111e79b4
+
+		measure 'TCC Data Fim Teste' = DATE(2025, 9, 30)
+			formatString: General Date
+			lineageTag: acb3c818-c58d-4fb4-8afe-87c0880cf481
+
+		measure 'TCC Data Inicio Teste' = DATE(2023, 7, 31)
+			formatString: General Date
+			lineageTag: 7b0b56bf-824e-4459-b21e-93a320861180
+
+		measure 'TCC Erro' =
+				
+				[TCC Real Teste] - [TCC Previsao Backtest]
+			formatString: "R$"\ #,0.###############;-"R$"\ #,0.###############;"R$"\ #,0.###############
+			lineageTag: 3a4e24ee-27b2-444b-9372-a47f07987ada
+
+			annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+		measure 'TCC Erro Absoluto' =
+				
+				ABS([TCC Erro])
+			formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+			lineageTag: 8154d2a5-145c-4a1d-a28f-7c161d8098f8
+
+			annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+		measure 'TCC Erro Acumulado' =
+				
+				CALCULATE(
+					    SUMX(
+					        Calendario,
+					        [TCC Erro]
+					    ),
+					    FILTER(
+					        ALL(Calendario),
+					        Calendario[Date] >= [TCC Data Inicio Teste] &&
+					        Calendario[Date] <= MAX(Calendario[Date])
+					    )
+					)
+			formatString: "R$"\ #,0.###############;-"R$"\ #,0.###############;"R$"\ #,0.###############
+			lineageTag: f6bc8927-16d6-42fb-bc50-a61ac91ecc59
+
+			annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+		measure 'TCC Erro Percentual' =
+				
+				DIVIDE([TCC Erro], [TCC Real Teste])
+			formatString: 0.00%;-0.00%;0.00%
+			lineageTag: 0d66c164-b100-437a-8501-e37c43c11d4a
+
+		measure 'TCC Faturamento Mensal' =
+				
+				VAR MesAtual = SELECTEDVALUE(Calendario[YearMonth])
+				RETURN
+				    CALCULATE(
+				        [TCC Faturamento Realizado],
+				        FILTER(
+				            ALL(Calendario),
+				            Calendario[YearMonth] = MesAtual
+				        )
+				    )
+			formatString: "R$"\ #,0.###############;-"R$"\ #,0.###############;"R$"\ #,0.###############
+			lineageTag: 4cdf62c4-1f1f-4b38-a8be-08a41f94f863
+
+			annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+		measure 'TCC Faturamento Realizado' = ```
+				
+				    CALCULATE(
+				        SUM('Faturamento'[VALOR_LIQ]),
+				        KEEPFILTERS('Faturamento'[GERA_COBRANCA] = 1),
+				        KEEPFILTERS('Faturamento'[OPERACAO] = "VENDA")
+				    )
+				```
+			formatString: "R$"\ #,0.###############;-"R$"\ #,0.###############;"R$"\ #,0.###############
+			lineageTag: 87d780e3-151d-4772-80ec-9d09e9349b11
+
+			annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+		measure 'TCC MAE' = ```
+				
+				VAR TabelaErros = 
+				    ADDCOLUMNS(
+				        FILTER(
+				            Calendario,
+				            NOT(ISBLANK([TCC Real Teste])) &&
+				            NOT(ISBLANK([TCC Previsao Backtest]))
+				        ),
+				        "ErroAbs", ABS([TCC Real Teste] - [TCC Previsao Backtest])
+				    )
+				RETURN
+				    AVERAGEX(TabelaErros, [ErroAbs])    
+				```
+			formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+			lineageTag: 97f3a9d7-5ed0-4a36-82c1-c64f0c835bae
+
+			annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+		measure 'TCC MAPE' = ```
+				
+				VAR TabelaErros = 
+				    ADDCOLUMNS(
+				        SUMMARIZE(
+				            FILTER(
+				                Calendario,
+				                NOT(ISBLANK([TCC Real Teste])) &&
+				                [TCC Real Teste] <> 0
+				            ),
+				            Calendario[Date]
+				        ),
+				        "ErroPctAbs",
+				        DIVIDE(
+				            ABS([TCC Real Teste] - [TCC Previsao Backtest]),
+				            [TCC Real Teste]
+				        )
+				    )
+				RETURN
+				    AVERAGEX(TabelaErros, [ErroPctAbs]) * 100
+				```
+			lineageTag: da012412-3819-4c61-91e1-f7ff61f1185e
+
+		measure 'TCC Previsao Ano Anterior' =
+				
+				CALCULATE(
+				    [TCC Faturamento Mensal],
+				    DATEADD(Calendario[Date], -12, MONTH)
+				)
+			formatString: "R$"\ #,0.###############;-"R$"\ #,0.###############;"R$"\ #,0.###############
+			lineageTag: cfb9778d-e09b-4aaf-baab-2e89cb977ce3
+
+			annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+		measure 'TCC Previsao Backtest' = ```
+				
+				VAR DataAtual = MAX(Calendario[Date])
+				VAR EhPeriodoTeste = 
+				    DataAtual >= [TCC Data Inicio Teste] && 
+				    DataAtual <= [TCC Data Fim Teste]
+				VAR MesAnterior = EOMONTH(DataAtual, -1)
+				VAR Ultimos6Meses = 
+				    DATESINPERIOD(
+				        Calendario[Date],
+				        MesAnterior,
+				        -6,
+				        MONTH
+				    )
+				VAR MediaMovel = 
+				    CALCULATE(
+				        AVERAGEX(
+				            VALUES(Calendario[YearMonth]),
+				            [TCC Faturamento Mensal]
+				        ),
+				        Ultimos6Meses
+				    )
+				RETURN
+				    IF(EhPeriodoTeste, MediaMovel, BLANK())
+				```
+			formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+			lineageTag: 0eb5ecfd-434b-49cc-af9c-6f45775d9d2e
+
+			annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+		measure 'TCC Previsao Backtest Alt' = ```
+				
+				VAR DataAtual = MAX(Calendario[Date])
+				VAR EhPeriodoTeste = 
+				    DataAtual >= [TCC Data Inicio Teste] && 
+				    DataAtual <= [TCC Data Fim Teste]
+				VAR Mes12AnosAtras = 
+				    CALCULATE(
+				        [TCC Faturamento Mensal],
+				        DATEADD(Calendario[Date], -12, MONTH)
+				    )
+				RETURN
+				    IF(EhPeriodoTeste, Mes12AnosAtras, BLANK())
+				```
+			formatString: "R$"\ #,0.###############;-"R$"\ #,0.###############;"R$"\ #,0.###############
+			lineageTag: 7a8aefb5-1041-47aa-88db-8d57448a2470
+
+			annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+		measure 'TCC Previsao Linear' = ```
+				
+				VAR DadosHistoricos = 
+				    FILTER(
+				        SELECTCOLUMNS(
+				            ALLSELECTED(Calendario),
+				            "X", CONVERT(Calendario[Date], DOUBLE),
+				            "Y", [TCC Faturamento Mensal]
+				        ),
+				        NOT(ISBLANK([Y])) && NOT(ISBLANK([X]))
+				    )
+				VAR Regressao = LINESTX(DadosHistoricos, [Y], [X])
+				VAR Inclinacao = SELECTCOLUMNS(Regressao, [Slope1])
+				VAR Intercepto = SELECTCOLUMNS(Regressao, [Intercept])
+				VAR DataAtual = CONVERT(MAX(Calendario[Date]), DOUBLE)
+				RETURN
+				    Intercepto + Inclinacao * DataAtual
+				```
+			lineageTag: 077a657c-b181-4c8f-9379-2153b08cac1d
+
+			annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+		measure 'TCC Previsao MM6' = ```
+				
+				VAR DataAtual = MAX(Calendario[Date])
+				VAR Ultimos6Meses = 
+				    DATESINPERIOD(
+				        Calendario[Date],
+				        DataAtual,
+				        -6,
+				        MONTH
+				    )
+				VAR MediaMovel = 
+				    CALCULATE(
+				        AVERAGEX(
+				            VALUES(Calendario[YearMonth]),
+				            [TCC Faturamento Mensal]
+				        ),
+				        Ultimos6Meses
+				    )
+				RETURN
+				    MediaMovel
+				```
+			formatString: "R$"\ #,0.###############;-"R$"\ #,0.###############;"R$"\ #,0.###############
+			lineageTag: 8a517f33-ae3b-4511-8081-7df592ee789a
+
+			annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+		measure 'TCC Real e Forecast' =
+				
+				VAR DataAtual = MAX(Calendario[Date])
+				VAR UltimaDataReal = [Ultima Data Dados]
+				VAR EhHistorico = DataAtual <= UltimaDataReal
+				RETURN
+				    IF(
+				        EhHistorico,
+				        [TCC Faturamento Mensal],
+				        [TCC Previsao MM6]
+				    )
+			lineageTag: 7ba5a5b7-199f-4d9f-a8d7-b0d1f8031cda
+
+		measure 'TCC Real Teste' = ```
+				
+				VAR DataAtual = MAX(Calendario[Date])
+				VAR EhPeriodoTeste = 
+				    DataAtual >= [TCC Data Inicio Teste] && 
+				    DataAtual <= [TCC Data Fim Teste]
+				RETURN
+				    IF(
+				        EhPeriodoTeste,
+				        [TCC Faturamento Mensal],
+				        BLANK()
+				    )
+				```
+			formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+			lineageTag: 5b90e3b3-fca7-4cc9-a27b-06468bf1fe52
+
+			annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+		measure 'TCC RMSE' = ```
+				
+				VAR TabelaErros = 
+				    ADDCOLUMNS(
+				        FILTER(
+				            Calendario,
+				            NOT(ISBLANK([TCC Real Teste])) &&
+				            NOT(ISBLANK([TCC Previsao Backtest]))
+				        ),
+				        "ErroQuadrado", 
+				        POWER([TCC Real Teste] - [TCC Previsao Backtest], 2)
+				    )
+				VAR MSE = AVERAGEX(TabelaErros, [ErroQuadrado])
+				RETURN
+				    SQRT(MSE)          
+				```
+			lineageTag: 0b6aa463-0cf8-4eae-b392-7668085a1bc6
+
+		measure 'TCC Total Meses Teste' =
+				
+				CALCULATE(
+				    COUNTROWS(
+				        FILTER(
+				            VALUES(Calendario[YearMonth]),
+				            NOT(ISBLANK([TCC Real Teste]))
+				        )
+				    )
+				)
+			lineageTag: 683a5d6e-8429-42fe-a034-b48890536064
+
+		measure 'TCC Vies' = ```
+				
+				DIVIDE(
+				    SUMX(
+				        Calendario, 
+				        [TCC Previsao Backtest] - [TCC Real Teste]
+				    ),
+				    SUMX(Calendario, [TCC Real Teste])
+				)
+				```
+			formatString: 0.00%;-0.00%;0.00%
+			lineageTag: acac09e6-7fe5-4839-9ce5-ea30b07b6d0a
+
+		measure 'Ultima Data Dados' =
+				
+				CALCULATE(
+				    MAX(Faturamento[DATE_CAD]),
+				    ALL(Faturamento)
+				)
+			formatString: General Date
+			lineageTag: ebc2884b-ec69-408b-b054-b6961298df56
+
+		partition Medidas = m
+			mode: import
+			source =
+					let
+					    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+					    #"Removed Columns" = Table.RemoveColumns(Source,{"Column1"})
+					in
+					    #"Removed Columns"
+
+		annotation PBI_ResultType = Table
