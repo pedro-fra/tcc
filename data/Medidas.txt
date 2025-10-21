@@ -1,4 +1,4 @@
-createOrReplace
+﻿createOrReplace
 
 	table Medidas
 		lineageTag: 624783ef-c471-401e-872b-44f72219ed5e
@@ -332,7 +332,15 @@ createOrReplace
 			formatString: General Date
 			lineageTag: ebc2884b-ec69-408b-b054-b6961298df56
 
-		partition Medidas = m
+			measure 'TCC Previsao Hibrido' =
+
+			([TCC Previsao Backtest] * 0.5) + ([TCC Previsao Backtest Alt] * 0.5)
+		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+		lineageTag: 9f7c3a4b-8d92-4e5f-b3c9-2a1b5d7f9e3c
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+partition Medidas = m
 			mode: import
 			source =
 					let
