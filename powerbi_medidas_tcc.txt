@@ -33,17 +33,24 @@ TCC Faturamento Projetado Power BI =
     VAR vMesAtual = MONTH(vDataAtual)
     VAR vAnoAtual = YEAR(vDataAtual)
 
-    VAR vUltimoDiaMes =
+    VAR vDiasNoMes =
         CALCULATE(
-            MAX('[Dim] Calendário'[Data]),
+            COUNTDISTINCT('[Dim] Calendário'[Data]),
             ALL('[Dim] Calendário'[Data]),
             MONTH('[Dim] Calendário'[Data]) = vMesAtual,
-            YEAR('[Dim] Calendário'[Data]) = vAnoAtual
+            YEAR('[Dim] Calendário'[Data]) = vAnoAtual,
+            NOT(ISBLANK('[Dim] Calendário'[Data]))
         )
 
-    VAR vDiasNoMes = DAY(vUltimoDiaMes)
-
-    VAR vDiasAteAgora = DAY(vDataAtual)
+    VAR vDiasAteAgora =
+        CALCULATE(
+            COUNTDISTINCT('[Dim] Calendário'[Data]),
+            ALL('[Dim] Calendário'[Data]),
+            '[Dim] Calendário'[Data] <= vDataAtual,
+            MONTH('[Dim] Calendário'[Data]) = vMesAtual,
+            YEAR('[Dim] Calendário'[Data]) = vAnoAtual,
+            NOT(ISBLANK('[Dim] Calendário'[Data]))
+        )
 
     VAR vFaturamentoAteAgora =
         CALCULATE(
@@ -54,12 +61,12 @@ TCC Faturamento Projetado Power BI =
             YEAR('[Dim] Calendário'[Data]) = vAnoAtual
         )
 
-    VAR vMediaDiaria = DIVIDE(vFaturamentoAteAgora, vDiasAteAgora)
+    VAR vMediaDiaria = DIVIDE(vFaturamentoAteAgora, vDiasAteAgora, 0)
 
     VAR vProjecao = vMediaDiaria * vDiasNoMes
 
     RETURN
-    IF(vDiasAteAgora > 0, vProjecao, 0)
+    IF(AND(vDiasAteAgora > 0, vDiasNoMes > 0), vProjecao, 0)
 
 // Formatação: "R$" #,0
 // Pasta: TCC
