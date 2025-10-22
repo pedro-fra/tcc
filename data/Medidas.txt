@@ -32,7 +32,7 @@
 
 		measure 'TCC Erro' =
 				
-				[TCC Real Teste] - [TCC Previsao Backtest]
+				[TCC Real Teste] - [TCC Previsao Hibrido]
 			formatString: "R$"\ #,0.###############;-"R$"\ #,0.###############;"R$"\ #,0.###############
 			lineageTag: 3a4e24ee-27b2-444b-9372-a47f07987ada
 
@@ -106,9 +106,9 @@
 				        FILTER(
 				            Calendario,
 				            NOT(ISBLANK([TCC Real Teste])) &&
-				            NOT(ISBLANK([TCC Previsao Backtest]))
+				            NOT(ISBLANK([TCC Previsao Hibrido]))
 				        ),
-				        "ErroAbs", ABS([TCC Real Teste] - [TCC Previsao Backtest])
+				        "ErroAbs", ABS([TCC Real Teste] - [TCC Previsao Hibrido])
 				    )
 				RETURN
 				    AVERAGEX(TabelaErros, [ErroAbs])    
@@ -132,7 +132,7 @@
 				        ),
 				        "ErroPctAbs",
 				        DIVIDE(
-				            ABS([TCC Real Teste] - [TCC Previsao Backtest]),
+				            ABS([TCC Real Teste] - [TCC Previsao Hibrido]),
 				            [TCC Real Teste]
 				        )
 				    )
@@ -287,10 +287,10 @@
 				        FILTER(
 				            Calendario,
 				            NOT(ISBLANK([TCC Real Teste])) &&
-				            NOT(ISBLANK([TCC Previsao Backtest]))
+				            NOT(ISBLANK([TCC Previsao Hibrido]))
 				        ),
 				        "ErroQuadrado", 
-				        POWER([TCC Real Teste] - [TCC Previsao Backtest], 2)
+				        POWER([TCC Real Teste] - [TCC Previsao Hibrido], 2)
 				    )
 				VAR MSE = AVERAGEX(TabelaErros, [ErroQuadrado])
 				RETURN
@@ -315,7 +315,7 @@
 				DIVIDE(
 				    SUMX(
 				        Calendario, 
-				        [TCC Previsao Backtest] - [TCC Real Teste]
+				        [TCC Previsao Hibrido] - [TCC Real Teste]
 				    ),
 				    SUMX(Calendario, [TCC Real Teste])
 				)
