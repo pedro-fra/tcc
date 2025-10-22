@@ -120,13 +120,15 @@
 
 		measure 'TCC MAPE' = ```
 				
-				VAR TabelaErros = 
+				VAR TabelaErros =
 				    ADDCOLUMNS(
 				        SUMMARIZE(
 				            FILTER(
 				                Calendario,
 				                NOT(ISBLANK([TCC Real Teste])) &&
-				                [TCC Real Teste] <> 0
+				                [TCC Real Teste] <> 0 &&
+				                Calendario[Date] >= [TCC Data Inicio Teste] &&
+				                Calendario[Date] <= [TCC Data Fim Teste]
 				            ),
 				            Calendario[Date]
 				        ),
@@ -136,9 +138,9 @@
 				            [TCC Real Teste]
 				        )
 				    )
-				RETURN
-				    AVERAGEX(TabelaErros, [ErroPctAbs]) * 100
-				```
+			RETURN
+			    AVERAGEX(TabelaErros, [ErroPctAbs]) * 100
+			```
 			lineageTag: da012412-3819-4c61-91e1-f7ff61f1185e
 
 		measure 'TCC Previsao Ano Anterior' =
@@ -370,12 +372,12 @@
 			RETURN
 			(MediaMovel6 * 0.5) + (AnoAnterior * 0.5)
 			```
-		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
-		lineageTag: 9f7c3a4b-8d92-4e5f-b3c9-2a1b5d7f9e3c
+			formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+			lineageTag: 9f7c3a4b-8d92-4e5f-b3c9-2a1b5d7f9e3c
 
 		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
 
-partition Medidas = m
+		partition Medidas = m
 			mode: import
 			source =
 					let
