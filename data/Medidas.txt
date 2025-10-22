@@ -332,9 +332,44 @@
 			formatString: General Date
 			lineageTag: ebc2884b-ec69-408b-b054-b6961298df56
 
-			measure 'TCC Previsao Hibrido' =
+		measure 'TCC Previsao Hibrido' = ```
 
-			([TCC Previsao Backtest] * 0.5) + ([TCC Previsao Backtest Alt] * 0.5)
+			VAR DataAtual = MAX(Calendario[Date])
+			VAR EhPeriodoTeste =
+			    DataAtual >= [TCC Data Inicio Teste] &&
+			    DataAtual <= [TCC Data Fim Teste]
+
+			VAR MediaMovel6 =
+			    IF(
+			        EhPeriodoTeste,
+			        CALCULATE(
+			            AVERAGEX(
+			                VALUES(Calendario[YearMonth]),
+			                [TCC Faturamento Mensal]
+			            ),
+			            DATESINPERIOD(
+			                Calendario[Date],
+			                EOMONTH(MAX(Calendario[Date]), -1),
+			                -6,
+			                MONTH
+			            )
+			        ),
+			        BLANK()
+			    )
+
+			VAR AnoAnterior =
+			    IF(
+			        EhPeriodoTeste,
+			        CALCULATE(
+			            [TCC Faturamento Mensal],
+			            DATEADD(Calendario[Date], -12, MONTH)
+			        ),
+			        BLANK()
+			    )
+
+			RETURN
+			(MediaMovel6 * 0.5) + (AnoAnterior * 0.5)
+			```
 		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
 		lineageTag: 9f7c3a4b-8d92-4e5f-b3c9-2a1b5d7f9e3c
 
