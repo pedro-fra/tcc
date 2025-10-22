@@ -157,8 +157,8 @@ createOrReplace
 
 		measure 'TCC MAPE' = ```
 
-			DIVIDE(
-			    SUMX(
+			VAR TabelaErros =
+			    ADDCOLUMNS(
 			        FILTER(
 			            Calendario,
 			            NOT(ISBLANK([TCC Real Teste])) &&
@@ -166,22 +166,14 @@ createOrReplace
 			            Calendario[Date] >= [TCC Data Inicio Teste] &&
 			            Calendario[Date] <= [TCC Data Fim Teste]
 			        ),
+			        "ErroPctAbs",
 			        DIVIDE(
 			            ABS([TCC Real Teste] - [TCC Previsao Hibrido]),
 			            [TCC Real Teste]
 			        )
-			    ),
-			    CALCULATE(
-			        COUNTROWS(Calendario),
-			        FILTER(
-			            Calendario,
-			            NOT(ISBLANK([TCC Real Teste])) &&
-			            [TCC Real Teste] <> 0 &&
-			            Calendario[Date] >= [TCC Data Inicio Teste] &&
-			            Calendario[Date] <= [TCC Data Fim Teste]
-			        )
 			    )
-			) * 100
+			RETURN
+			    AVERAGEX(TabelaErros, [ErroPctAbs]) * 100
 			```
 			lineageTag: da012412-3819-4c61-91e1-f7ff61f1185e
 
