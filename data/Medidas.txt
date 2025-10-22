@@ -88,7 +88,7 @@ createOrReplace
 			            ),
 			            DATESINPERIOD(
 			                Calendario[Date],
-			                EOMONTH(MAX(Calendario[Date]), -1),
+			                DataAtual,
 			                -6,
 			                MONTH
 			            )
@@ -109,9 +109,6 @@ createOrReplace
 			RETURN
 			(MediaMovel6 * 0.5) + (AnoAnterior * 0.5)
 			```
-			formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
-			lineageTag: 9f7c3a4b-8d92-4e5f-b3c9-2a1b5d7f9e3c
-
 			annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
 
 		measure 'TCC Erro' =
