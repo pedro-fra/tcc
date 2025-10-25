@@ -1431,7 +1431,7 @@ f. reg_alpha: 0.2 (regularização L1/Lasso) para penalizar complexidade e promo
 61 g. reg_lambda: 1.5 (regularização L2/Ridge) para controle adicional de
 complexidade e suavização dos pesos.
 h. random_state: 42 para garantir reprodutibilidade total dos resultados entre execuções.
-Esta configuração hibrida aproveitou a especialização da Darts em processamento de séries temporais (geração automática de lags e encoders
+Esta configuração híbrida aproveitou a especialização da Darts em processamento de séries temporais (geração automática de lags e encoders
 temporais) combinada com o poder preditivo do algoritmo XGBoost (ensemble de arvores com gradient boosting). Os hiper parâmetros do XGBoost foram definidos
 manualmente com base em práticas estabelecidas para modelos de previsão, priorizando capacidade de aprendizado (n_estimators alto e max_depth moderado)
 equilibrada com regularização (reg_alpha e reg_lambda) para evitar overfitting.
@@ -1465,30 +1465,30 @@ As previsões finais geradas pelo modelo XGBoost foram armazenadas em formato es
 
 ## 3.2.5 Metodologia do método híbrido no Power BI
 
-O método de previsão atualmente implementado no Power BI utiliza uma abordagem hibrida que combina dois métodos estatísticos simples, mas robustos, para gerar
+O método de previsão atualmente implementado no Power BI utiliza uma abordagem híbrida que combina dois métodos estatísticos simples, mas robustos, para gerar
 previsões de faturamento mensal. Este método foi considerado como baseline
-(solução de referencia) para comparação com os modelos de machine learning desenvolvidos neste trabalho.
+(solução de referência) para comparação com os modelos de machine learning desenvolvidos neste trabalho.
 
 ### 3.2.5.1 Estrutura da solução no Power BI
 
-A solução foi implementada através de medidas DAX no Power BI, que realizam cálculos automaticos a partir dos dados de faturamento armazenados no banco de
+A solução foi implementada através de medidas DAX no Power BI, que realizam cálculos automáticos a partir dos dados de faturamento armazenados no banco de
 dados corporativo. O processo segue a seguinte estrutura:
 a) **Medida de Faturamento Realizado**: Calcula a soma do faturamento líquido mensal, considerando apenas operações de vendas processadas (OPERACAO = "VENDA")
-que geraram cobranca (GERA_COBRANCA = 1). Esta medida filtra automaticamente os dados pela dimensão de data selecionada.
+que geraram cobrança (GERA_COBRANCA = 1). Esta medida filtra automaticamente os dados pela dimensão de data selecionada.
 b) **Medida de Faturamento Mensal**: Agrega o faturamento realizado para cada mês/ano, garantindo que cada ponto temporal seja associado ao valor correspondente
 de faturamento.
 c) **Período de Teste**: Define o intervalo temporal para as previsões (julho de
 2023 a setembro de 2025), correspondendo aos 27 meses utilizados para validação dos modelos.
 
-### 3.2.5.2 Cálculo da previsão hibrida
+### 3.2.5.2 Cálculo da previsão híbrida
 
 O método híbrido combina duas técnicas estatísticas com igual peso (50% cada):
 a) **Média Movel de 6 Meses (MM6)**: Calcula a média aritmética dos 6 meses anteriores ao período de previsão. Esta técnica captura tendências recentes e
 variabilidades de curto prazo nos dados de vendas, reduzindo o impacto de flutuações aleatórias.
 b) **Year-over-Year (YoY)**: Utiliza o valor de faturamento do mesmo mês no ano anterior. Esta técnica captura padrões sazonais anuais, presumindo que os padrões
 de vendas se repetem em ciclos anuais.
-O cálculo final da previsão hibrida para cada mês e dado por:
-Previsão Hibrida = (Média Movel 6 Meses × 0.5) + (Year-over-Year × 0.5)
+O cálculo final da previsão híbrida para cada mês e dado por:
+Previsão Híbrida = (Média Movel 6 Meses × 0.5) + (Year-over-Year × 0.5)
 Esta combinação permite que o modelo capture tanto tendências recentes (via MM6) quanto padrões sazonais (via YoY), equilibrando a adaptabilidade a mudanças
 curtas com a estabilidade de padrões históricos anuais.
 
@@ -1496,7 +1496,7 @@ curtas com a estabilidade de padrões históricos anuais.
 
 Após a implementação das medidas DAX no Power BI, foi criada uma tabela contendo as seguintes colunas para cada mês no período de teste:
 - **Mês/Ano**: Identificador temporal do período;
-- **Faturamento Real Teste**: Valor observado de faturamento para o mês, obtido atraves da medida de Faturamento Realizado;
+- **Faturamento Real Teste**: Valor observado de faturamento para o mês, obtido através da medida de Faturamento Realizado;
 - **Faturamento Previsto (Híbrido)**: Valor previsto usando o método híbrido descrito acima.
 Esta tabela foi extraída do Power BI em formato CSV e importada em um script
 Python para realizar a comparação com o melhor modelo de machine learning
