@@ -3451,6 +3451,8 @@ comparável. Os resultados obtidos foram:
 
 | Modelo | MAE (R$) | RMSE (R$) | MAPE (%) |
 |--------|----------|-----------|----------|
+| ARIMA | 28,710,800.45 | 32,311,238.76 | 78.73 |
+| Exponential Smoothing | 21,846,386.39 | 25,914,518.67 | 63.00 |
 | Theta | 17,327,600.78 | 21,287,394.49 | 39.71 |
 | XGBoost | 10,110,160.96 | 13,302,309.10 | 26.91 |
 
@@ -3458,21 +3460,33 @@ Com base na análise do desempenho dos modelos de aprendizado de máquina e
 
 métodos estatísticos implementados, o modelo **XGBoost apresentou o melhor
 
-desempenho geral** quando comparado ao método Theta. O XGBoost demonstrou
+desempenho geral** entre todos os modelos avaliados. O XGBoost demonstrou
 
-desempenho superior em todas as métricas principais:
+desempenho superior em todas as métricas principais quando comparado aos demais
 
-- **MAE**: XGBoost apresentou erro médio absoluto 41.8% menor que Theta
+modelos:
 
-(R$ 10.11 milhões vs R$ 17.33 milhões);
+- **MAE**: XGBoost apresentou erro médio absoluto 62.8% menor que ARIMA
 
-- **RMSE**: XGBoost apresentou raiz do erro quadrático 37.6% menor que Theta
+(R$ 10.11 milhões vs R$ 28.71 milhões), 53.7% menor que Exponential Smoothing
 
-(R$ 13.30 milhões vs R$ 21.29 milhões);
+(R$ 10.11 milhões vs R$ 21.85 milhões) e 41.8% menor que Theta (R$ 10.11 milhões
 
-- **MAPE**: XGBoost apresentou erro percentual 32.3% menor que Theta
+vs R$ 17.33 milhões);
 
-(26.91% vs 39.71%).
+- **RMSE**: XGBoost apresentou raiz do erro quadrático 58.9% menor que ARIMA
+
+(R$ 13.30 milhões vs R$ 32.31 milhões), 48.7% menor que Exponential Smoothing
+
+(R$ 13.30 milhões vs R$ 25.91 milhões) e 37.6% menor que Theta (R$ 13.30 milhões
+
+vs R$ 21.29 milhões);
+
+- **MAPE**: XGBoost apresentou erro percentual 65.8% menor que ARIMA
+
+(26.91% vs 78.73%), 57.3% menor que Exponential Smoothing (26.91% vs 63.00%) e
+
+32.3% menor que Theta (26.91% vs 39.71%).
 
 Esta seleção foi baseada no critério de melhor desempenho em MAE, RMSE e MAPE,
 
