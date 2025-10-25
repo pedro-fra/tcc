@@ -3628,6 +3628,349 @@ algoritmos de machine learning testados para a próxima etapa de comparação co
 
 abordagem implementada no Power BI.
 
+### 4.3 Comparação: Melhor Modelo de ML (XGBoost) versus Método Power BI
+
+Após identificar o XGBoost como o melhor modelo entre os algoritmos de machine
+
+learning testados, foi realizada uma comparação direta com o método de previsão
+
+híbrido implementado no Power BI. Esta comparação é fundamental para responder à
+
+questão de pesquisa central deste trabalho.
+
+Os resultados obtidos foram os seguintes:
+
+| Método/Modelo | MAE (R$) | RMSE (R$) | MAPE (%) | Viés (%) | Acurácia (%) |
+|---------------|----------|-----------|----------|----------|--------------|
+| Power BI (Híbrido: MM6 + YoY) | 95,139.69 | 119,785.85 | 23.45 | 1.47 | 79.44 |
+| XGBoost (Melhor ML) | 10,110,160.96 | 13,302,309.10 | 26.91 | - | - |
+
+**Resultado Principal: O método Power BI superou significativamente o modelo XGBoost em todas
+
+as métricas de erro.**
+
+O método híbrido implementado no Power BI, que combina 50% de Média Móvel 6 Meses
+
+com 50% de Year-over-Year, apresentou desempenho claramente superior:
+
+- **MAPE**: Power BI obteve 23.45% enquanto XGBoost alcançou 26.91%, representando
+
+uma diferença de 3.46 pontos percentuais, equivalente a uma melhoria relativa de
+
+12.9% em favor do Power BI;
+
+- **MAE**: Power BI obteve R$ 95,139.69 enquanto XGBoost alcançou R$ 10,110,160.96,
+
+uma diferença absoluta de R$ 10,015,021.27, equivalente a uma melhoria relativa de
+
+99.1% em favor do Power BI;
+
+- **RMSE**: Power BI obteve R$ 119,785.85 enquanto XGBoost alcançou
+
+R$ 13,302,309.10, indicando que o Power BI produz erros muito mais concentrados e
+
+previsíveis.
+
+Adicionalmente, o método Power BI apresentou viés de apenas 1.47%, indicando que
+
+as previsões são praticamente não-enviesadas em média, e acurácia de 79.44%
+
+quando considerado o MAE em relação à média dos valores observados no período.
+
+## 5 DISCUSSÃO
+
+Os resultados apresentados na seção anterior revelam insights importantes sobre a
+
+efetividade relativa de diferentes abordagens de previsão quando aplicadas ao
+
+contexto específico de previsão de vendas nesta organização.
+
+### 5.1 Desempenho Relativo dos Modelos de Machine Learning
+
+A hierarquia de desempenho observada entre os modelos de machine learning e
+
+estatísticos (ARIMA < Exponential Smoothing < Theta < XGBoost) reflete
+
+progressivamente maior sofisticação na captura de padrões temporais. O ARIMA,
+
+apesar de sua importância teórica como modelo canônico em análise de séries
+
+temporais, apresentou desempenho inadequado para este conjunto de dados,
+
+possivelmente devido a sua limitação em modelar relações não-lineares complexas.
+
+O Exponential Smoothing demonstrou melhor capacidade em capturar a sazonalidade
+
+através do método de Holt-Winters, porém ainda apresentou limitações. O Theta,
+
+com sua abordagem de decomposição temporal, melhorou substancialmente o
+
+desempenho, sugerindo que a separação explícita de componentes de longo e curto
+
+prazo é mais eficaz para estes dados que modelos globais como ARIMA.
+
+O XGBoost, finalmente, apresentou o melhor desempenho entre os modelos testados.
+
+A superioridade do XGBoost pode ser atribuída à sua capacidade de:
+
+- Modelar interações não-lineares entre features através de múltiplas árvores de
+
+decisão;
+
+- Capturar padrões complexos através de 17 lags principais, 8 lags de covariadas
+
+e 6 encoders temporais;
+
+- Aplicar regularização L1 e L2 para evitar overfitting mantendo capacidade
+
+preditiva.
+
+Contudo, o fato de que um modelo com 17 lags e 6 encoders temporais foi superado
+
+por uma combinação simples de dois métodos estatísticos básicos é revelador.
+
+### 5.2 Superioridade do Método Power BI: Uma Análise Crítica
+
+O resultado mais significativo deste estudo é que o método híbrido do Power BI
+
+superou substancialmente o melhor modelo de machine learning testado. Esta
+
+descoberta contraria a expectativa comum de que algoritmos mais complexos e
+
+sofisticados produzem necessariamente melhores previsões.
+
+O método Power BI combina apenas dois componentes simples:
+
+- Média Móvel 6 Meses: Captura tendências recentes e volatilidades de curto prazo;
+
+- Year-over-Year: Captura padrões sazonais anuais bem definidos nos dados.
+
+A melhoria de 12.9% do Power BI sobre o XGBoost em MAPE, embora menor em
+
+termos percentuais, é mais significativa quando considerado em contexto:
+
+1. **Simplicidade Operacional**: O método Power BI é imediatamente compreensível
+
+pelos stakeholders não-técnicos, facilitando aceitação organizacional e auditoria
+
+das previsões;
+
+2. **Estabilidade**: A ausência de hiperparâmetros complexos reduz o risco de
+
+degradação de desempenho em futuras aplicações ou quando novos dados são
+
+incorporados;
+
+3. **Interpretabilidade**: Cada componente (MM6 e YoY) é facilmente explicável em
+
+reuniões de negócio, ao contrário do XGBoost que funciona como "caixa preta";
+
+4. **Manutenção**: O método Power BI requer pouca ou nenhuma reentrenagem,
+
+enquanto modelos de ML requerem monitoramento contínuo de performance e
+
+possível reciclagem periódica.
+
+Estes fatores sugerem que a superioridade observada do Power BI não é apenas
+
+uma questão estatística, mas também de adequação prática às necessidades
+
+organizacionais.
+
+### 5.3 Implicações para a Prática Organizacional
+
+Este estudo demonstra que para o contexto específico de previsão de vendas desta
+
+organização, métodos simples e bem estabelecidos podem superar algoritmos
+
+sofisticados de machine learning. Este achado alinha-se com a literatura que
+
+sugere que métodos estatísticos tradicionais frequentemente alcançam desempenho
+
+competitivo em cenários com sazonalidade clara e padrões bem definidos, conforme
+
+observado em estudos como Makridakis et al. (2000) e mais recentemente em
+
+Hyndman e Athanasopoulos (2021).
+
+As implicações práticas incluem:
+
+1. A continuação do método Power BI atual é justificada tanto estatística quanto
+
+operacionalmente;
+
+2. Investimentos em infraestrutura de ML complexo para este problema específico
+
+não se justificam baseado em ganhos de acurácia;
+
+3. Recursos podem ser melhor alocados em outras áreas onde ML pode oferecer
+
+vantagens mais substantivas.
+
+Contudo, reconhece-se que diferentes segmentos de produtos ou períodos temporais
+
+específicos podem apresentar padrões distintos, sugerindo que análises
+
+segmentadas poderiam ser exploradas em trabalhos futuros.
+
+## 6 CONCLUSÃO
+
+Este trabalho apresentou uma análise comparativa abrangente de diferentes
+
+abordagens para previsão de vendas, comparando modelos estatísticos tradicionais
+
+(ARIMA, Exponential Smoothing, Theta) com algoritmos modernos de machine
+
+learning (XGBoost) e o método híbrido atualmente implementado no Power BI.
+
+### 6.1 Síntese dos Achados Principais
+
+Os principais achados deste estudo foram:
+
+1. **Hierarquia de Desempenho ML**: Entre os modelos de machine learning e
+
+estatísticos testados, o XGBoost apresentou o melhor desempenho com MAPE de
+
+26.91%, seguido por Theta (39.71%), Exponential Smoothing (63.00%) e ARIMA
+
+(78.73%);
+
+2. **Superioridade do Power BI**: O método híbrido Power BI (MM6 + YoY) superou
+
+o melhor modelo de ML em todas as métricas, alcançando MAPE de 23.45% comparado
+
+aos 26.91% do XGBoost, uma melhoria relativa de 12.9%;
+
+3. **Simplicidade Vence Complexidade**: A combinação simples de dois métodos
+
+estatísticos básicos provou ser mais eficaz que um algoritmo sofisticado com 17
+
+lags, 8 covariadas e 6 encoders temporais, sugerindo adequação particularmente
+
+alta do Power BI aos padrões específicos dos dados de faturamento;
+
+4. **Viabilidade Operacional**: Além do desempenho superior, o método Power BI
+
+oferece vantagens significativas em termos de interpretabilidade, estabilidade,
+
+manutenção e aceitação organizacional.
+
+### 6.2 Resposta à Questão de Pesquisa
+
+A questão central deste trabalho foi: "Modelos avançados de aprendizado de máquina
+
+conseguem superar o método híbrido simples implementado no Power BI?"
+
+**Resposta: Não.** Os modelos testados, inclusive o melhor algoritmo de ML (XGBoost),
+
+não conseguiram superar a efetividade do método Power BI. Ao contrário, o Power BI
+
+apresentou desempenho superior, consolidando sua adequação como método de
+
+previsão para este contexto específico.
+
+### 6.3 Recomendações
+
+Com base nos achados deste estudo, recomenda-se:
+
+1. **Manutenção do Método Atual**: Continuar utilizando o método híbrido Power BI
+
+para previsões de faturamento mensal, dado seu desempenho superior e
+
+características operacionais favoráveis;
+
+2. **Não Investir em ML Geral**: Desconsiderar investimentos em implementação de
+
+modelos de ML complexos para o problema geral de previsão de vendas, pois os
+
+ganhos incrementais de acurácia não justificam a complexidade adicional;
+
+3. **Análise Segmentada**: Explorar em trabalhos futuros se diferentes categorias
+
+de produtos ou períodos sazonais específicos apresentam padrões que possam
+
+beneficiar de abordagens diferenciadas;
+
+4. **Monitoramento Contínuo**: Manter monitoramento das métricas de desempenho do
+
+método Power BI, com reavaliação periódica caso novos dados ou mudanças
+
+estruturais nos padrões de vendas sejam observados.
+
+### 6.4 Contribuição Científica
+
+Este trabalho contribui para a literatura de previsão de séries temporais ao:
+
+- Documentar empiricamente um cenário onde métodos simples superam algoritmos
+
+sofisticados;
+
+- Destacar a importância de considerar não apenas acurácia estatística, mas também
+
+viabilidade operacional na seleção de métodos de previsão;
+
+- Reforçar a recomendação de Makridakis et al. de não negligenciar métodos
+
+estatísticos simples em favor de abordagens mais complexas sem evidências claras
+
+de ganho significativo;
+
+- Contribuir para a aproximação entre pesquisa acadêmica e prática organizacional
+
+ao demonstrar que a "melhor" solução frequentemente não é a mais sofisticada
+
+tecnicamente.
+
+### 6.5 Limitações e Trabalhos Futuros
+
+Este estudo apresenta algumas limitações:
+
+1. **Período de Dados Limitado**: Os dados cobrem apenas 132 observações mensais
+
+(2014-2025), o que pode não ser suficiente para capturar padrões em ciclos
+
+econômicos muito longos;
+
+2. **Ausência de Variáveis Exógenas**: O estudo utilizou apenas a série temporal
+
+de faturamento sem incorporar variáveis exógenas como sazonalidade de
+
+campanhas, indicadores econômicos ou fatores externos;
+
+3. **Contexto Organizacional Específico**: Os achados são específicos a este
+
+conjunto de dados e organização, podendo não ser generalizáveis para outros
+
+contextos.
+
+Trabalhos futuros poderiam explorar:
+
+- Incorporação de variáveis exógenas nos modelos de ML;
+
+- Análise segmentada por categoria de produto ou unidade de negócio;
+
+- Exploração de abordagens de ensemble que combinem Power BI com modelos ML;
+
+- Investigação de métodos ML mais avançados (redes neurais, LSTM) para
+
+comparação;
+
+- Análise de horizonte de previsão: avaliar se XGBoost se desempenha melhor em
+
+previsões de longo prazo.
+
+### 6.6 Observações Finais
+
+Este trabalho reafirma uma lição importante para profissionais de dados e cientistas
+
+de dados: a escolha do melhor método nem sempre favorece a solução mais sofisticada.
+
+Efetividade prática, interpretabilidade, estabilidade e adequação ao contexto
+
+organizacional são critérios igualmente importantes que devem ser considerados
+
+quando se seleciona abordagens para problemas reais de previsão.
+
 ## REFERÊNCIAS
 
 ASSIMAKOPOULOS, V.; NIKOLOPOULOS, K. The Theta model: a decomposition
