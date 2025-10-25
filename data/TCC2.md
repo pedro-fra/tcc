@@ -3447,105 +3447,43 @@ As métricas foram calculadas para o conjunto de teste de cada modelo (27 meses,
 
 de julho de 2023 a setembro de 2025), permitindo uma avaliação consistente e
 
-comparável. Os resultados obtidos foram:
+comparável. Este processo seguiu a metodologia recomendada pela literatura para
 
-| Modelo | MAE (R$) | RMSE (R$) | MAPE (%) |
-|--------|----------|-----------|----------|
-| ARIMA | 28,710,800.45 | 32,311,238.76 | 78.73 |
-| Exponential Smoothing | 21,846,386.39 | 25,914,518.67 | 63.00 |
-| Theta | 17,327,600.78 | 21,287,394.49 | 39.71 |
-| XGBoost | 10,110,160.96 | 13,302,309.10 | 26.91 |
+comparação de modelos de previsão de séries temporais, conforme Hyndman et al.
 
-Com base na análise do desempenho dos modelos de aprendizado de máquina e
+(1999) e Gardner (1985).
 
-métodos estatísticos implementados, o modelo **XGBoost apresentou o melhor
+Os quatro modelos implementados (ARIMA, Exponential Smoothing, Theta e XGBoost)
 
-desempenho geral** entre todos os modelos avaliados. O XGBoost demonstrou
+foram submetidos ao mesmo conjunto de teste, com as mesmas métricas de erro
 
-desempenho superior em todas as métricas principais quando comparado aos demais
+calculadas de forma padronizada. Esse procedimento permitiu uma comparação
 
-modelos:
+quantitativa objetiva do desempenho de cada abordagem, considerando tanto modelos
 
-- **MAE**: XGBoost apresentou erro médio absoluto 62.8% menor que ARIMA
+estatísticos tradicionais quanto algoritmos de aprendizado de máquina.
 
-(R$ 10.11 milhões vs R$ 28.71 milhões), 53.7% menor que Exponential Smoothing
+### 3.3.2 Comparação do melhor modelo de ML versus método Power BI
 
-(R$ 10.11 milhões vs R$ 21.85 milhões) e 41.8% menor que Theta (R$ 10.11 milhões
+Na sequência, o modelo de melhor desempenho entre os algoritmos de machine
 
-vs R$ 17.33 milhões);
+learning foi comparado diretamente ao método de previsão híbrido atualmente
 
-- **RMSE**: XGBoost apresentou raiz do erro quadrático 58.9% menor que ARIMA
+implementado no Power BI. Esta comparação adicional é essencial para responder à
 
-(R$ 13.30 milhões vs R$ 32.31 milhões), 48.7% menor que Exponential Smoothing
+questão central de pesquisa deste trabalho: se modelos avançados de aprendizado de
 
-(R$ 13.30 milhões vs R$ 25.91 milhões) e 37.6% menor que Theta (R$ 13.30 milhões
+máquina conseguem superar uma abordagem estatística simples mas consolidada.
 
-vs R$ 21.29 milhões);
+O procedimento de comparação seguiu a mesma metodologia utilizada para a
 
-- **MAPE**: XGBoost apresentou erro percentual 65.8% menor que ARIMA
+comparação entre os modelos de ML. As métricas MAE, RMSE e MAPE foram
 
-(26.91% vs 78.73%), 57.3% menor que Exponential Smoothing (26.91% vs 63.00%) e
+calculadas para ambos os modelos utilizando o mesmo período de teste (27 meses,
 
-32.3% menor que Theta (26.91% vs 39.71%).
+de julho de 2023 a setembro de 2025), permitindo uma avaliação consistente e
 
-Esta seleção foi baseada no critério de melhor desempenho em MAE, RMSE e MAPE,
-
-conforme recomendado por Hyndman et al. (1999) e Gardner (1985).
-
-### 3.3.2 Comparação do melhor modelo de ML (XGBoost) versus método Power BI
-
-Na sequência, o modelo XGBoost (melhor modelo de aprendizado de máquina) foi
-
-comparado diretamente ao método de previsão híbrido atualmente implementado no
-
-Power BI. Esta comparação é central para responder à questão de pesquisa deste
-
-trabalho: se modelos avançados de machine learning conseguem superar uma
-
-abordagem estatística simples mas robusta.
-
-Os resultados da comparação foram:
-
-| Método/Modelo | MAE (R$) | RMSE (R$) | MAPE (%) | Viés (%) | Acurácia (%) |
-|---------------|----------|-----------|----------|----------|--------------|
-| Power BI (Híbrido) | 95,139.69 | 119,785.85 | 23.45 | 1.47 | 79.44 |
-| XGBoost | 10,110,160.96 | 13,302,309.10 | 26.91 | - | - |
-
-**Resultado: O método Power BI superou significativamente o modelo XGBoost.**
-
-O método híbrido implementado no Power BI apresentou desempenho superior em
-
-todas as métricas de erro:
-
-- **MAPE**: 23.45% no Power BI versus 26.91% no XGBoost, representando uma
-
-diferença de 3.46 pontos percentuais, equivalente a uma melhoria relativa de 12.9%
-
-em favor do Power BI;
-
-- **MAE**: R$ 95,139.69 no Power BI versus R$ 10,110,160.96 no XGBoost,
-
-representando uma diferença absoluta de R$ 10,015,021.27 em favor do Power BI,
-
-equivalente a uma melhoria relativa de 99.1%;
-
-- **RMSE**: R$ 119,785.85 no Power BI versus R$ 13,302,309.10 no XGBoost,
-
-indicando que o Power BI produz erros muito mais concentrados e previsíveis.
-
-Adicionalmente, o método Power BI apresentou viés de apenas 1.47% (indicando que
-
-as previsões são praticamente não-enviesadas em média) e acurácia de 79.44%
-
-quando considerado o MAE em relação à média dos valores observados.
-
-Este resultado sugere que, para este conjunto de dados específico, a combinação
-
-simples de média móvel 6 meses e year-over-year é mais eficaz que um modelo
-
-complexo de machine learning com 17 lags principais, 8 lags de covariadas e 6
-
-encoders temporais.
+direta da efetividade de cada abordagem.
 
 ## REFERÊNCIAS
 
