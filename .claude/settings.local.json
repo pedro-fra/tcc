@@ -28,7 +28,9 @@
       "Bash(rm:*)",
       "Bash(git restore:*)",
       "Bash(git push)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "Read(//c/**)",
+      "Bash(git checkout:*)"
     ],
     "deny": [],
     "ask": []
