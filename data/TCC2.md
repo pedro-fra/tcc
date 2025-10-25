@@ -3485,6 +3485,149 @@ de julho de 2023 a setembro de 2025), permitindo uma avaliação consistente e
 
 direta da efetividade de cada abordagem.
 
+## 4 RESULTADOS
+
+Nesta seção são apresentados os resultados da implementação e avaliação de todos
+
+os modelos de previsão desenvolvidos neste trabalho. Os resultados são organizados
+
+por modelo, apresentando as métricas de desempenho obtidas no conjunto de teste
+
+(27 meses, de julho de 2023 a setembro de 2025) para cada abordagem.
+
+### 4.1 Resultados dos Modelos de Aprendizado de Máquina e Estatísticos
+
+#### 4.1.1 ARIMA
+
+O modelo ARIMA implementado utilizando AutoARIMA da biblioteca Darts apresentou
+
+os seguintes resultados no conjunto de teste:
+
+| Métrica | Valor |
+|---------|-------|
+| MAE | R$ 28,710,800.45 |
+| RMSE | R$ 32,311,238.76 |
+| MAPE | 78.73% |
+
+O ARIMA apresentou o desempenho mais inferior entre todos os modelos testados.
+
+O modelo dificuldade em capturar adequadamente os padrões complexos presentes
+
+nos dados de vendas, resultando em erros absolutamente elevados. O MAPE de 78.73%
+
+indica que, em média, as previsões do ARIMA desviaram 78.73% dos valores reais
+
+observados, demonstrando capacidade preditiva muito limitada para este conjunto
+
+de dados específico.
+
+#### 4.1.2 Exponential Smoothing
+
+O modelo de Suavização Exponencial (Exponential Smoothing) foi implementado
+
+utilizando a classe ExponentialSmoothing da Darts, aplicando o método de
+
+Holt-Winters para capturar componentes de nível, tendência e sazonalidade.
+
+Os resultados obtidos foram:
+
+| Métrica | Valor |
+|---------|-------|
+| MAE | R$ 21,846,386.39 |
+| RMSE | R$ 25,914,518.67 |
+| MAPE | 63.00% |
+
+O Exponential Smoothing apresentou desempenho superior ao ARIMA em todas as
+
+métricas, reduzindo o erro em 23.8% em relação ao MAE do ARIMA. Apesar dessa
+
+melhoria, o MAPE de 63.00% ainda indica erros significativos nas previsões. O
+
+modelo demonstrou melhor capacidade que o ARIMA em capturar a sazonalidade dos
+
+dados, porém ainda se mostrou insuficiente para gerar previsões com acurácia
+
+adequada para fins organizacionais.
+
+#### 4.1.3 Theta
+
+O método Theta foi implementado utilizando a classe AutoTheta da Darts, que aplica
+
+automaticamente técnicas de decomposição temporal para capturar padrões de longo
+
+e curto prazo na série. Os resultados foram:
+
+| Métrica | Valor |
+|---------|-------|
+| MAE | R$ 17,327,600.78 |
+| RMSE | R$ 21,287,394.49 |
+| MAPE | 39.71% |
+
+O Theta apresentou desempenho substancialmente melhor que os dois modelos
+
+anteriores, reduzindo o MAE em 39.6% em relação ao Exponential Smoothing e em
+
+69.2% em relação ao ARIMA. O MAPE de 39.71% representa uma redução significativa
+
+na magnitude dos erros percentuais, indicando que o método Theta conseguiu
+
+capturar melhor os padrões sazonais e de tendência presentes nos dados de
+
+faturamento.
+
+#### 4.1.4 XGBoost
+
+O modelo XGBoost foi implementado utilizando a classe XGBModel da Darts com
+
+configuração de 17 lags principais, 8 lags de covariadas passadas e 6 encoders
+
+temporais, combinados com hyperparâmetros otimizados para o problema específico.
+
+Os resultados obtidos foram:
+
+| Métrica | Valor |
+|---------|-------|
+| MAE | R$ 10,110,160.96 |
+| RMSE | R$ 13,302,309.10 |
+| MAPE | 26.91% |
+
+O XGBoost apresentou o melhor desempenho entre todos os modelos de machine
+
+learning testados. O modelo reduziu o MAE em 41.7% em relação ao Theta, 53.7%
+
+em relação ao Exponential Smoothing e 64.8% em relação ao ARIMA. O MAPE de
+
+26.91% representa a menor taxa de erro percentual observada entre os modelos,
+
+indicando que o XGBoost conseguiu capturar de forma mais eficaz os padrões
+
+complexos e não-lineares presentes nos dados de vendas. A superioridade do
+
+XGBoost reflete a capacidade do algoritmo de gradient boosting em modelar
+
+relacionamentos complexos através de suas múltiplas features de engenharia
+
+temporal.
+
+### 4.2 Resumo Comparativo dos Modelos de ML
+
+A tabela abaixo apresenta um resumo consolidado dos resultados de todos os
+
+modelos de machine learning e estatísticos:
+
+| Modelo | MAE (R$) | RMSE (R$) | MAPE (%) | Ranking |
+|--------|----------|-----------|----------|---------|
+| ARIMA | 28,710,800.45 | 32,311,238.76 | 78.73 | 4º |
+| Exponential Smoothing | 21,846,386.39 | 25,914,518.67 | 63.00 | 3º |
+| Theta | 17,327,600.78 | 21,287,394.49 | 39.71 | 2º |
+| XGBoost | 10,110,160.96 | 13,302,309.10 | 26.91 | 1º |
+
+Com base nesta análise, o XGBoost foi selecionado como o melhor modelo entre os
+
+algoritmos de machine learning testados para a próxima etapa de comparação com a
+
+abordagem implementada no Power BI.
+
 ## REFERÊNCIAS
 
 ASSIMAKOPOULOS, V.; NIKOLOPOULOS, K. The Theta model: a decomposition
