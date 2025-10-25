@@ -111,19 +111,23 @@ plt.close()
 
 fig, ax = plt.subplots(figsize=(15, 8), dpi=300, facecolor="white")
 
-cores_erros = ["green" if x < 15 else "orange" if x < 30 else "red" for x in df["Erro_Pct_CSV"]]
+# Usar valor absoluto dos erros percentuais
+df["Erro_Pct_Abs"] = df["Erro_Pct_CSV"].abs()
+
+cores_erros = ["green" if x < 15 else "orange" if x < 30 else "red" for x in df["Erro_Pct_Abs"]]
 
 bars = ax.bar(
-    x_pos, df["Erro_Pct_CSV"], color=cores_erros, alpha=0.7, edgecolor="black", linewidth=0.8
+    x_pos, df["Erro_Pct_Abs"], color=cores_erros, alpha=0.7, edgecolor="black", linewidth=0.8
 )
 
-mape_medio = df["Erro_Pct_CSV"].mean()
+# MAPE do Power BI (23.45%)
+mape_pbi = 23.45
 ax.axhline(
-    y=mape_medio,
+    y=mape_pbi,
     color="blue",
     linestyle="--",
     linewidth=2.5,
-    label=f"MAPE Medio ({mape_medio:.2f}%)",
+    label=f"MAPE ({mape_pbi:.2f}%)",
 )
 
 ax.set_xlabel("Periodo", fontsize=12, fontweight="bold")
@@ -154,8 +158,9 @@ ax.bar(
 )
 
 mae_media = (df["Erro_Abs"] * 100000).mean()
+mae_original = df["Erro_Abs"].mean()
 ax.axhline(
-    y=mae_media, color="blue", linestyle="--", linewidth=2.5, label=f"MAE (R$ {mae_media:,.0f})"
+    y=mae_media, color="blue", linestyle="--", linewidth=2.5, label=f"MAE (R$ {mae_original:,.2f})"
 )
 
 ax.set_xlabel("Periodo", fontsize=12, fontweight="bold")
@@ -177,9 +182,9 @@ plt.close()
 
 fig, axes = plt.subplots(1, 2, figsize=(16, 6), dpi=300, facecolor="white")
 
-# Histograma de erros percentuais
+# Histograma de erros percentuais (usando valor absoluto)
 axes[0].hist(
-    df["Erro_Pct_CSV"],
+    df["Erro_Pct_Abs"],
     bins=10,
     color=VISUAL_COLORS["bars"],
     alpha=0.7,
@@ -187,19 +192,19 @@ axes[0].hist(
     linewidth=1,
 )
 axes[0].axvline(
-    x=df["Erro_Pct_CSV"].mean(), color="red", linestyle="--", linewidth=2, label="Media"
+    x=df["Erro_Pct_Abs"].mean(), color="red", linestyle="--", linewidth=2, label="Media"
 )
 axes[0].axvline(
-    x=df["Erro_Pct_CSV"].median(), color="green", linestyle="--", linewidth=2, label="Mediana"
+    x=df["Erro_Pct_Abs"].median(), color="green", linestyle="--", linewidth=2, label="Mediana"
 )
-axes[0].set_xlabel("Erro Percentual (%)", fontsize=11, fontweight="bold")
+axes[0].set_xlabel("Erro Percentual Absoluto (%)", fontsize=11, fontweight="bold")
 axes[0].set_ylabel("Frequencia", fontsize=11, fontweight="bold")
 axes[0].set_title("Distribuicao de Erros Percentuais", fontsize=12, fontweight="bold")
 axes[0].legend(fontsize=10)
 axes[0].grid(True, alpha=0.3, axis="y")
 
-# Box plot
-data_box = [df["Erro_Pct_CSV"]]
+# Box plot (usando valor absoluto)
+data_box = [df["Erro_Pct_Abs"]]
 bp = axes[1].boxplot(data_box, tick_labels=["Erro %"], patch_artist=True)
 for patch in bp["boxes"]:
     patch.set_facecolor(VISUAL_COLORS["bars"])
@@ -376,19 +381,19 @@ ax1.grid(True, alpha=0.3)
 ax1.set_xticks(x_pos[::3])
 ax1.set_xticklabels(df["MonthName"].iloc[::3], rotation=45, ha="right")
 
-# Grafico inferior: Erros
+# Grafico inferior: Erros (usar valor absoluto)
 cores_erros_temporal = [
-    "green" if x < 15 else "orange" if x < 30 else "red" for x in df["Erro_Pct_CSV"]
+    "green" if x < 15 else "orange" if x < 30 else "red" for x in df["Erro_Pct_Abs"]
 ]
 ax2.bar(
     x_pos,
-    df["Erro_Pct_CSV"],
+    df["Erro_Pct_Abs"],
     color=cores_erros_temporal,
     alpha=0.7,
     edgecolor="black",
     linewidth=0.8,
 )
-ax2.axhline(y=mape_val, color="blue", linestyle="--", linewidth=2, label=f"MAPE ({mape_val:.2f}%)")
+ax2.axhline(y=mape_pbi, color="blue", linestyle="--", linewidth=2, label=f"MAPE ({mape_pbi:.2f}%)")
 ax2.set_xlabel("Periodo", fontsize=11, fontweight="bold")
 ax2.set_ylabel("Erro Percentual (%)", fontsize=11, fontweight="bold")
 ax2.set_title("Erros Percentuais Mensais", fontsize=12, fontweight="bold")
