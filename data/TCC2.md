@@ -3327,6 +3327,104 @@ formato estruturado para comparação direta com os resultados dos demais modelo
 
 abrangente baseada nas mesmas métricas padronizadas.
 
+## 3.2.5 Metodologia do metodo hibrido no Power BI
+
+O metodo de previsao atualmente implementado no Power BI utiliza uma abordagem
+
+hibrida que combina dois metodos estatísticos simples, mas robustos, para gerar
+
+previsoes de faturamento mensal. Este metodo foi considerado como baseline
+
+(solucao de referencia) para comparacao com os modelos de machine learning
+
+desenvolvidos neste trabalho.
+
+### 3.2.5.1 Estrutura da solucao no Power BI
+
+A solucao foi implementada através de medidas DAX no Power BI, que realizam
+
+calculos automaticos a partir dos dados de faturamento armazenados no banco de
+
+dados corporativo. O processo segue a seguinte estrutura:
+
+a) **Medida de Faturamento Realizado**: Calcula a soma do faturamento liquido
+
+mensal, considerando apenas operacoes de vendas processadas (OPERACAO = "VENDA")
+
+que geraram cobranca (GERA_COBRANCA = 1). Esta medida filtra automaticamente os
+
+dados pela dimensao de data selecionada.
+
+b) **Medida de Faturamento Mensal**: Agrega o faturamento realizado para cada
+
+mes/ano, garantindo que cada ponto temporal seja associado ao valor correspondente
+
+de faturamento.
+
+c) **Periodo de Teste**: Define o intervalo temporal para as previsoes (julho de
+
+2023 a setembro de 2025), correspondendo aos 27 meses utilizados para validacao
+
+dos modelos.
+
+### 3.2.5.2 Calculo da previsao hibrida
+
+O metodo hibrido combina duas tecnicas estatísticas com igual peso (50% cada):
+
+a) **Media Movel de 6 Meses (MM6)**: Calcula a media aritmetica dos 6 meses
+
+anteriores ao periodo de previsao. Esta tecnica captura tendencias recentes e
+
+variabilidades de curto prazo nos dados de vendas, reduzindo o impacto de
+
+flutuacoes aleatorias.
+
+b) **Year-over-Year (YoY)**: Utiliza o valor de faturamento do mesmo mes no ano
+
+anterior. Esta tecnica captura padroes sazonais anuais, presumindo que os padroes
+
+de vendas se repetem em ciclos anuais.
+
+O calculo final da previsao hibrida para cada mes e dado por:
+
+Previsao Hibrida = (Media Movel 6 Meses × 0.5) + (Year-over-Year × 0.5)
+
+Esta combinacao permite que o modelo capture tanto tendencias recentes (via MM6)
+
+quanto padroes sazonais (via YoY), equilibrando a adaptabilidade a mudancas
+
+curtas com a estabilidade de padroes historicos anuais.
+
+### 3.2.5.3 Extracao de dados e comparacao com modelos de ML
+
+Apos a implementacao das medidas DAX no Power BI, foi criada uma tabela
+
+contendo as seguintes colunas para cada mes no periodo de teste:
+
+- **Mes/Ano**: Identificador temporal do periodo;
+- **Faturamento Real Teste**: Valor observado de faturamento para o mes,
+
+obtido atraves da medida de Faturamento Realizado;
+- **Faturamento Previsto (Hibrido)**: Valor previsto usando o metodo hibrido
+
+descrito acima.
+
+Esta tabela foi extraida do Power BI em formato CSV e importada em um script
+
+Python para realizar a comparacao com o melhor modelo de machine learning
+
+(XGBoost). As metricas padrao (MAE, RMSE e MAPE) foram calculadas diretamente
+
+sobre essa tabela, permitindo uma avaliacao quantitativa equivalente à realizada
+
+para os demais modelos de previsao desenvolvidos neste trabalho.
+
+O armazenamento dos dados em formato CSV garante rastreabilidade dos resultados
+
+e facilita a reproducibilidade da analise, permitindo futuras revisoes e
+
+melhorias na metodologia de comparacao.
+
 ## 3.3 AVALIAÇÃO E COMPARAÇÃO DOS MODELOS
 
 Após o ajuste e validação de todos os modelos preditivos considerados neste
