@@ -14,7 +14,6 @@ São Leopoldo
 
 2025
 
-
 ---
 
 # Page 2
@@ -61,7 +60,6 @@ São Leopoldo
 
 2025
 
-
 ---
 
 # Page 3
@@ -102,7 +100,6 @@ Power BI; ARIMA; XGBoost; Suavização Exponencial; Método Theta; Business
 
 Intelligence.
 
-
 ---
 
 # Page 4
@@ -139,7 +136,6 @@ Key-words: Sales Forecasting; Time Series; Machine Learning; Power BI; ARIMA;
 
 XGBoost; Exponential Smoothing; Theta Method; Business Intelligence.
 
-
 ---
 
 # Page 5
@@ -172,7 +168,6 @@ Figura 12 – Metodologia do modelo Theta ......................................
 
 Figura 13 – Metodologia do modelo XGBoost ........................................................... 58
 
-
 ---
 
 # Page 6
@@ -182,7 +177,6 @@ Figura 13 – Metodologia do modelo XGBoost ....................................
 ## LISTA DE QUADROS
 
 Nenhuma entrada de índice de ilustrações foi encontrada.
-
 
 ---
 
@@ -278,7 +272,6 @@ Business Intelligence
 
 Gradient Boosting Decision Tree
 
-
 ---
 
 # Page 8
@@ -348,7 +341,6 @@ Gradient Boosting Decision Tree
 2.5 XGBOOST ........................................................................................................... 26
 
 2.5.1 Visão geral do Extreme Gradient Boosting .................................................. 26
-
 
 ---
 
@@ -424,7 +416,6 @@ Fonte: elaborado pelo autor ....................................................
 
 3.2.1.8 Análise residual ............................................................................................. 50
 
-
 ---
 
 # Page 10
@@ -482,7 +473,6 @@ Fonte: elaborado pelo autor ....................................................
 3.3 AVALIAÇÃO E COMPARAÇÃO DOS MODELOS .............................................. 62
 
 REFERÊNCIAS ......................................................................................................... 63
-
 
 ---
 
@@ -552,7 +542,6 @@ temporais, com foco na comparação entre métodos tradicionais e modernos de
 
 modelagem preditiva aplicados a dados reais de faturamento empresarial.
 
-
 ---
 
 # Page 12
@@ -608,7 +597,6 @@ métodos estatísticos clássicos e técnicas de ML voltadas à previsão de
 vendas, conforme descrito por autores como Bezerra (2006), Makridakis,
 
 Wheelwright e Hyndman (1999) e Ensafi et al. (2022);
-
 
 ---
 
@@ -674,7 +662,6 @@ aproximar a teoria e a prática, orientando gestores e profissionais de dados qu
 
 melhor escolha de métodos para suas demandas específicas.
 
-
 ---
 
 # Page 14
@@ -734,7 +721,6 @@ a) Estacionariedade: Segundo Bezerra (2006), a estacionariedade ocorre
 quando as propriedades estatísticas, tais como média, variância e
 
 covariância, permanecem constantes ao longo do tempo. A condição de
-
 
 ---
 
@@ -810,7 +796,6 @@ técnicas tradicionais, como ARIMA, enquanto séries não lineares exigem
 
 modelos mais avançados, como redes neurais artificiais (SHIRI et al., 2024).
 
-
 ---
 
 # Page 16
@@ -868,7 +853,6 @@ estudado e aprimorado, resultando em diferentes variantes que exploram seu
 potencial para aplicações automáticas e mais robustas. (ASSIMAKOPOULOS;
 
 ## NIKILOPOULOS, 2000).
-
 
 ---
 
@@ -939,7 +923,6 @@ métodos mais complexos como ARIMA ou redes neurais (FIORUCCI et al.,
 f) Capacidade de generalização: é aplicável em séries temporais com
 
 diferentes padrões, como tendências lineares, não lineares, séries com
-
 
 ---
 
@@ -1021,7 +1004,6 @@ Para prever dados futuros, o método Theta realiza as seguintes etapas
 
 ## (ASSIMAKOPOULOS; NIKOLOPOULOS, 2000; FIORUCCI, 2016):
 
-
 ---
 
 # Page 19
@@ -1079,7 +1061,6 @@ automaticamente a forma mais apropriada (aditiva ou multiplicativa) e ajustar
 a inclinação das tendências, superando outros algoritmos automáticos em
 
 competições recentes (como M4), especialmente em séries anuais.
-
 
 ---
 
@@ -1153,7 +1134,6 @@ constante (ruído branco).
 
 𝜃1, 𝜃2, … , 𝜃𝑞: coeficientes do termo de média móvel.
 
-
 ---
 
 # Page 21
@@ -1211,7 +1191,6 @@ critérios estatísticos como AIC (Critério de Informação de Akaike);
 d) Previsão: Realização da previsão de valores futuros utilizando o modelo
 
 ajustado.
-
 
 ---
 
@@ -1281,7 +1260,6 @@ da boa performance dos modelos avançados de Machine Learning, o
 
 modelo ARIMA ainda obteve desempenho competitivo e foi considerado
 
-
 ---
 
 # Page 23
@@ -1347,7 +1325,6 @@ Onde:
 •
 
 𝑋̂𝑡+1: valor previsto para o próximo período;
-
 
 ---
 
@@ -1429,7 +1406,6 @@ estruturais na série temporal, atribuindo pesos exponenciais aos dados
 
 recentes (GARDNER, 1985);
 
-
 ---
 
 # Page 25
@@ -1500,7 +1476,6 @@ sucedido de exponential smoothing no controle e previsão para gestão de
 
 estoques. Nesse contexto, foram aplicadas variações do método para prever
 
-
 ---
 
 # Page 26
@@ -1565,7 +1540,6 @@ robusto e altamente eficiente para prever valores futuros e classificar dados
 
 complexos (MALIK; HARODE; KUNWAR, 2020).
 
-
 ---
 
 # Page 27
@@ -1627,7 +1601,6 @@ velocidade do modelo (CHEN; GUESTRIN, 2016).
 O funcionamento do XGBoost para previsões ocorre de maneira iterativa,
 
 seguindo os passos:
-
 
 ---
 
@@ -1701,7 +1674,6 @@ onde:
 
 𝑙(𝑦̂𝑦, 𝑦𝑖) representa a função de perda (e.g., erro quadrático médio);
 
-
 ---
 
 # Page 29
@@ -1766,7 +1738,6 @@ demonstrando bom desempenho com menor tempo de computação e
 
 recursos de memória.
 
-
 ---
 
 # Page 30
@@ -1804,7 +1775,6 @@ condução da pesquisa.
 Fonte: elaborado pelo autor
 
 Figura 1 - Metodologia geral do trabalho
-
 
 ---
 
@@ -1872,7 +1842,6 @@ etapas distintas, conforme mostra figura abaixo, cada uma com objetivos específ
 
 para preparar os dados para diferentes tipos de modelos de machine learning.
 
-
 ---
 
 # Page 32
@@ -1904,7 +1873,6 @@ O sistema gerou identificadores no formato "CLIENTE_####" onde os quatro dígito
 foram derivados deterministicamente do hash do nome original. Esta abordagem
 
 Figura 2 - Metodologia do pré-processamento
-
 
 ---
 
@@ -1965,7 +1933,6 @@ específicas para cada algoritmo.
 Diferentemente de abordagens tradicionais que requerem engenharia manual
 
 extensiva de features (criação de lags, médias móveis, codificações trigonométricas
-
 
 ---
 
@@ -2049,7 +2016,6 @@ escolha de modelos estatísticos apropriados e a definição de estratégias de 
 
 processamento.
 
-
 ---
 
 # Page 35
@@ -2094,7 +2060,6 @@ valores variando de aproximadamente R$ 1 milhão em 2014 para um pico acima de
 
 R$ 80 milhões em 2022.
 
-
 ---
 
 # Page 36
@@ -2121,7 +2086,6 @@ anos de transição econômica.
 
 Figura 3 - Visão geral da série temporal
 
-
 ---
 
 # Page 37
@@ -2143,7 +2107,6 @@ análise de autocorrelação identificou dependências temporais significativas 
 12, confirmando a presença de sazonalidade anual na série.
 
 Figura 4 – Decomposição da série temporal
-
 
 ---
 
@@ -2171,7 +2134,6 @@ tendência, tornando a série mais adequada para modelagem estatística.
 
 Figura 5 - Análise da sazonalidade
 
-
 ---
 
 # Page 39
@@ -2194,7 +2156,6 @@ assimetria positiva e presença de valores extremos.
 
 Figura 6 - Propriedades estatísticas da série temporal
 
-
 ---
 
 # Page 40
@@ -2214,7 +2175,6 @@ crescimento revelou crescimento superior a 200% em 2015, estabilização em torn
 de 20 a 40% nos anos intermediários, e declínios acentuados nos anos finais.
 
 Figura 7 - Análise de distribuição
-
 
 ---
 
@@ -2241,7 +2201,6 @@ padrões de dependência temporal que orientaram a configuração dos modelos
 preditivos.
 
 Figura 8 - Evolução temporal das vendas
-
 
 ---
 
@@ -2274,7 +2233,6 @@ d) Distribuição: Dados não seguem distribuição normal, apresentando
 assimetria positiva;
 
 Figura 9 - Análise de correlação temporal
-
 
 ---
 
@@ -2340,7 +2298,6 @@ os requisitos específicos de implementação e o diagrama do fluxo metodológic
 
 correspondente.
 
-
 ---
 
 # Page 44
@@ -2364,7 +2321,6 @@ reprodutibilidade do código. O ambiente Python foi configurado com as seguintes
 bibliotecas essenciais:
 
 Figura 10 - Metodologia do modelo ARIMA
-
 
 ---
 
@@ -2427,7 +2383,6 @@ coluna de valores (faturamento mensal), o índice temporal (datas mensais), e a
 frequência da série ('MS' para mensal). Esta estrutura otimizada permitiu que o modelo
 
 ARIMA acessasse funcionalidades avançadas como detecção automática de
-
 
 ---
 
@@ -2501,7 +2456,6 @@ não-sobreposição temporal, essencial para validação realística de modelos 
 
 temporais. A estratégia adotada foi:
 
-
 ---
 
 # Page 47
@@ -2563,7 +2517,6 @@ b. d (ordem de diferenciação): Número de diferenciações aplicadas para
 tornar a série estacionária. Avaliadas ordens de 0 a 2, baseadas nos
 
 testes de estacionariedade;
-
 
 ---
 
@@ -2643,7 +2596,6 @@ próximos) e sazonais (padrões anuais, dependências de períodos
 
 equivalentes em anos anteriores);
 
-
 ---
 
 # Page 49
@@ -2704,7 +2656,6 @@ para identificar padrões nos erros, sazonalidade residual, e performance
 
 diferencial ao longo do horizonte de previsão.
 
-
 ---
 
 # Page 50
@@ -2751,7 +2702,6 @@ Exponencial e XGBoost). Esta documentação foi essencial para a análise compar
 
 final e escolha da abordagem preditiva mais adequada.
 
-
 ---
 
 # Page 51
@@ -2777,7 +2727,6 @@ ARIMA, utilizando a mesma biblioteca Darts, mesma estrutura TimeSeries, e mesma
 proporção 80/20 com divisão temporal rigorosa.
 
 Figura 11 – Metodologia do modelo Suavização Exponencial
-
 
 ---
 
@@ -2828,7 +2777,6 @@ variou proporcionalmente ao nível da série.
 A decisão foi automatizada pela Darts baseada na análise da variância relativa
 
 dos componentes sazonais já extraídos na EDA.
-
 
 ---
 
@@ -2882,7 +2830,6 @@ Este processo iterativo permitiu ao modelo adaptar-se gradualmente aos
 
 padrões, diferindo da estimação simultânea de todos os parâmetros no ARIMA.
 
-
 ---
 
 # Page 54
@@ -2927,7 +2874,6 @@ temporal 80/20.
 
 A figura a seguir mostra a metodologia utilizada para o modelo.
 
-
 ---
 
 # Page 55
@@ -2949,7 +2895,6 @@ série, pois o Theta da Darts não possui tratamento automático para dados
 ausentes;
 
 Figura 12 – Metodologia do modelo Theta
-
 
 ---
 
@@ -3013,7 +2958,6 @@ b) Geração das linhas Theta: Foram criadas múltiplas linhas Theta através de
 
 transformações matemáticas, incluindo:
 
-
 ---
 
 # Page 57
@@ -3062,7 +3006,6 @@ específicas de validação das linhas Theta, verificação da capacidade de rec
 
 da série original, e análise de estabilidade dos parâmetros otimizados.
 
-
 ---
 
 # Page 58
@@ -3094,7 +3037,6 @@ outros modelos (faturamento mensal agregado), mantendo consistência na
 preparação dos dados. A Darts se encarregou automaticamente de transformar esta
 
 Figura 13 – Metodologia do modelo XGBoost
-
 
 ---
 
@@ -3151,7 +3093,6 @@ médias móveis, codificações trigonométricas, e estatísticas agregadas, sim
 significativamente o pipeline e garantindo que apenas as features mais relevantes
 
 fossem utilizadas.
-
 
 ---
 
@@ -3227,7 +3168,6 @@ f. reg_alpha: 0.2 (regularização L1/Lasso) para penalizar complexidade e
 
 promover esparsidade nos pesos do modelo.
 
-
 ---
 
 # Page 61
@@ -3289,7 +3229,6 @@ A integração com Darts garantiu que todo este processo respeitasse a natureza
 temporal dos dados, utilizando apenas informações disponíveis até cada ponto
 
 temporal durante o treinamento.
-
 
 ---
 
@@ -3979,7 +3918,6 @@ approach to forecasting. International Journal of Forecasting, v. 16, n. 4, p. 5
 
 530, out. 2000. Disponível em: https://doi.org/10.1016/S0169-2070(00)00066-2.
 
-
 ---
 
 # Page 64
@@ -4040,7 +3978,6 @@ v. 6, n. 1, p. 170–186, 1 mar. 2024. Disponível em:
 
 https://doi.org/10.3390/forecast6010010.
 
-
 ---
 
 # Page 65
@@ -4098,7 +4035,6 @@ https://doi.org/10.1002/for.3980030312.
 MONDAL, P.; SHIT, L.; GOSWAMI, S. Study of Effectiveness of Time Series
 
 Modeling (Arima) in Forecasting Stock Prices. International Journal of Computer
-
 
 ---
 
