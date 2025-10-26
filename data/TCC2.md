@@ -1646,6 +1646,14 @@ R$ 13,302,309.10, indicando que o Power BI produz erros muito mais concentrados 
 Adicionalmente, o método Power BI apresentou viés de apenas 1.47%, indicando que as previsões são praticamente não-enviesadas em média, e acurácia de 79.44%
 quando considerado o MAE em relação à média dos valores observados no período.
 
+### 4.4 Limitações e Desafios Técnicos
+
+Embora os resultados apresentados sejam relevantes, algumas limitações devem ser reconhecidas. O conjunto de dados compreende 132 observações mensais, volume modesto para otimizar todo o potencial de modelos complexos de machine learning. A série apresenta tendência não-linear pronunciada e não-estacionariedade, exigindo transformações que podem limitar a capacidade preditiva em cenários fora do padrão histórico.
+
+A divisão temporal fixa (80/20) não permite validação cruzada em múltiplas janelas, e a seleção de hiperparâmetros do XGBoost foi realizada empiricamente, não através de busca sistemática exaustiva. Adicionalmente, o método Power BI utiliza apenas dois componentes com pesos iguais, sem exploração de combinações alternativas ou pesos adaptativos.
+
+No contexto de implementação, a dependência de dados corporativos e a natureza de "caixa preta" do XGBoost limitam a explicabilidade das previsões. Por fim, os resultados refletem o contexto específico desta organização e não devem ser generalizados sem consideração das características únicas do negócio.
+
 ## 5 DISCUSSÃO
 
 Os resultados apresentados na seção anterior revelam insights importantes sobre a efetividade relativa de diferentes abordagens de previsão quando aplicadas ao
