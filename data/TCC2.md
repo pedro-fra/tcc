@@ -1629,8 +1629,12 @@ Os resultados obtidos foram os seguintes:
 | Power BI (Híbrido: MM6 + YoY) | 95,139.69 | 119,785.85 | 23.45 | 1.47 | 79.44 |
 | XGBoost (Melhor ML) | 10,110,160.96 | 13,302,309.10 | 26.91 | - | - |
 
-**Resultado Principal: O método Power BI superou significativamente o modelo XGBoost em todas as métricas de erro.**
-O método híbrido implementado no Power BI, que combina 50% de Média Móvel 6 Meses com 50% de Year-over-Year, apresentou desempenho claramente superior:
+**Resultado Principal: O método Power BI apresentou desempenho superior ao modelo XGBoost em todas as métricas de erro avaliadas.**
+O método híbrido implementado no Power BI combina duas técnicas estatísticas simples com efetividade comprovada:
+1. **Média Móvel 6 Meses (MM6)**: Calcula a média aritmética dos últimos 6 meses, capturando tendências recentes e flutuações de curto prazo;
+2. **Year-over-Year (YoY)**: Utiliza o valor de faturamento do mesmo mês no ano anterior, assumindo que os padrões de vendas se repetem anualmente (sazonalidade anual bem definida).
+Cada componente contribui com peso igual (50% cada), resultando em previsões que balanceiam adaptabilidade a mudanças recentes com a estabilidade de padrões históricos estabelecidos.
+O desempenho superior é evidente em todas as métricas:
 - **MAPE**: Power BI obteve 23.45% enquanto XGBoost alcançou 26.91%, representando uma diferença de 3.46 pontos percentuais, equivalente a uma melhoria relativa de
 12.9% em favor do Power BI;
 - **MAE**: Power BI obteve R$ 95,139.69 enquanto XGBoost alcançou R$ 10,110,160.96, uma diferença absoluta de R$ 10,015,021.27, equivalente a uma melhoria relativa de
@@ -1664,9 +1668,9 @@ Contudo, o fato de que um modelo com 17 lags e 6 encoders temporais foi superado
 
 O resultado mais significativo deste estudo é que o método híbrido do Power BI superou substancialmente o melhor modelo de machine learning testado. Esta
 descoberta contraria a expectativa comum de que algoritmos mais complexos e sofisticados produzem necessariamente melhores previsões.
-O método Power BI combina apenas dois componentes simples:
-- Média Móvel 6 Meses: Captura tendências recentes e volatilidades de curto prazo;
-- Year-over-Year: Captura padrões sazonais anuais bem definidos nos dados.
+O método Power BI combina apenas dois componentes simples, mas poderosos:
+- **Média Móvel 6 Meses**: Captura tendências recentes e volatilidades de curto prazo, sendo responsiva a mudanças de comportamento nos últimos meses. Por exemplo, se houve uma queda de vendas nos últimos 3 meses, a MM6 refletirá essa redução;
+- **Year-over-Year (YoY)**: Baseia-se na premissa de que padrões de vendas se repetem em ciclos anuais. Concretamente, para prever faturamento em junho de 2024, utiliza-se o valor de junho de 2023, capturando sazonalidade estabelecida. Esta abordagem é particularmente eficaz quando o negócio tem comportamentos sazonais bem definidos (p. ex., picos de vendas em períodos específicos do ano que se repetem consistentemente).
 A melhoria de 12.9% do Power BI sobre o XGBoost em MAPE, embora menor em termos percentuais, é mais significativa quando considerado em contexto:
 1. **Simplicidade Operacional**: O método Power BI é imediatamente compreensível pelos stakeholders não-técnicos, facilitando aceitação organizacional e auditoria
 das previsões;
