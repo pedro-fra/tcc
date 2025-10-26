@@ -1,0 +1,64 @@
+{
+  "model_type": "XGBoost_Ultimate_Darts",
+  "data_info": {
+    "total_samples": 133,
+    "train_samples": 106,
+    "test_samples": 27,
+    "time_range": "2014-10-31 00:00:00 to 2025-10-31 00:00:00"
+  },
+  "ultimate_enhancements": {
+    "main_lags": [
+      -1,
+      -2,
+      -3,
+      -4,
+      -5,
+      -6,
+      -7,
+      -8,
+      -9,
+      -10,
+      -11,
+      -12,
+      -15,
+      -18,
+      -24,
+      -30,
+      -36
+    ],
+    "past_covariates_lags": [
+      -1,
+      -2,
+      -3,
+      -4,
+      -5,
+      -6,
+      -12,
+      -24
+    ],
+    "temporal_encoders": [
+      "month",
+      "year",
+      "quarter",
+      "dayofyear",
+      "weekofyear",
+      "dayofweek"
+    ],
+    "data_scaling": "MaxAbsScaler",
+    "xgboost_params": {
+      "n_estimators": 2000,
+      "max_depth": 8,
+      "learning_rate": 0.05,
+      "subsample": 0.9,
+      "colsample_bytree": 0.9,
+      "reg_alpha": 0.2,
+      "reg_lambda": 1.5
+    }
+  },
+  "metrics": {
+    "mae": 120808.88916666665,
+    "rmse": 157902.9443522934,
+    "mape": 31.655665675244936
+  },
+  "model_fitted": true
+}

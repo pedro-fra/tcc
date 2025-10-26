@@ -21,14 +21,12 @@ DATA_SUMMARY_FILE = PROCESSED_DATA_DIR / "data_summary.json"
 
 # Data processing parameters
 DATA_CONFIG = {
-    "csv_separator": ";",
+    "csv_separator": ",",
     "encoding": "utf-8-sig",  # Handle BOM in CSV
-    "date_column": "DATA_EMISSAO_PEDIDO",
+    "date_column": "DATE_CAD",
     "value_column": "VALOR_LIQ",
-    "customer_column": "apelido",
-    "operation_column": "OPERACAO",
-    "date_format": "%d/%m/%Y",
-    "target_operation": "VENDA",  # Filter only sales transactions
+    "customer_column": "APELIDO",
+    "date_format": None,  # Auto-detect datetime format (includes timestamp)
 }
 
 # Anonymization parameters

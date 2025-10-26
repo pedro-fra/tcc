@@ -1,14 +1,14 @@
 {
   "model_type": "ExponentialSmoothing",
   "fitted": true,
-  "train_samples": 105,
+  "train_samples": 106,
   "test_samples": 27,
   "forecast_periods": 27,
   "trend_seasonality_analysis": {
-    "trend_strength": 0.7223451630439788,
-    "seasonal_strength": 0.1949118800885184,
+    "trend_strength": 0.6930888757281083,
+    "seasonal_strength": 0.20172945226301578,
     "trend_type": "increasing",
-    "trend_slope": 416896.8637761303,
+    "trend_slope": 4220.562573341462,
     "has_seasonality": true,
     "seasonal_period": 12,
     "decomposition_available": true,

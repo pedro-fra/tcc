@@ -88,8 +88,8 @@ def validate_data_quality(df: pd.DataFrame, config: Dict[str, Any]) -> Dict[str,
             "negative_values": int((value_col < 0).sum()),
         }
 
-    # Operation counts
-    if config["operation_column"] in df.columns:
+    # Operation counts (removed - data pre-filtered by GERA_COBRANCA = 1)
+    if "operation_column" in config and config["operation_column"] in df.columns:
         quality_metrics["operation_counts"] = (
             df[config["operation_column"]].value_counts().to_dict()
         )

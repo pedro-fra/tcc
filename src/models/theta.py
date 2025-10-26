@@ -89,16 +89,18 @@ class ThetaForecaster:
                 encoding=data_config.get("encoding", "utf-8-sig"),
             )
 
-            # Filter for sales operations only
-            target_operation = data_config.get("target_operation", "VENDA")
-            df = df[df[data_config.get("operation_column", "OPERACAO")] == target_operation]
+            # Data already pre-filtered by GERA_COBRANCA = 1 in SQL query
+            # No need to filter by OPERACAO column
 
             # Convert date column
-            date_col = data_config.get("date_column", "DATA_EMISSAO_PEDIDO")
+            date_col = data_config.get("date_column", "DATE_CAD")
             value_col = data_config.get("value_column", "VALOR_LIQ")
-            date_format = data_config.get("date_format", "%d/%m/%Y")
+            date_format = data_config.get("date_format")
 
-            df[date_col] = pd.to_datetime(df[date_col], format=date_format)
+            if date_format:
+                df[date_col] = pd.to_datetime(df[date_col], format=date_format)
+            else:
+                df[date_col] = pd.to_datetime(df[date_col])
 
             # Aggregate by month (sum sales values)
             df_monthly = (

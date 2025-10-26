@@ -80,6 +80,7 @@ class MLDataPreprocessor:
         """
         Step 1: Create target variable (sales aggregation).
         For this dataset, target is already the VALOR_LIQ column.
+        Data is pre-filtered by GERA_COBRANCA = 1 in the SQL query.
 
         Args:
             df: Input DataFrame
@@ -91,16 +92,10 @@ class MLDataPreprocessor:
 
         df_processed = df.copy()
 
-        # Filter only sales operations
-        if self.config["data"]["operation_column"] in df_processed.columns:
-            target_operation = self.config["data"]["target_operation"]
-            df_processed = df_processed[
-                df_processed[self.config["data"]["operation_column"]] == target_operation
-            ].copy()
-            logger.info(f"Filtered to {len(df_processed)} {target_operation} records")
-
         # Set target variable (sales value is already our target)
         df_processed["target"] = df_processed[self.config["data"]["value_column"]]
+
+        logger.info(f"Total records with GERA_COBRANCA = 1: {len(df_processed)}")
 
         return df_processed
 
@@ -121,9 +116,14 @@ class MLDataPreprocessor:
         df_processed = df.copy()
 
         # Convert date column to datetime
-        df_processed[date_column] = pd.to_datetime(
-            df_processed[date_column], format=self.config["data"]["date_format"]
-        )
+        date_format = self.config["data"]["date_format"]
+        if date_format:
+            df_processed[date_column] = pd.to_datetime(
+                df_processed[date_column], format=date_format
+            )
+        else:
+            # Auto-detect format (handles timestamps)
+            df_processed[date_column] = pd.to_datetime(df_processed[date_column])
 
         # Create temporal features
         if self.config["feature_engineering"]["create_temporal_features"]:
@@ -319,10 +319,11 @@ class MLDataPreprocessor:
         if value_col in df_processed.columns and value_col != "target":
             columns_to_remove.append(value_col)
 
-        # Operation column (already filtered)
-        operation_col = self.config["data"]["operation_column"]
-        if operation_col in df_processed.columns:
-            columns_to_remove.append(operation_col)
+        # Operation column (if exists - data pre-filtered by GERA_COBRANCA = 1)
+        if "operation_column" in self.config["data"]:
+            operation_col = self.config["data"]["operation_column"]
+            if operation_col in df_processed.columns:
+                columns_to_remove.append(operation_col)
 
         # Remove identified columns
         columns_to_remove = [col for col in columns_to_remove if col in df_processed.columns]

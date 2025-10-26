@@ -1,0 +1,66 @@
+{
+  "test_period": {
+    "start": "Jul/2023",
+    "end": "Sep/2025",
+    "months": 27
+  },
+  "all_metrics": {
+    "power_bi": {
+      "mae": 89651.2233888889,
+      "rmse": 113475.15237512394,
+      "mape": 21.822249144490023
+    },
+    "xgboost": {
+      "mae": 120808.88916666665,
+      "rmse": 157902.9443522934,
+      "mape": 31.655665675244936
+    },
+    "exponential_smoothing": {
+      "mae": 107171.14611557918,
+      "rmse": 137369.01758147377,
+      "mape": 23.99497804858145,
+      "forecast_horizon": 27,
+      "test_samples": 27
+    },
+    "arima": {
+      "mae": 121014.75194254996,
+      "rmse": 143364.0188722522,
+      "mape": 33.61342397184559,
+      "forecast_horizon": 27,
+      "test_samples": 27
+    },
+    "theta": {
+      "mae": 186346.4536239508,
+      "rmse": 233478.87715301214,
+      "mape": 40.29938717139634
+    }
+  },
+  "comparison": {
+    "winner": "Power BI",
+    "mape_improvement_pct": 31.06368582368732,
+    "mae_improvement_pct": 25.790871841221026,
+    "rmse_improvement_pct": 28.136139043770893
+  },
+  "ranking_by_mape": [
+    {
+      "model": "Power BI",
+      "mape": 21.822249144490023
+    },
+    {
+      "model": "XGBoost",
+      "mape": 31.655665675244936
+    },
+    {
+      "model": "Exponential Smoothing",
+      "mape": 23.99497804858145
+    },
+    {
+      "model": "ARIMA",
+      "mape": 33.61342397184559
+    },
+    {
+      "model": "Theta",
+      "mape": 40.29938717139634
+    }
+  ]
+}

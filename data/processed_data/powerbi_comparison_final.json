@@ -1,0 +1,24 @@
+{
+  "power_bi_metrics": {
+    "mae": 89651.2233888889,
+    "rmse": 113475.15237512394,
+    "mape": 21.822249144490023
+  },
+  "xgboost_metrics": {
+    "mae": 120808.89,
+    "rmse": 157902.94,
+    "mape": 31.66
+  },
+  "comparison": {
+    "mape_diff_pp": 9.837750855509977,
+    "mape_improvement_pct": 31.073123359159748,
+    "mae_diff": 31157.666611111097,
+    "mae_improvement_pct": 25.790872353111677,
+    "winner": "Power BI"
+  },
+  "test_period": {
+    "start": "Jul/23",
+    "end": "Sep/25",
+    "months": 27
+  }
+}

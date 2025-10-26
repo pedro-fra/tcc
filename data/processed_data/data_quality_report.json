@@ -1,37 +1,33 @@
 {
   "initial": {
-    "total_records": 37034,
+    "total_records": 37649,
     "missing_values": {
-      "apelido": 0,
-      "DATA_EMISSAO_PEDIDO": 0,
-      "OPERACAO": 0,
+      "APELIDO": 0,
+      "DATE_CAD": 0,
       "VALOR_LIQ": 0
     },
-    "duplicate_records": 271,
+    "duplicate_records": 0,
     "date_range": {
-      "min_date": "01/02/2017",
-      "max_date": "31/12/2020",
-      "unique_dates": 2956
+      "min_date": "2014-10-28 15:49:39.1340",
+      "max_date": "2025-10-24 16:31:47.6390",
+      "unique_dates": 37584
     },
     "value_statistics": {
-      "mean": 80313.24461305827,
-      "median": 41275.0,
-      "std": 138415.29211436186,
+      "mean": 806.0375497357168,
+      "median": 420.0,
+      "std": 1381.2942858715799,
       "min": 0.0,
-      "max": 5392800.0,
-      "zero_values": 514,
+      "max": 53928.0,
+      "zero_values": 517,
       "negative_values": 0
     },
-    "operation_counts": {
-      "VENDA": 37022,
-      "VENDA DE MERCADORIA CONSIGNADA": 12
-    }
+    "operation_counts": null
   },
   "final": {
-    "total_records": 36751,
-    "total_features": 27,
+    "total_records": 37649,
+    "total_features": 26,
     "target_column": "target",
     "missing_values": 0,
-    "memory_usage_mb": 7.465327262878418
+    "memory_usage_mb": 7.611835479736328
   }
 }
