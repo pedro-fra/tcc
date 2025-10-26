@@ -1539,6 +1539,8 @@ por modelo, apresentando as métricas de desempenho obtidas no conjunto de teste
 
 ### 4.1 Resultados dos Modelos de Aprendizado de Máquina e Estatísticos
 
+Nesta subseção são apresentados os resultados detalhados de cada modelo de previsão implementado, avaliados no conjunto de teste compreendendo 27 meses (julho de 2023 a setembro de 2025). Cada modelo foi submetido aos mesmos dados de validação, permitindo uma comparação rigorosa e padronizada através das métricas MAE, RMSE e MAPE. Os resultados refletem a capacidade preditiva de cada abordagem para o contexto específico de faturamento mensal da organização, com ênfase na análise de tendência de desempenho entre as diferentes técnicas.
+
 #### 4.1.1 ARIMA
 
 O modelo ARIMA implementado utilizando AutoARIMA da biblioteca Darts apresentou os seguintes resultados no conjunto de teste:
