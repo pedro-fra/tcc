@@ -906,24 +906,24 @@ class GeneralEDAPlotter:
         gs = fig.add_gridspec(4, 4, hspace=0.3, wspace=0.3)
 
         # Calcular metricas principais
-        total_vendas = df["target"].sum()
+        df["target"].sum()
         media_mensal = df["target"].mean()
-        mediana_mensal = df["target"].median()
+        df["target"].median()
         desvio_padrao = df["target"].std()
-        cv = (desvio_padrao / media_mensal) * 100
+        (desvio_padrao / media_mensal) * 100
 
         # Vendas anuais
         df_anual = df.copy()
         df_anual["ano"] = df_anual.index.year
         vendas_anuais = df_anual.groupby("ano")["target"].sum()
-        crescimento_medio = vendas_anuais.pct_change().mean() * 100
+        vendas_anuais.pct_change().mean() * 100
 
         # Sazonalidade
         df_mensal = df.copy()
         df_mensal["mes"] = df_mensal.index.month
         sazonalidade = df_mensal.groupby("mes")["target"].mean()
-        mes_maior_venda = sazonalidade.idxmax()
-        mes_menor_venda = sazonalidade.idxmin()
+        sazonalidade.idxmax()
+        sazonalidade.idxmin()
 
         # Panel 1: Distribuicao de vendas anuais
         ax1 = fig.add_subplot(gs[0, :2])
@@ -1033,7 +1033,7 @@ class GeneralEDAPlotter:
         diag_corr = np.diag(monthly_corr)
         meses_abrev = [m[:3] for m in self.meses_pt]
 
-        bars = ax6.bar(meses_abrev, diag_corr, color="#5490d3", alpha=0.8, edgecolor="#1f77b4")
+        ax6.bar(meses_abrev, diag_corr, color="#5490d3", alpha=0.8, edgecolor="#1f77b4")
 
         configure_axes(
             ax6,
