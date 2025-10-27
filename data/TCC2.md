@@ -3714,30 +3714,7 @@ Valor
 
 Fonte: elaborado pelo autor
 
-Apesar do aumento nas métricas em relação aos testes anteriores, o XGBoost Ultimate ainda apresentou o melhor desempenho entre todos os modelos de
-
-machine learning testados. O modelo reduziu o MAE em 35,1% em relação ao Theta,
-
-43,5% em relação à Suavização Exponencial e 50,3% em relação ao ARIMA. O
-
-MAPE de 31,66% representa a menor taxa de erro percentual observada entre os
-
-modelos, indicando que o XGBoost conseguiu capturar de forma mais eficaz os
-
-
----
-
-# Page 70
-
-70
-
-padrões complexos e não-lineares presentes nos dados de vendas. A superioridade
-
-do XGBoost reflete a capacidade do algoritmo de gradient boosting em modelar
-
-relacionamentos complexos através de suas múltiplas features de engenharia
-
-temporal.
+O XGBoost Ultimate apresentou desempenho inferior à Suavização Exponencial neste contexto específico. Com MAPE de 31,66%, o modelo demonstrou melhor capacidade que ARIMA (33,61%) e Theta (40,30%), mas ficou atrás da Suavização Exponencial (23,99%). O modelo conseguiu capturar os padrões sazonais e de tendência dos dados, porém com menor precisão que a abordagem de suavização exponencial. Este resultado evidencia que, embora XGBoost seja um algoritmo sofisticado, sua complexidade não necessariamente resulta em melhor desempenho em séries temporais com padrões bem definidos e volume limitado de observações.
 
 ## 4.2 RESUMO COMPARATIVO DOS MODELOS DE ML
 
