@@ -13,191 +13,70 @@ from sklearn.preprocessing import MaxAbsScaler
 # Add src to path
 sys.path.append(str(Path(__file__).parent / "src"))
 
-# Import plotting libraries
-import matplotlib.pyplot as plt
-import seaborn as sns
 from darts import TimeSeries
 from darts.dataprocessing.transformers import Scaler
 from darts.metrics import mae, mape, rmse
 from darts.models import XGBModel
 
-# Set plot style
-sns.set_style("whitegrid")
+# Import visualization module
+try:
+    from visualization.xgboost_plots import XGBoostVisualizer
+
+    PLOTTING_AVAILABLE = True
+except ImportError as e:
+    print(f"Warning: Could not import XGBoostVisualizer: {e}")
+    PLOTTING_AVAILABLE = False
 
 
-def format_brazilian_currency(value):
-    """Format value as Brazilian currency."""
-    return f"R$ {value:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+def _generate_ultimate_plots(
+    results, predictions_df, train_series, test_series, predictions, output_dir
+):
+    """Generate plots for XGBoost Ultimate results using standardized visualizer."""
+    if not PLOTTING_AVAILABLE:
+        print("      Skipping plot generation (XGBoostVisualizer not available)")
+        return
 
-
-def _generate_ultimate_plots(results, predictions_df, output_dir):
-    """Generate plots for XGBoost Ultimate results."""
     plots_dir = Path("data/plots/xgboost_ultimate")
     plots_dir.mkdir(parents=True, exist_ok=True)
 
+    visualizer = XGBoostVisualizer()
     metrics = results["metrics"]
 
-    # Plot 1: Model Summary
-    fig, axes = plt.subplots(2, 2, figsize=(16, 10))
-    fig.suptitle("Resumo do Modelo - XGBoost Ultimate", fontsize=16, fontweight="bold", y=0.995)
+    # Convert TimeSeries to pandas Series for visualizer
+    y_test = pd.Series(test_series.values().flatten(), index=test_series.time_index, name="actual")
+    y_predictions = predictions_df["predicted"].values
 
-    # Metrics bars
-    metric_names = ["MAE", "RMSE"]
-    metric_values = [metrics["mae"], metrics["rmse"]]
-    bars = axes[0, 0].bar(
-        metric_names, metric_values, color=["#3498db", "#2ecc71"], alpha=0.8, edgecolor="black"
-    )
-    axes[0, 0].set_title("Performance do Modelo", fontsize=14, fontweight="bold", pad=15)
-    axes[0, 0].set_ylabel("Valor da Metrica", fontsize=12)
-    axes[0, 0].grid(True, alpha=0.3, axis="y")
+    # Create mock X_test and X_train using temporal index
+    X_test = pd.DataFrame(index=test_series.time_index)
+    X_train = pd.DataFrame(index=train_series.time_index)
+    y_train = pd.Series(train_series.values().flatten(), index=train_series.time_index)
 
-    for bar, value in zip(bars, metric_values):
-        height = bar.get_height()
-        axes[0, 0].text(
-            bar.get_x() + bar.get_width() / 2.0,
-            height,
-            format_brazilian_currency(value),
-            ha="center",
-            va="bottom",
-            fontsize=11,
-            fontweight="bold",
+    # Generate prediction comparison plots
+    print("      Generating prediction comparison plots...")
+    try:
+        pred_plots = visualizer.create_prediction_comparison_plots(
+            X_test=X_test,
+            y_test=y_test,
+            predictions=y_predictions,
+            X_train=X_train,
+            y_train=y_train,
+            output_dir=plots_dir,
         )
+        print(f"        Created {len(pred_plots)} prediction plots")
+    except Exception as e:
+        print(f"        Warning: Could not create prediction plots: {e}")
 
-    axes[0, 0].text(
-        0.98,
-        0.95,
-        f"MAPE: {metrics['mape']:.2f}%",
-        transform=axes[0, 0].transAxes,
-        fontsize=12,
-        verticalalignment="top",
-        horizontalalignment="right",
-        bbox=dict(boxstyle="round", facecolor="wheat", alpha=0.8),
-    )
+    # Generate performance plots
+    print("      Generating performance analysis plots...")
+    try:
+        perf_plots = visualizer.create_performance_plots(
+            y_test=y_test, predictions=y_predictions, metrics=metrics, output_dir=plots_dir
+        )
+        print(f"        Created {len(perf_plots)} performance plots")
+    except Exception as e:
+        print(f"        Warning: Could not create performance plots: {e}")
 
-    # Configuration text
-    config_text = f"""
-XGBoost Ultimate - Resumo:
-
-Tipo: Gradient Boosting
-Algoritmo: XGBoost Regressor
-Features: Tabular com lag e ciclicas
-
-Metricas de Performance:
-• MAE: {format_brazilian_currency(metrics["mae"])}
-• RMSE: {format_brazilian_currency(metrics["rmse"])}
-• MAPE: {metrics["mape"]:.2f}%
-
-Periodo de Teste: {results["data_info"]["test_samples"]} observacoes
-Data Range: {results["data_info"]["time_range"]}
-    """
-
-    axes[0, 1].axis("off")
-    axes[0, 1].text(
-        0.05,
-        0.95,
-        config_text.strip(),
-        transform=axes[0, 1].transAxes,
-        fontsize=11,
-        verticalalignment="top",
-        fontfamily="monospace",
-        bbox=dict(boxstyle="round", facecolor="#f0f0f0", alpha=0.8),
-    )
-
-    # Actual vs Predicted
-    axes[1, 0].scatter(
-        predictions_df["actual"],
-        predictions_df["predicted"],
-        alpha=0.6,
-        edgecolors="black",
-        linewidths=0.5,
-    )
-    min_val = min(predictions_df["actual"].min(), predictions_df["predicted"].min())
-    max_val = max(predictions_df["actual"].max(), predictions_df["predicted"].max())
-    axes[1, 0].plot([min_val, max_val], [min_val, max_val], "r--", lw=2, label="Linha Perfeita")
-    axes[1, 0].set_xlabel("Valores Reais", fontsize=12)
-    axes[1, 0].set_ylabel("Valores Previstos", fontsize=12)
-    axes[1, 0].set_title("Real vs Previsto", fontsize=14, fontweight="bold")
-    axes[1, 0].legend()
-    axes[1, 0].grid(True, alpha=0.3)
-
-    # Time series comparison
-    axes[1, 1].plot(
-        predictions_df.index, predictions_df["actual"], label="Real", marker="o", linewidth=2
-    )
-    axes[1, 1].plot(
-        predictions_df.index,
-        predictions_df["predicted"],
-        label="Previsto",
-        marker="s",
-        linewidth=2,
-        linestyle="--",
-    )
-    axes[1, 1].set_xlabel("Data", fontsize=12)
-    axes[1, 1].set_ylabel("Valor", fontsize=12)
-    axes[1, 1].set_title("Serie Temporal - Teste", fontsize=14, fontweight="bold")
-    axes[1, 1].legend()
-    axes[1, 1].grid(True, alpha=0.3)
-    axes[1, 1].tick_params(axis="x", rotation=45)
-
-    plt.tight_layout()
-    plt.savefig(plots_dir / "01_xgboost_ultimate_model_summary.png", dpi=300, bbox_inches="tight")
-    plt.close()
-
-    # Plot 2: Metrics Comparison
-    fig, axes = plt.subplots(1, 3, figsize=(18, 6))
-    fig.suptitle("Analise de Metricas - XGBoost Ultimate", fontsize=16, fontweight="bold")
-
-    axes[0].bar(["MAE"], [metrics["mae"]], color="#3498db", alpha=0.8, edgecolor="black", width=0.5)
-    axes[0].set_title("Mean Absolute Error", fontsize=14, fontweight="bold")
-    axes[0].set_ylabel("Valor (R$)", fontsize=12)
-    axes[0].text(
-        0,
-        metrics["mae"],
-        format_brazilian_currency(metrics["mae"]),
-        ha="center",
-        va="bottom",
-        fontsize=12,
-        fontweight="bold",
-    )
-    axes[0].grid(True, alpha=0.3, axis="y")
-
-    axes[1].bar(
-        ["RMSE"], [metrics["rmse"]], color="#2ecc71", alpha=0.8, edgecolor="black", width=0.5
-    )
-    axes[1].set_title("Root Mean Square Error", fontsize=14, fontweight="bold")
-    axes[1].set_ylabel("Valor (R$)", fontsize=12)
-    axes[1].text(
-        0,
-        metrics["rmse"],
-        format_brazilian_currency(metrics["rmse"]),
-        ha="center",
-        va="bottom",
-        fontsize=12,
-        fontweight="bold",
-    )
-    axes[1].grid(True, alpha=0.3, axis="y")
-
-    axes[2].bar(
-        ["MAPE"], [metrics["mape"]], color="#e74c3c", alpha=0.8, edgecolor="black", width=0.5
-    )
-    axes[2].set_title("Mean Absolute Percentage Error", fontsize=14, fontweight="bold")
-    axes[2].set_ylabel("Valor (%)", fontsize=12)
-    axes[2].text(
-        0,
-        metrics["mape"],
-        f"{metrics['mape']:.2f}%",
-        ha="center",
-        va="bottom",
-        fontsize=12,
-        fontweight="bold",
-    )
-    axes[2].grid(True, alpha=0.3, axis="y")
-
-    plt.tight_layout()
-    plt.savefig(plots_dir / "02_xgboost_ultimate_metrics.png", dpi=300, bbox_inches="tight")
-    plt.close()
-
-    print(f"      Plots saved to: {plots_dir}")
+    print(f"      All plots saved to: {plots_dir}")
 
 
 def run_ultimate_xgboost():
@@ -364,7 +243,9 @@ def run_ultimate_xgboost():
 
         # Generate plots
         print("\n   Generating plots...")
-        _generate_ultimate_plots(results, predictions_df, output_dir)
+        _generate_ultimate_plots(
+            results, predictions_df, train_series, test_series, predictions, output_dir
+        )
 
         # 8. Ultimate performance comparison
         print("\n" + "=" * 75)
