@@ -3629,7 +3629,7 @@ O modelo apresentou desempenho superior ao ARIMA em todas as métricas,
 
 reduzindo o erro em 11,5% em relação ao MAE do ARIMA. O
 
-MAPE de 23,99% indica indica erros significativos nas previsões. O modelo demonstrou
+MAPE de 23,99% indica erros significativos nas previsões. O modelo demonstrou
 
 melhor capacidade que o ARIMA em capturar a sazonalidade dos dados, porém ainda
 
@@ -3676,7 +3676,7 @@ O método Theta apresentou um desempenho moderado entre os modelos de
 
 séries temporais. Embora tenha obtido resultados superiores ao ARIMA, o modelo
 
-mostrou-se inferior à Suavização Exponencial neste contexto específico. O MAPE de representa uma
+mostrou-se inferior à Suavização Exponencial neste contexto específico. O MAPE de 40,30% representa uma
 
 redução significativa na magnitude dos erros percentuais, indicando que o método
 
