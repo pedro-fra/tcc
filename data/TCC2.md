@@ -150,11 +150,11 @@ Quadro 2 - Resultados das Métricas do Modelo Suavização Exponencial .........
 
 Quadro 3 - Resultados das Métricas do Modelo Theta ............................................. 69
 
-Quadro 4 - Resultados das Métricas do Modelo XGBoost ........................................ 69
+Quadro 4 - Resultados das Métricas do Modelo XGBoost Ultimate ........................................ 69
 
 Quadro 5 - Tabela Comparativa dos Modelos ........................................................... 70
 
-Quadro 6 - Tabela Comparativa entre Power BI e XGBoost ..................................... 71
+Quadro 6 - Tabela Comparativa entre Power BI e XGBoost Ultimate ..................................... 71
 
 
 ---
@@ -2101,16 +2101,16 @@ temporal. Esta visão panorâmica revelou uma tendência de crescimento consiste
 
 de 2014 a 2022, seguida por um declínio significativo entre os anos 2023 e 2025, com
 
+valores variando de aproximadamente R$ 1 milhão em 2014 para um pico acima de
+
+R$ 80 milhões em 2022.
+
 
 ---
 
 # Page 37
 
 37
-
-valores variando de aproximadamente R$ 1 milhão em 2014 para um pico acima de
-
-R$ 80 milhões em 2022.
 
 Fonte: elaborado pelo autor
 
@@ -2374,10 +2374,6 @@ reprodutibilidade do código. O ambiente Python foi configurado com as seguintes
 
 bibliotecas essenciais:
 
-a) Darts: Biblioteca especializada em séries temporais que forneceu o módulo
-
-ARIMA (com seleção automática de parâmetros via AutoARIMA), métodos
-
 Figura 10 - Metodologia do modelo ARIMA
 
 
@@ -2386,6 +2382,10 @@ Figura 10 - Metodologia do modelo ARIMA
 # Page 46
 
 46
+
+a) Darts: Biblioteca especializada em séries temporais que forneceu o módulo
+
+ARIMA (com seleção automática de parâmetros via AutoARIMA), métodos
 
 de divisão temporal apropriados para séries temporais, e funções integradas
 
@@ -2439,16 +2439,16 @@ frequência da série ('MS' para mensal). Esta estrutura otimizada permitiu que 
 
 ARIMA acessasse funcionalidades avançadas como detecção automática de
 
-periodicidade sazonal, aplicação de transformações temporais (diferenciação), e
-
-geração de previsões de forma eficiente.
-
 
 ---
 
 # Page 47
 
 47
+
+periodicidade sazonal, aplicação de transformações temporais (diferenciação), e
+
+geração de previsões de forma eficiente.
 
 3.2.1.3 Verificação de estacionaridade e diferenciação
 
@@ -2512,18 +2512,18 @@ não-sobreposição temporal, essencial para validação realística de modelos 
 
 temporais. A estratégia adotada foi:
 
-a) Conjunto de treino: Primeiros 80% da série (aproximadamente 105 meses),
-
-representando o período de outubro de 2014 até meados de 2023. Este
-
-período incluiu a fase de crescimento consistente e o pico histórico das
-
 
 ---
 
 # Page 48
 
 48
+
+a) Conjunto de treino: Primeiros 80% da série (aproximadamente 105 meses),
+
+representando o período de outubro de 2014 até meados de 2023. Este
+
+período incluiu a fase de crescimento consistente e o pico histórico das
 
 vendas, fornecendo ao modelo informação suficiente sobre tendências de
 
@@ -2577,18 +2577,18 @@ tornar a série estacionária. Avaliadas ordens de 0 a 2, baseadas nos
 
 testes de estacionariedade;
 
-c. q (ordem de média móvel): Número de erros de previsão defasados
-
-incluídos no modelo. Testadas ordens de 0 a 5, capturando
-
-dependências nos termos de erro.
-
 
 ---
 
 # Page 49
 
 49
+
+c. q (ordem de média móvel): Número de erros de previsão defasados
+
+incluídos no modelo. Testadas ordens de 0 a 5, capturando
+
+dependências nos termos de erro.
 
 c) Parâmetros sazonais (período 𝑠 =  12):
 
@@ -2638,6 +2638,13 @@ c) Ajuste da componente sazonal: O modelo SARIMA ajustou simultaneamente
 
 os padrões não sazonais (tendência de curto prazo, dependências de lags
 
+
+---
+
+# Page 50
+
+50
+
 próximos) e sazonais (padrões anuais, dependências de períodos
 
 equivalentes em anos anteriores);
@@ -2647,13 +2654,6 @@ d) Validação do ajuste: Durante o treinamento, foram monitoradas métricas de
 convergência e estabilidade dos coeficientes estimados para garantir
 
 adequação do processo de otimização.
-
-
----
-
-# Page 50
-
-50
 
 O resultado foi um modelo completamente parametrizado, capaz de capturar
 
@@ -2697,18 +2697,18 @@ c. MAPE (Mean Absolute Percentage Error): Erro percentual absoluto
 
 médio, permitindo interpretação relativa independente da escala.
 
-d) Análise temporal das previsões: Foi conduzida análise período a período
-
-para identificar padrões nos erros, sazonalidade residual, e performance
-
-diferencial ao longo do horizonte de previsão.
-
 
 ---
 
 # Page 51
 
 51
+
+d) Análise temporal das previsões: Foi conduzida análise período a período
+
+para identificar padrões nos erros, sazonalidade residual, e performance
+
+diferencial ao longo do horizonte de previsão.
 
 3.2.1.8 Análise residual
 
@@ -3350,7 +3350,7 @@ learning desenvolvidos neste trabalho.
 
 A solução foi implementada através de medidas DAX no Power BI, que realizam
 
-cálculos automáticos a partir dos dados de faturamento armazenados no banco de
+cálculos automáticos a partir dos geram cobrança (GERA_COBRANCA = 1). Este comportamento sugere que o Theta pode ser mais adequado para séries temporais com padrões mais regulares e previsíveis.armazenados no banco de
 
 dados corporativo. O processo segue a seguinte estrutura:
 
@@ -3562,15 +3562,15 @@ Valor
 
 ## MAE
 
-## R$ 287.108,00
+## R$ 121.014,75
 
 ## RMSE
 
-## R$ 323.112,39
+## R$ 143.364,02
 
 ## MAPE
 
-78,73%
+33,61%
 
 Fonte: elaborado pelo autor
 
@@ -3589,7 +3589,7 @@ presentes nos dados de vendas, resultando em erros absolutamente elevados. O
 
 68
 
-MAPE de 78,73% indica que, em média, as previsões do ARIMA desviaram 78,73%
+MAPE de 33,61% indica que, em média, as previsões do ARIMA desviaram 33,61%
 
 dos valores reais observados, demonstrando capacidade preditiva muito limitada para
 
@@ -3613,23 +3613,23 @@ Valor
 
 ## MAE
 
-## R$ 218.463,86
+## R$ 107.171,15
 
 ## RMSE
 
-## R$ 259.145,19
+## R$ 137.369,02
 
 ## MAPE
 
-63,00%
+23,99%
 
 Fonte: elaborado pelo autor
 
 O modelo apresentou desempenho superior ao ARIMA em todas as métricas,
 
-reduzindo o erro em 23,8% em relação ao MAE do ARIMA. Apesar dessa melhoria, o
+reduzindo o erro em 11,5% em relação ao MAE do ARIMA. O
 
-MAPE de 63% ainda indica erros significativos nas previsões. O modelo demonstrou
+MAPE de 23,99% indica indica erros significativos nas previsões. O modelo demonstrou
 
 melhor capacidade que o ARIMA em capturar a sazonalidade dos dados, porém ainda
 
@@ -3660,29 +3660,29 @@ Valor
 
 ## MAE
 
-## R$ 173.276,01
+## R$ 186.346,45
 
 ## RMSE
 
-## R$ 212.873,94
+## R$ 233.478,88
 
 ## MAPE
 
-39,71%
+40,30%
 
 Fonte: elaborado pelo autor
 
-O Theta apresentou desempenho substancialmente melhor que os dois
+O método Theta apresentou um desempenho moderado entre os modelos de
 
-modelos anteriores, reduzindo o MAE em 39,6% em relação ao Suavização
+séries temporais. Embora tenha obtido resultados superiores ao ARIMA, o modelo
 
-Exponencial e em 69,2% em relação ao ARIMA. O MAPE de 39,71% representa uma
+mostrou-se inferior à Suavização Exponencial neste contexto específico. O MAPE de representa uma
 
 redução significativa na magnitude dos erros percentuais, indicando que o método
 
-Theta conseguiu capturar melhor os padrões sazonais e de tendência presentes nos
+sazonais e de tendência presentes nos dados com o novo filtro de transações que
 
-dados de faturamento.
+geram cobrança (GERA_COBRANCA = 1). Este comportamento sugere que o Theta pode ser mais adequado para séries temporais com padrões mais regulares e previsíveis.
 
 4.1.4 XGBoost
 
@@ -3694,7 +3694,7 @@ temporais, combinados com hiper parâmetros otimizados para o problema específi
 
 Os resultados obtidos foram:
 
-Quadro 4 - Resultados das Métricas do Modelo XGBoost
+Quadro 4 - Resultados das Métricas do Modelo XGBoost Ultimate
 
 Métrica
 
@@ -3702,25 +3702,25 @@ Valor
 
 ## MAE
 
-## R$ 101.101,61
+## R$ 120.808,89
 
 ## RMSE
 
-## R$ 133.023,09
+## R$ 157.902,94
 
 ## MAPE
 
-26,91%
+31,66%
 
 Fonte: elaborado pelo autor
 
-O XGBoost apresentou o melhor desempenho entre todos os modelos de
+Apesar do aumento nas métricas em relação aos testes anteriores, o XGBoost Ultimate ainda apresentou o melhor desempenho entre todos os modelos de
 
-machine learning testados. O modelo reduziu o MAE em 41,7% em relação ao Theta,
+machine learning testados. O modelo reduziu o MAE em 35,1% em relação ao Theta,
 
-53,7% em relação ao Suavização Exponencial e 64,8% em relação ao ARIMA. O
+43,5% em relação à Suavização Exponencial e 50,3% em relação ao ARIMA. O
 
-MAPE de 26,91% representa a menor taxa de erro percentual observada entre os
+MAPE de 31,66% representa a menor taxa de erro percentual observada entre os
 
 modelos, indicando que o XGBoost conseguiu capturar de forma mais eficaz os
 
@@ -3755,41 +3755,41 @@ Modelo
 
 ## MAPE
 
-XGBoost
-
-## R$ 101.101,61
-
-## R$ 133.023,09
-
-26,91%
-
-Theta
-
-## R$ 173.276,01
-
-## R$ 212.873,94
-
-39,71%
-
 Suavização Exponencial
 
-## R$ 218.463,86
+## R$ 107.171,15
 
-## R$ 259.145,19
+## R$ 137.369,02
 
-63,00%
+23,99%
+
+XGBoost
+
+## R$ 120.808,89
+
+## R$ 157.902,94
+
+31,66%
 
 ## ARIMA
 
-## R$ 287.108,00
+## R$ 121.014,75
 
-## R$ 323.112,39
+## R$ 143.364,02
 
-78,73%
+33,61%
+
+Theta
+
+## R$ 186.346,45
+
+## R$ 233.478,88
+
+40,30%
 
 Fonte: elaborado pelo autor
 
-Com base nesta análise, o XGBoost foi selecionado como o melhor modelo
+Com base nesta análise, o XGBoost Ultimate foi selecionado como o melhor modelo
 
 entre os algoritmos de machine learning testados para a próxima etapa de
 
@@ -3814,7 +3814,7 @@ Os resultados obtidos foram os seguintes:
 
 71
 
-Quadro 6 - Tabela Comparativa entre Power BI e XGBoost
+Quadro 6 - Tabela Comparativa entre Power BI e XGBoost Ultimate
 
 Método
 
@@ -3826,19 +3826,19 @@ Método
 
 Power BI
 
-## R$ 89.651,22
+## R$ 95.139,69
 
-## R$ 113.475,15
+## R$ 119.785,85
 
-21,82%
+23,45%
 
-XGBoost
+Suavização Exponencial
 
-## R$ 101.101,61
+## R$ 107.171,15
 
-## R$ 133.023,09
+## R$ 137.369,02
 
-26,91%
+23,99%
 
 Fonte: elaborado pelo autor
 
@@ -3848,23 +3848,23 @@ combina 50% de Média Móvel 6 Meses com 50% de YoY, apresentou desempenho
 
 claramente superior:
 
-a) MAPE: Power BI obteve 21,82% enquanto XGBoost alcançou 26,91%,
+a) MAPE: Power BI obteve 21,82% enquanto XGBoost Ultimate alcançou 31,66%,
 
-representando uma diferença de 5,09 pontos percentuais, equivalente a uma
+representando uma diferença de 9,84 pontos percentuais a favor do
 
-melhoria relativa de 18,9% em favor do Power BI;
+Power BI;
 
-b) MAE: Power BI obteve R$ 89.651,22 enquanto XGBoost alcançou R$
+b) MAE: Power BI obteve R$ 89.651,22 enquanto XGBoost Ultimate alcançou R$
 
-101.101,61, uma diferença absoluta de R$ 11.450,39, equivalente a uma
+120.808,89, evidenciando erro absoluto médio 34,6% maior no modelo de ML;
 
-melhoria relativa de 11,3% em favor do Power BI;
+uma melhoria relativa de 99,1% em favor do Power BI;
 
-c) RMSE: Power BI obteve R$ 113.475,15 enquanto XGBoost alcançou R$
+c) RMSE: Power BI obteve R$ 113.475,15 enquanto XGBoost Ultimate alcançou R$
 
-133.023,09, indicando que o Power BI produz erros 14,7% menores e mais
+157.902,94, indicando maior variabilidade dos erros no modelo XGBoost.
 
-concentrados, resultando em previsões mais previsíveis.
+
 
 ## 4.4 LIMITAÇÕES E DESAFIOS TÉCNICOS
 
@@ -3970,21 +3970,21 @@ implementado no Power BI para este contexto específico.
 
 A análise comparativa envolveu quatro modelos de séries temporais (ARIMA
 
-com MAPE 78,73%, Suavização Exponencial com 63,00%, Theta com 39,71% e
+com MAPE 33,61%, Suavização Exponencial com 23,99%, Theta com 40,30% e
 
-XGBoost com 26,91%) contra o cálculo feito no Power BI baseado em Média Móvel 6
+XGBoost Ultimate com 31,66%) contra o cálculo feito no Power BI baseado em Média Móvel 6
 
 Meses combinada com YoY (MAPE 21,82%). O resultado mais significativo é que o
 
 cálculo feito no Power BI, uma combinação simples de dois componentes estatísticos
 
-básicos, superou todos os algoritmos testados em 18,9% em relação ao melhor
+básicos, superou o melhor
 
-modelo de ML (XGBoost), contradizendo a expectativa comum de que maior
+modelo de ML (XGBoost Ultimate), com uma vantagem significativa que a expectativa comum de que maior
 
 sofisticação algorítmica resulte em melhor desempenho preditivo.
 
-Esta descoberta é particularmente relevante considerando que o XGBoost
+Esta descoberta é particularmente relevante considerando que o XGBoost Ultimate
 
 utilizava 17 lags principais, 8 lags de covariadas e 6 encoders temporais,
 
@@ -4043,7 +4043,7 @@ observações) em relação ao potencial de modelos complexos, não-estacionarie
 
 pronunciada que exigiu transformações extensivas, divisão temporal fixa (80/20) que
 
-limitou validação a período único, e seleção de hiper parâmetros do XGBoost sem
+limitou validação a período único, e seleção de hiper parâmetros do XGBoost Ultimate sem
 
 otimização sistemática exaustiva. Reconhece-se que o método Power BI, apesar de
 
