@@ -48,11 +48,11 @@ São Leopoldo
 
 Este trabalho tem como objetivo avaliar e comparar o desempenho de diferentes métodos de previsão de vendas, utilizando tanto técnicas estatísticas tradicionais quanto algoritmos modernos de aprendizado de máquina, aplicados a dados reais de faturamento extraídos de um dashboard corporativo em Power BI.
 
-Diante do aumento da competitividade e da demanda por decisões empresariais baseadas em dados, destaca-se a necessidade de modelos preditivos cada vez mais precisos e robustos. O estudo envolve a implementação dos modelos ARIMA, Theta,
+Diante do aumento da competitividade e da demanda por decisões empresariais baseadas em dados, destaca-se a necessidade de modelos preditivos cada vez mais precisos e robustos. O estudo envolve a implementação dos modelos ARIMA, Theta, Suavização Exponencial e XGBoost, analisando suas performances preditivas e as possibilidades de adoção dessas abordagens no contexto empresarial. Os resultados são avaliados a partir de métricas estatísticas padronizadas, permitindo identificar se algum modelo apresenta desempenho superior ao método atualmente empregado.
 
-Suavização Exponencial e XGBoost, analisando suas performances preditivas e as possibilidades de adoção dessas abordagens no contexto empresarial. Os resultados são avaliados a partir de métricas estatísticas padronizadas, permitindo identificar se algum modelo apresenta desempenho superior ao método atualmente empregado. A
+Os achados indicam que a Suavização Exponencial obteve o melhor desempenho entre os modelos de aprendizado de máquina testados, com MAPE de 23,99%, porém ainda foi superada pelo método híbrido implementado no Power BI (21,82% de MAPE). Este resultado evidencia que, para a série temporal analisada, o método existente em produção demonstrou maior acurácia que os algoritmos avançados testados, sugerindo que a sofisticação algorítmica não necessariamente resulta em melhor desempenho para este contexto específico.
 
-pesquisa contribui para a aproximação entre teoria e prática, oferecendo subsídios para a escolha de métodos de previsão mais adequados às necessidades das organizações e potencializando o valor estratégico das análises de vendas.
+A pesquisa contribui para a aproximação entre teoria e prática, oferecendo subsídios para a escolha de métodos de previsão mais adequados às necessidades das organizações e potencializando o valor estratégico das análises de vendas.
 
 Palavras-chave: Previsão de Vendas; Séries Temporais; Aprendizado de Máquina;
 
@@ -513,9 +513,7 @@ estudo limita-se à previsão de faturamento mensal, simulando o contexto práti
 
 ## 1.3 PROBLEMA
 
-O problema que orienta este trabalho é: Modelos avançados de aprendizado de máquina podem proporcionar previsões mais precisas de faturamento, quando comparados à abordagem utilizada em dashboards de Power BI? A investigação busca responder se a adoção de modelos de aprendizado de máquina como XGBoost,
-
-ARIMA, Suavização Exponencial e Theta pode, de fato, melhorar a acurácia das projeções realizadas atualmente pela empresa, promovendo maior confiabilidade e valor estratégico às informações disponibilizadas.
+O problema que orienta este trabalho é: Modelos de aprendizado de máquina conseguem superar o desempenho do método híbrido atualmente implementado no Power BI para previsão de vendas? A investigação busca responder se as técnicas de ML como XGBoost, ARIMA, Suavização Exponencial e Theta produzem resultados com maior acurácia do que a abordagem existente no dashboard corporativo, servindo como baseline de comparação. O estudo compara diretamente o desempenho dos modelos de ML contra o método em produção no Power BI, avaliando se há ganhos significativos em precisão que justifiquem a adoção de algoritmos mais complexos.
 
 ## 1.4 OBJETIVOS
 
@@ -2308,22 +2306,9 @@ Por fim, os resultados e conclusões deste trabalho refletem o contexto específ
 ## 5 CONCLUSÃO
 
 O problema que orientou este trabalho foi: "Modelos avançados de aprendizado de máquina podem proporcionar previsões mais precisas de faturamento, quando comparados à abordagem utilizada em dashboards de Power BI?". A resposta, baseada em análise empírica rigorosa realizada em 132 observações mensais de faturamento (outubro de 2014 a setembro de 2025), é contundente: Não. Modelos avançados de aprendizado de máquina não superaram o método híbrido implementado no Power BI para este contexto específico.
-
-A análise comparativa envolveu quatro modelos de séries temporais (ARIMA
-
-com MAPE 33,61%, Suavização Exponencial com 23,99%, Theta com 40,30% e XGBoost Ultimate com 31,66%) contra o cálculo feito no Power BI baseado em Média Móvel 6
-
-Meses combinada com YoY (MAPE 21,82%). O resultado mais significativo é que o cálculo feito no Power BI, uma combinação simples de dois componentes estatísticos básicos, superou o melhor modelo de ML (Suavização Exponencial), evidenciando que sofisticação algorítmica não necessariamente resulta em melhor desempenho preditivo para este contexto específico.
-
+A análise comparativa envolveu quatro modelos de séries temporais (ARIMA com MAPE 33,61%, Suavização Exponencial com 23,99%, Theta com 40,30% e XGBoost Ultimate com 31,66%) contra o cálculo feito no Power BI baseado em Média Móvel 6 Meses combinada com YoY (MAPE 21,82%). O resultado mais significativo é que o cálculo feito no Power BI, uma combinação simples de dois componentes estatísticos básicos, superou o melhor modelo de ML (Suavização Exponencial), evidenciando que sofisticação algorítmica não necessariamente resulta em melhor desempenho preditivo para este contexto específico.
 Esta descoberta é particularmente relevante considerando que o XGBoost Ultimate, utilizava 17 lags principais, 8 lags de covariadas e 6 encoders temporais, representando uma infraestrutura computacional significativamente mais complexa que a abordagem simples do Power BI. O resultado evidencia que, para séries temporais com sazonalidade clara e padrões bem definidos, métodos estatísticos simples e bem estabelecidos podem ser superiores a algoritmos sofisticados.
-
-Além da superioridade em acurácia, o cálculo feito no Power BI apresenta vantagens operacionais substantivas que reforçam sua adequação.
-
-## A
-
-interpretabilidade imediata dos componentes (MM6 e YoY) facilita a aceitação organizacional e auditoria das previsões junto a stakeholders não técnicos, ao contrário do XGBoost que funciona como "caixa preta". A ausência de hiper parâmetros complexos garante estabilidade previsível com novos dados e reduz riscos de degradação de desempenho. A manutenção é praticamente nula, enquanto modelos de ML requerem monitoramento contínuo e possível revisão periódica. Estes fatores cumulativos indicam que a superioridade observada do Power BI não é
-
-meramente estatística, mas fundamentalmente operacional e organizacional.
+Além da superioridade em acurácia, o cálculo feito no Power BI apresenta vantagens operacionais substantivas que reforçam sua adequação. A interpretabilidade imediata dos componentes (MM6 e YoY) facilita a aceitação organizacional e auditoria das previsões junto a stakeholders não técnicos, ao contrário do XGBoost que funciona como "caixa preta". A ausência de hiper parâmetros complexos garante estabilidade previsível com novos dados e reduz riscos de degradação de desempenho. A manutenção é praticamente nula, enquanto modelos de ML requerem monitoramento contínuo e possível revisão periódica. Estes fatores cumulativos indicam que a superioridade observada do Power BI não é meramente estatística, mas fundamentalmente operacional e organizacional.
 
 
 ---
@@ -2332,9 +2317,7 @@ meramente estatística, mas fundamentalmente operacional e organizacional.
 
 74
 
-Os desafios técnicos enfrentados incluem volume modesto de dados (132
-
-observações) em relação ao potencial de modelos complexos, não-estacionariedade pronunciada que exigiu transformações extensivas, divisão temporal fixa (80/20) que limitou validação a período único, e seleção de hiper parâmetros do XGBoost Ultimate sem otimização sistemática exaustiva. Reconhece-se que o método Power BI, apesar de superior, utiliza apenas dois componentes com pesos fixos, deixando potencial para extensões como pesos adaptativos ou componentes adicionais. Estas limitações, contudo, não alteram a conclusão central: para este contexto específico, simplicidade prevaleceu sobre complexidade.
+Os desafios técnicos enfrentados incluem volume modesto de dados (132 observações) em relação ao potencial de modelos complexos,  não-estacionariedade pronunciada que exigiu transformações extensivas, divisão temporal fixa (80/20) que limitou validação a período único, e seleção de hiper parâmetros do XGBoost Ultimate sem otimização sistemática exaustiva. Reconhece-se que o método Power BI, apesar de superior, utiliza apenas dois componentes com pesos fixos, deixando potencial para extensões como pesos adaptativos ou componentes adicionais. Estas limitações, contudo, não alteram a conclusão central: para este contexto específico, simplicidade prevaleceu sobre complexidade.
 
 As contribuições deste trabalho incluem:
 
