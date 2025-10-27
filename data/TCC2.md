@@ -154,7 +154,7 @@ Quadro 4 - Resultados das Métricas do Modelo XGBoost Ultimate .................
 
 Quadro 5 - Tabela Comparativa dos Modelos ........................................................... 70
 
-Quadro 6 - Tabela Comparativa entre Power BI e XGBoost Ultimate ..................................... 71
+Quadro 6 - Tabela Comparativa entre Power BI e Suavização Exponencial ..................................... 71
 
 
 ---
@@ -3789,17 +3789,17 @@ Theta
 
 Fonte: elaborado pelo autor
 
-Com base nesta análise, o XGBoost Ultimate foi selecionado como o melhor modelo
+Com base nesta análise, a Suavização Exponencial foi identificada como o melhor modelo
 
-entre os algoritmos de machine learning testados para a próxima etapa de
+entre os algoritmos de machine learning testados, com MAPE de 23,99%, seguida pelo XGBoost Ultimate com 31,66%. Para a próxima etapa de
 
-comparação com a abordagem implementada no Power BI.
+comparação com a abordagem implementada no Power BI, optou-se por utilizar o XGBoost Ultimate como representante dos modelos de ML, considerando sua maior complexidade e potencial para cenários com maior volume de dados.
 
-## 4.3 COMPARAÇÃO: MODELO XGBOOST VERSUS MÉTODO POWER BI
+## 4.3 COMPARAÇÃO: MODELOS DE MACHINE LEARNING VERSUS MÉTODO POWER BI
 
-Após identificar o XGBoost como o melhor modelo entre os algoritmos de
+Após identificar a Suavização Exponencial como o melhor modelo entre os algoritmos de
 
-machine learning testados, foi realizada uma comparação direta com o método de
+machine learning testados (MAPE 23,99%), foi realizada uma comparação direta com o método de
 
 previsão híbrido implementado no Power BI. Esta comparação é fundamental para
 
@@ -3814,7 +3814,7 @@ Os resultados obtidos foram os seguintes:
 
 71
 
-Quadro 6 - Tabela Comparativa entre Power BI e XGBoost Ultimate
+Quadro 6 - Tabela Comparativa entre Power BI e Suavização Exponencial
 
 Método
 
@@ -3844,25 +3844,23 @@ Fonte: elaborado pelo autor
 
 Como visto no quadro 6, o método híbrido implementado no Power BI, que
 
-combina 50% de Média Móvel 6 Meses com 50% de YoY, apresentou desempenho
+combina 50% de Média Móvel 6 Meses com 50% de YoY, apresentou desempenho superior até mesmo ao melhor modelo de ML (Suavização Exponencial):
 
-claramente superior:
+a) MAPE: Power BI obteve 21,82% enquanto Suavização Exponencial alcançou 23,99%,
 
-a) MAPE: Power BI obteve 21,82% enquanto XGBoost Ultimate alcançou 31,66%,
+representando uma diferença de 2,17 pontos percentuais a favor do
 
-representando uma diferença de 9,84 pontos percentuais a favor do
+Power BI. Este resultado é ainda mais impressionante ao considerar que a Suavização Exponencial é o melhor modelo de machine learning testado;
 
-Power BI;
+b) MAE: Power BI obteve R$ 89.651,22 enquanto Suavização Exponencial alcançou R$
 
-b) MAE: Power BI obteve R$ 89.651,22 enquanto XGBoost Ultimate alcançou R$
-
-120.808,89, evidenciando erro absoluto médio 34,6% maior no modelo de ML;
+107.171,15, evidenciando erro absoluto médio 19,5% maior no melhor modelo de ML;
 
 uma melhoria relativa de 99,1% em favor do Power BI;
 
-c) RMSE: Power BI obteve R$ 113.475,15 enquanto XGBoost Ultimate alcançou R$
+c) RMSE: Power BI obteve R$ 113.475,15 enquanto Suavização Exponencial alcançou R$
 
-157.902,94, indicando maior variabilidade dos erros no modelo XGBoost.
+137.369,02, indicando maior variabilidade dos erros no modelo de ML mesmo considerando o melhor desempenho entre os algoritmos testados.
 
 
 
@@ -3980,11 +3978,9 @@ cálculo feito no Power BI, uma combinação simples de dois componentes estatí
 
 básicos, superou o melhor
 
-modelo de ML (XGBoost Ultimate), com uma vantagem significativa que a expectativa comum de que maior
+modelo de ML (Suavização Exponencial), evidenciando que sofisticação algorítmica não necessariamente resulta em melhor desempenho preditivo para este contexto específico.
 
-sofisticação algorítmica resulte em melhor desempenho preditivo.
-
-Esta descoberta é particularmente relevante considerando que o XGBoost Ultimate
+Esta descoberta é particularmente relevante considerando que o XGBoost Ultimate,
 
 utilizava 17 lags principais, 8 lags de covariadas e 6 encoders temporais,
 
